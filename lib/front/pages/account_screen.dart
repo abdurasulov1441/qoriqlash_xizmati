@@ -360,7 +360,7 @@ class _AccountScreenNotLoginState extends State<AccountScreenNotLogin> {
             const SizedBox(
               height: 10,
             ),
-            Container(
+            SizedBox(
               width: double.infinity,
               height: 400,
               child: Expanded(
