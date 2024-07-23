@@ -31,8 +31,6 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> login() async {
-    final navigator = Navigator.of(context);
-
     final isValid = formKey.currentState!.validate();
     if (!isValid)
       return;

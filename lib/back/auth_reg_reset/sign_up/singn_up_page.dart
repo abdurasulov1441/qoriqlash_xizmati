@@ -1,21 +1,12 @@
-import 'dart:io';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:http/io_client.dart';
-import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
-import 'package:pinput/pinput.dart';
 import 'package:qoriqlash_xizmati/back/api/api_sms.dart';
 import 'package:qoriqlash_xizmati/back/auth_reg_reset/sign_up/sms_verify_page.dart';
 import 'package:qoriqlash_xizmati/back/snack_bar.dart';
 import 'package:qoriqlash_xizmati/front/components/mini_red_app_bar.dart';
-import 'package:qoriqlash_xizmati/front/pages/home_page.dart';
 import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
 import 'package:qoriqlash_xizmati/front/style/app_style.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
