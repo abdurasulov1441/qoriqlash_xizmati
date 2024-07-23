@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:http/http.dart' as http;
-import 'package:qoriqlash_xizmati/back/api_news.dart';
+import 'package:qoriqlash_xizmati/back/api/api_news.dart';
 import 'package:qoriqlash_xizmati/front/components/appbar_title.dart';
 import 'package:qoriqlash_xizmati/front/components/progress_for_news.dart';
 import 'package:qoriqlash_xizmati/front/pages/news/new_detail.dart';

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:qoriqlash_xizmati/back/api_news.dart';
+import 'package:qoriqlash_xizmati/back/api/api_news.dart';
 import 'package:qoriqlash_xizmati/front/components/mini_red_app_bar.dart';
 
 class NewsDetailPage extends StatelessWidget {

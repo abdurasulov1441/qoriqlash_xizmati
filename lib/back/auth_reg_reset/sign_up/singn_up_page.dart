@@ -1,9 +1,14 @@
+import 'dart:io';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:http/io_client.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
 import 'package:pinput/pinput.dart';
+import 'package:qoriqlash_xizmati/back/api/api_sms.dart';
+import 'package:qoriqlash_xizmati/back/auth_reg_reset/sign_up/sms_verify_page.dart';
 import 'package:qoriqlash_xizmati/back/snack_bar.dart';
 import 'package:qoriqlash_xizmati/front/components/mini_red_app_bar.dart';
 import 'package:qoriqlash_xizmati/front/pages/home_page.dart';
@@ -138,18 +143,31 @@ class _SignUpScreen extends State<SignUpScreen> {
                       ],
                     ),
                     const SizedBox(
-                      height: 5,
+                      height: 10,
                     ),
                     TextFormField(
                       style: const TextStyle(color: AppColors.lightTextColor),
                       keyboardType: TextInputType.phone,
                       autocorrect: false,
                       controller: _phoneController,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        LengthLimitingTextInputFormatter(
+                            12), // Ограничение на длину
+                      ],
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Поле не может быть пустым';
+                        } else if (value.length != 12) {
+                          return 'Длина номера должна быть 12 символов';
+                        }
+                        return null;
+                      },
                       decoration: const InputDecoration(
                           border: OutlineInputBorder(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(15))),
-                          hintText: 'Telefon raqamni kiriting',
+                          hintText: '998901234567 formatida',
                           hintStyle: AppStyle.fontStyle,
                           label: Icon(
                             Icons.phone,
@@ -157,17 +175,19 @@ class _SignUpScreen extends State<SignUpScreen> {
                           )),
                     ),
                     const SizedBox(
-                      height: 5,
+                      height: 10,
                     ),
-                    const SizedBox(height: 5),
                     Row(
                       children: [
                         Text(
                           'Parol',
                           style: AppStyle.fontStyle
                               .copyWith(fontWeight: FontWeight.bold),
-                        )
+                        ),
                       ],
+                    ),
+                    const SizedBox(
+                      height: 10,
                     ),
                     TextFormField(
                       style: const TextStyle(color: AppColors.lightTextColor),
@@ -208,6 +228,9 @@ class _SignUpScreen extends State<SignUpScreen> {
                               .copyWith(fontWeight: FontWeight.bold),
                         )
                       ],
+                    ),
+                    const SizedBox(
+                      height: 10,
                     ),
                     TextFormField(
                       style: const TextStyle(color: AppColors.lightTextColor),
@@ -285,239 +308,6 @@ class _SignUpScreen extends State<SignUpScreen> {
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class SmsService {
-  final String login = 'Qoriqlash';
-  final String password = 'WNM63NWR7C6VwwT98RG7';
-  final String url = 'https://appdata.uz/sms_proxy.php';
-
-  Future<void> sendSms(List<Map<String, String>> messages) async {
-    final data = {
-      'login': login,
-      'password': password,
-      'data': jsonEncode(messages),
-    };
-
-    final response = await http.post(
-      Uri.parse(url),
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-      body: data,
-    );
-
-    if (response.statusCode == 200) {
-      print('SMS sent successfully: ${response.body}');
-    } else {
-      print('Failed to send SMS: ${response.body}');
-    }
-  }
-}
-
-class ConfirmSmsPage extends StatelessWidget {
-  final String phone;
-  final String password;
-  final String code;
-
-  ConfirmSmsPage({
-    super.key,
-    required this.phone,
-    required this.password,
-    required this.code,
-  });
-
-  final TextEditingController _smsController = TextEditingController();
-
-  @override
-  Widget build(BuildContext context) {
-    void _verifyCode() {
-      if (_smsController.text == code) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              'Login Successful\nPhone: $phone\nPassword: $password',
-            ),
-          ),
-        );
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => SingnUpSuccesPage()),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Invalid SMS code')),
-        );
-      }
-    }
-
-    return Scaffold(
-      body: Container(
-        padding: EdgeInsets.only(left: 20, right: 20),
-        width: double.infinity,
-        height: 800,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset('assets/images/sms_verify.png'),
-              ],
-            ),
-            Text(
-              'Sms ni tasdiqlash',
-              style: AppStyle.fontStyle
-                  .copyWith(fontWeight: FontWeight.bold, fontSize: 20),
-            ),
-            Text(
-              'Biz sizga 4 tali raqam jo‘natdik',
-              style: AppStyle.fontStyle.copyWith(color: Colors.grey),
-            ),
-            Text(
-              '+$phone',
-              style: AppStyle.fontStyle
-                  .copyWith(color: AppColors.lightIconGuardColor),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Row(
-              children: [
-                Text(
-                  'Tasdiqlash kodini kiriting',
-                  style:
-                      AppStyle.fontStyle.copyWith(fontWeight: FontWeight.bold),
-                )
-              ],
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Pinput(
-              animationCurve: Curves.fastLinearToSlowEaseIn,
-              controller: _smsController,
-            ),
-            SizedBox(height: 20),
-            Container(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  _verifyCode();
-                },
-                child: Text(
-                  'Akkauntni tasdiqlash va yaratish',
-                  style: AppStyle.fontStyle
-                      .copyWith(color: AppColors.lightHeaderColor),
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.lightIconGuardColor,
-                  side: BorderSide(color: AppColors.lightIconGuardColor),
-                  elevation: 5,
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-              ),
-            )
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class SingnUpSuccesPage extends StatelessWidget {
-  const SingnUpSuccesPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SvgPicture.asset('assets/images/succes.svg'),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'Ha! Muvaffaqiyatli',
-                  style: AppStyle.fontStyle
-                      .copyWith(fontSize: 20, fontWeight: FontWeight.bold),
-                )
-              ],
-            ),
-            SizedBox(
-              height: 5,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  ' ro‘yxatdan o‘tingiz',
-                  style: AppStyle.fontStyle
-                      .copyWith(fontSize: 20, fontWeight: FontWeight.bold),
-                )
-              ],
-            ),
-            SizedBox(
-              height: 30,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'Siz endi tizimni ichidagi imkoniyatlarda',
-                  style: AppStyle.fontStyle.copyWith(
-                    color: Colors.grey,
-                  ),
-                )
-              ],
-            ),
-            SizedBox(
-              height: 5,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text('foydalanishingiz va ko‘rishingiz mumkin',
-                    style: AppStyle.fontStyle.copyWith(
-                      color: Colors.grey,
-                    ))
-              ],
-            ),
-            SizedBox(
-              height: 30,
-            ),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  pushScreenWithNavBar(context, HomePage());
-                },
-                child: Text(
-                  'Ketdik',
-                  style: AppStyle.fontStyle
-                      .copyWith(color: AppColors.lightHeaderColor),
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.lightIconGuardColor,
-                  side: BorderSide(color: AppColors.lightIconGuardColor),
-                  elevation: 5,
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-              ),
-            )
-          ],
         ),
       ),
     );
