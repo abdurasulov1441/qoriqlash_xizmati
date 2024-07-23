@@ -45,6 +45,7 @@ dependencies:
   http: ^1.2.2
   another_flutter_splash_screen: ^1.2.1
   provider: ^6.1.2
+  pinput: ^5.0.0
 
 dev_dependencies:
   flutter_test:
