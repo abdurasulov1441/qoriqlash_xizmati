@@ -62,4 +62,18 @@ class AppDataProvider with ChangeNotifier {
         : 'assets/images/step2.svg';
     notifyListeners();
   }
+
+  Future<void> login(int index) async {
+    final box = HiveBox.favotiresBox;
+    final user = FavoriteModel(userAuth: true);
+    await box.putAt(index, user);
+    notifyListeners();
+  }
+
+  Future<void> logout(int index) async {
+    final box = HiveBox.favotiresBox;
+    final user = FavoriteModel(userAuth: false);
+    await box.putAt(index, user);
+    notifyListeners();
+  }
 }

@@ -7,9 +7,12 @@ import 'package:qoriqlash_xizmati/qoriqlash_xizmati_app.dart';
 
 Future<void> main() async {
   await Hive.initFlutter();
-  await Hive.initFlutter();
 
-  await Hive.openBox<UsersModel>('userstate');
+  // Регистрация адаптера
+  Hive.registerAdapter(FavoriteModelAdapter());
+
+  // Открытие коробки
+  await Hive.openBox<FavoriteModel>('favorites');
   WidgetsFlutterBinding.ensureInitialized();
 
   WidgetsFlutterBinding.ensureInitialized();

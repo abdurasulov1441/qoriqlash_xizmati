@@ -6,23 +6,23 @@ part of 'favorite_model.dart';
 // TypeAdapterGenerator
 // **************************************************************************
 
-class UsersModelAdapter extends TypeAdapter<UsersModel> {
+class FavoriteModelAdapter extends TypeAdapter<FavoriteModel> {
   @override
   final int typeId = 1;
 
   @override
-  UsersModel read(BinaryReader reader) {
+  FavoriteModel read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return UsersModel(
-      fields[0] as bool,
+    return FavoriteModel(
+      userAuth: fields[0] as bool,
     );
   }
 
   @override
-  void write(BinaryWriter writer, UsersModel obj) {
+  void write(BinaryWriter writer, FavoriteModel obj) {
     writer
       ..writeByte(1)
       ..writeByte(0)
@@ -35,7 +35,7 @@ class UsersModelAdapter extends TypeAdapter<UsersModel> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is UsersModelAdapter &&
+      other is FavoriteModelAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

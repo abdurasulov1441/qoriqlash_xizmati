@@ -7,10 +7,24 @@ import 'package:qoriqlash_xizmati/front/pages/news_screen.dart';
 import 'package:qoriqlash_xizmati/front/pages/tarifs_screen.dart';
 import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
-  List<PersistentTabConfig> _tabs() => [
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  late FavoriteModel model;
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize your FavoriteModel here and update the state based on real data
+    model = FavoriteModel(userAuth: false); // Replace with real initialization
+  }
+
+  List<PersistentTabConfig> _tabs(bool userAuth) => [
         PersistentTabConfig(
           screen: const HomePageElements(),
           item: ItemConfig(
@@ -42,8 +56,8 @@ class HomePage extends StatelessWidget {
           ),
         ),
         PersistentTabConfig(
-          screen: const AccountScreen(),
-          // : const AccountScreenNotLogin(),
+          screen:
+              userAuth ? const AccountScreen() : const AccountScreenNotLogin(),
           item: ItemConfig(
               icon: const Icon(
                 Icons.person,
@@ -56,12 +70,15 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool userAuth =
+        model.userAuth; // Fetch the userAuth state from the model
+
     return PersistentTabView(
       popAllScreensOnTapAnyTabs: true,
       popActionScreens: PopActionScreensType.all,
       screenTransitionAnimation: const ScreenTransitionAnimation(
           duration: Duration(milliseconds: 300)),
-      tabs: _tabs(),
+      tabs: _tabs(userAuth),
       navBarBuilder: (navBarConfig) => Style1BottomNavBar(
         navBarDecoration:
             const NavBarDecoration(color: AppColors.lightIconGuardColor),
