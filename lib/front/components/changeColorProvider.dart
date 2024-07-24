@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:qoriqlash_xizmati/back/hive/favorite_model.dart';
+import 'package:qoriqlash_xizmati/back/hive/hive_box.dart';
 import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
 
 class AppDataProvider with ChangeNotifier {
@@ -59,5 +61,13 @@ class AppDataProvider with ChangeNotifier {
         ? 'assets/images/step2.svg'
         : 'assets/images/step2.svg';
     notifyListeners();
+  }
+
+  Future<void> onCheck(int index, List<UsersModel> allNotes) async {
+    await HiveBox.favotiresBox.putAt(
+        index,
+        UsersModel(
+          userAuth: true,
+        ));
   }
 }
