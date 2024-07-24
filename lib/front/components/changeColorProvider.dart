@@ -1,15 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:qoriqlash_xizmati/back/hive/favorite_model.dart';
-import 'package:qoriqlash_xizmati/back/hive/hive_box.dart';
 import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
 
 class AppDataProvider with ChangeNotifier {
   bool _isDarkTheme = false;
-  bool _isAuthenticated =
-      HiveBox.favotiresBox.get('userstate')?.userAuth ?? false;
 
   bool get isDarkTheme => _isDarkTheme;
-  bool get isAuthenticated => _isAuthenticated;
 
   ThemeData get currentTheme => _isDarkTheme ? darkTheme : lightTheme;
 
@@ -41,14 +36,6 @@ class AppDataProvider with ChangeNotifier {
         dividerColor: AppColors.darkDividerColor,
         iconTheme: const IconThemeData(color: AppColors.darkIconColor),
       );
-
-  void updateAuthenticationStatus(bool status) async {
-    _isAuthenticated = status;
-    notifyListeners();
-    final box = HiveBox.favotiresBox;
-    final userModel = FavoriteModel(userAuth: status);
-    await box.put('userstate', userModel);
-  }
 
   Map<String, TimeOfDay> startTimes = {};
   Map<String, TimeOfDay> endTimes = {};

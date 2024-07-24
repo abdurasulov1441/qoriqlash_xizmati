@@ -6,7 +6,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
 import 'package:provider/provider.dart';
 import 'package:qoriqlash_xizmati/back/auth_reg_reset/sign_up/singn_up_page.dart';
-import 'package:qoriqlash_xizmati/back/hive/favorite_model.dart';
 import 'package:qoriqlash_xizmati/front/components/appbar_title.dart';
 import 'package:qoriqlash_xizmati/front/components/changeColorProvider.dart';
 import 'package:qoriqlash_xizmati/front/pages/accaount_screens/shartnomalar.dart';
@@ -44,12 +43,7 @@ class _AccountScreenState extends State<AccountScreen> {
               child: const Text('Yo\'q'),
             ),
             TextButton(
-              onPressed: () async {
-                // Update authentication status
-                final provider =
-                    Provider.of<AppDataProvider>(context, listen: false);
-                provider.updateAuthenticationStatus(false);
-
+              onPressed: () {
                 signOut();
                 Navigator.of(context).pop();
               },
