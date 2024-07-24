@@ -68,28 +68,26 @@ class BuildStep4Page extends StatelessWidget {
         Container(
             padding: EdgeInsets.symmetric(horizontal: 20),
             width: double.infinity,
-            height: 50,
-            child: Expanded(
-              child: ElevatedButton(
-                onPressed: () {
-                  pushScreenWithNavBar(context, HomePage());
-                },
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  backgroundColor: Color(0xFF8B2D2D), // Цвет текста кнопки
-                  shape: RoundedRectangleBorder(
-                    borderRadius:
-                        BorderRadius.circular(20), // Радиус скругления углов
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 20, vertical: 10), // Отступы внутри кнопки
+            height: 60,
+            child: ElevatedButton(
+              onPressed: () {
+                pushScreenWithNavBar(context, HomePage());
+              },
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.white,
+                backgroundColor: Color(0xFF8B2D2D), // Цвет текста кнопки
+                shape: RoundedRectangleBorder(
+                  borderRadius:
+                      BorderRadius.circular(20), // Радиус скругления углов
                 ),
-                child: Text('Yopish',
-                    style: AppStyle.fontStyle.copyWith(
-                        fontSize: 30,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.lightHeaderColor)),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 20, vertical: 10), // Отступы внутри кнопки
               ),
+              child: Text('Yopish',
+                  style: AppStyle.fontStyle.copyWith(
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.lightHeaderColor)),
             ))
       ],
     );

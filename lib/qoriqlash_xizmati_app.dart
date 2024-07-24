@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:qoriqlash_xizmati/front/components/changeColorProvider.dart';
 import 'package:qoriqlash_xizmati/front/pages/home_page.dart';
 import 'package:provider/provider.dart';
+import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
+import 'package:qoriqlash_xizmati/front/style/app_style.dart';
 
 class QoriqlashXizmatiApp extends StatelessWidget {
   const QoriqlashXizmatiApp({super.key});
@@ -57,14 +59,37 @@ class SplashScreenContent extends StatelessWidget {
             width: 200,
             height: 200,
           ),
-          RichText(
-              text: const TextSpan(
-            style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
-            children: <TextSpan>[
-              TextSpan(text: 'Xavfsiz', style: TextStyle(color: Colors.white)),
-              TextSpan(text: 'Turizm'),
+          SizedBox(
+            height: 20,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Qo\'riqlash',
+                style: AppStyle.fontStyle.copyWith(fontSize: 20),
+              ),
+              SizedBox(
+                width: 10,
+              ),
+              Text(
+                'Xizmati',
+                style: AppStyle.fontStyle.copyWith(fontSize: 20),
+              ),
             ],
-          )),
+          ),
+          // RichText(
+          //     text: const TextSpan(
+          //   style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+          //   children: <TextSpan>[
+          //     TextSpan(
+          //         text: 'Qo\'riqlash',
+          //         style: TextStyle(color: AppColors.lightTextColor)),
+          //     TextSpan(
+          //         text: 'Xizmati',
+          //         style: TextStyle(color: AppColors.lightTextColor)),
+          //   ],
+          // )),
         ],
       ),
     );

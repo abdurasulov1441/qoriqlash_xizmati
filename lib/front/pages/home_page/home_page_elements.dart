@@ -1,4 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:d_chart/commons/data_model/data_model.dart';
+import 'package:d_chart/ordinal/bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:qoriqlash_xizmati/front/components/appbar_title.dart';
@@ -11,7 +13,7 @@ class HomePageElements extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -62,9 +64,80 @@ class HomePageElements extends StatelessWidget {
                           backColor: AppColors.homeDarkBlue2),
                     ],
                   ),
+                  Expanded(
+                    child: ListView(
+                      padding: EdgeInsets.all(25),
+                      children: [
+                        AspectRatio(
+                          aspectRatio: 16 / 9,
+                          child: DChartBarO(
+                            groupList: [
+                              OrdinalGroup(
+                                color: AppColors.homeLightBlue,
+                                id: '1',
+                                data: [
+                                  OrdinalData(
+                                    domain: '1',
+                                    measure: 535,
+                                  ),
+                                ],
+                              ),
+                              OrdinalGroup(
+                                color: AppColors.homeOrange,
+                                id: '2',
+                                data: [
+                                  OrdinalData(
+                                    domain: '2',
+                                    measure: 435,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: ListView(
+                      padding: EdgeInsets.all(25),
+                      children: [
+                        AspectRatio(
+                          aspectRatio: 16 / 9,
+                          child: DChartBarO(
+                            groupList: [
+                              OrdinalGroup(
+                                color: AppColors.homePink,
+                                id: '3',
+                                data: [
+                                  OrdinalData(
+                                    domain: '3',
+                                    measure: 33755,
+                                  ),
+                                ],
+                              ),
+                              OrdinalGroup(
+                                color: AppColors.homeDarkBlue,
+                                id: '4',
+                                data: [
+                                  OrdinalData(
+                                    domain: '4',
+                                    measure: 51584,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
+            SizedBox(
+              height: 100,
+            )
           ],
         ),
       ),

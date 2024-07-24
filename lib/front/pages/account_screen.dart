@@ -10,6 +10,7 @@ import 'package:qoriqlash_xizmati/front/components/appbar_title.dart';
 import 'package:qoriqlash_xizmati/front/components/changeColorProvider.dart';
 import 'package:qoriqlash_xizmati/front/pages/accaount_screens/shartnomalar.dart';
 import 'package:qoriqlash_xizmati/front/pages/accaount_screens/visacard.dart';
+import 'package:qoriqlash_xizmati/front/pages/accaount_screens/yordam_page.dart';
 import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
 import 'package:qoriqlash_xizmati/front/style/app_style.dart';
 
@@ -80,7 +81,7 @@ class _AccountScreenState extends State<AccountScreen> {
       Shartnomalar(),
       Shartnomalar(),
       Cards(),
-      Shartnomalar(),
+      FaqPage(),
       Divider(),
       Shartnomalar(),
     ];
@@ -270,16 +271,19 @@ class _AccountScreenNotLoginState extends State<AccountScreenNotLogin> {
       'Yordam',
       'Qorong\'u rejim',
       'Chiqish',
+      'Ro\'yxatdan o\'tish'
     ];
     final List image = [
       'yordam.svg',
       'tungi_rejim.svg',
       'logout.svg',
+      'logout.svg',
     ];
     final List<Widget> route = [
-      Shartnomalar(),
+      FaqPage(),
       Divider(),
       Shartnomalar(),
+      SignUpScreen()
     ];
     return Scaffold(
       body: SizedBox(
@@ -304,126 +308,63 @@ class _AccountScreenNotLoginState extends State<AccountScreenNotLogin> {
             const SizedBox(
               height: 10,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Image.network(
-                  'https://appdata.uz/qbb-data/house.png',
-                  width: 60,
-                  height: 60,
-                ),
-                Column(
-                  children: [
-                    Text(
-                      'Mening uyim',
-                      style: AppStyle.fontStyle.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: themeProvider.isDarkTheme
-                              ? AppColors.darkTextColor
-                              : AppColors.lightTextColor),
-                    ),
-                    Row(
-                      children: [
-                        const Icon(
-                          Icons.arrow_upward,
-                          color: Colors.greenAccent,
+            const SizedBox(
+              height: 10,
+            ),
+            Expanded(
+              child: SizedBox(
+                width: double.infinity,
+                child: ListView.builder(
+                  itemCount: name.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                        leading: SvgPicture.asset(
+                          'assets/images/${image[index]}',
+                          width: 30,
+                          height: 30,
                         ),
-                        Text(
-                          '+230 154 so\'m',
+                        // title: item.buildTitle(context),
+                        // subtitle: item.buildSubtitle(context),
+                        title: Text(
+                          name[index],
                           style: AppStyle.fontStyle.copyWith(
-                              fontWeight: FontWeight.bold,
                               color: themeProvider.isDarkTheme
                                   ? AppColors.darkTextColor
                                   : AppColors.lightTextColor),
                         ),
-                      ],
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  width: 20,
-                  // height: 20,
-                ),
-                Image.network(
-                  'https://appdata.uz/qbb-data/lock.png',
-                  width: 60,
-                  height: 60,
-                ),
-                Image.network(
-                  'https://appdata.uz/qbb-data/emerency_on.png',
-                  width: 60,
-                  height: 60,
-                )
-              ],
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            SizedBox(
-              width: double.infinity,
-              height: 400,
-              child: Expanded(
-                child: SizedBox(
-                  // height: 100,
-                  width: double.infinity,
-                  child: ListView.builder(
-                    itemCount: name.length,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                          leading: SvgPicture.network(
-                            'https://appdata.uz/qbb-data/${image[index]}',
-                            width: 30,
-                            height: 30,
-                          ),
-                          // title: item.buildTitle(context),
-                          // subtitle: item.buildSubtitle(context),
-                          title: Text(
-                            name[index],
-                            style: AppStyle.fontStyle.copyWith(
+                        onTap: () {
+                          print(name[index]);
+                          if (name[index] == 'Chiqish') {
+                            showLogoutDialog(context);
+                          } else if (name[index] == 'Qorong\'u rejim') {
+                            null;
+                          } else {
+                            pushWithoutNavBar(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => route[index]));
+                          }
+                        },
+                        //leading: Image.asset(images[index],width: 50,height: 50,),
+                        textColor: Colors.white,
+                        trailing: name[index] == 'Qorong\'u rejim'
+                            ? Switch(
+                                value: themeProvider.isDarkTheme,
+                                onChanged: (value) {
+                                  themeProvider.toggleTheme();
+                                },
+                              )
+                            : Icon(
+                                Icons.keyboard_arrow_right,
                                 color: themeProvider.isDarkTheme
                                     ? AppColors.darkTextColor
-                                    : AppColors.lightTextColor),
-                          ),
-                          onTap: () {
-                            print(name[index]);
-                            if (name[index] == 'Chiqish') {
-                              showLogoutDialog(context);
-                            } else if (name[index] == 'Qorong\'u rejim') {
-                              null;
-                            } else {
-                              pushWithoutNavBar(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => route[index]));
-                            }
-                          },
-                          //leading: Image.asset(images[index],width: 50,height: 50,),
-                          textColor: Colors.white,
-                          trailing: name[index] == 'Qorong\'u rejim'
-                              ? Switch(
-                                  value: themeProvider.isDarkTheme,
-                                  onChanged: (value) {
-                                    themeProvider.toggleTheme();
-                                  },
-                                )
-                              : Icon(
-                                  Icons.keyboard_arrow_right,
-                                  color: themeProvider.isDarkTheme
-                                      ? AppColors.darkTextColor
-                                      : AppColors.lightTextColor,
-                                  weight: 20,
-                                ));
-                    },
-                  ),
+                                    : AppColors.lightTextColor,
+                                weight: 20,
+                              ));
+                  },
                 ),
               ),
             ),
-            TextButton(
-                onPressed: () {
-                  pushScreenWithoutNavBar(context, SignUpScreen());
-                },
-                child: Text('Ro\'yxatdan o\'tish'))
           ],
         ),
       ),

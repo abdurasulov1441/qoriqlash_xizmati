@@ -1,16 +1,12 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
-import 'package:flutter_svg/svg.dart';
-import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
 import 'package:qoriqlash_xizmati/front/components/mini_red_app_bar.dart';
-import 'package:qoriqlash_xizmati/front/pages/home_page.dart';
+
 import 'package:qoriqlash_xizmati/front/pages/tarifs_screens/object/ariza_step_texnik_object/step_four.dart';
 import 'package:qoriqlash_xizmati/front/pages/tarifs_screens/object/ariza_step_texnik_object/step_one.dart';
 import 'package:qoriqlash_xizmati/front/pages/tarifs_screens/object/ariza_step_texnik_object/step_second.dart';
 import 'package:qoriqlash_xizmati/front/pages/tarifs_screens/object/ariza_step_texnik_object/step_third.dart';
 import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
-import 'package:qoriqlash_xizmati/front/style/app_style.dart';
 
 class ArizaTexnikObyekt extends StatelessWidget {
   const ArizaTexnikObyekt({super.key});

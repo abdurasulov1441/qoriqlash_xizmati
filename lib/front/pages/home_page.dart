@@ -41,7 +41,7 @@ class HomePage extends StatelessWidget {
           ),
         ),
         PersistentTabConfig(
-          screen: const AccountScreen(),
+          screen: const AccountScreenNotLogin(),
           item: ItemConfig(
               icon: const Icon(
                 Icons.person,
