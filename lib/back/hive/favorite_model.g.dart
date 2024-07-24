@@ -17,7 +17,7 @@ class UsersModelAdapter extends TypeAdapter<UsersModel> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return UsersModel(
-      userAuth: fields[0] as bool,
+      fields[0] as bool,
     );
   }
 

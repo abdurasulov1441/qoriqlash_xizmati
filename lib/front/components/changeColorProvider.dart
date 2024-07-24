@@ -62,12 +62,4 @@ class AppDataProvider with ChangeNotifier {
         : 'assets/images/step2.svg';
     notifyListeners();
   }
-
-  Future<void> onCheck(int index, List<UsersModel> allNotes) async {
-    await HiveBox.favotiresBox.putAt(
-        index,
-        UsersModel(
-          userAuth: true,
-        ));
-  }
 }

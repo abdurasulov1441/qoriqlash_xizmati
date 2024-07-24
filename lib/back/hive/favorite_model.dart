@@ -6,5 +6,5 @@ part 'favorite_model.g.dart';
 class UsersModel {
   @HiveField(0)
   final bool userAuth;
-  const UsersModel({required this.userAuth});
+  const UsersModel(this.userAuth);
 }

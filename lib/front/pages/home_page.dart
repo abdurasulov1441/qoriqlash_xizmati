@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
+import 'package:qoriqlash_xizmati/back/hive/favorite_model.dart';
 import 'package:qoriqlash_xizmati/front/pages/account_screen.dart';
 import 'package:qoriqlash_xizmati/front/pages/home_page/home_page_elements.dart';
 import 'package:qoriqlash_xizmati/front/pages/news_screen.dart';
@@ -41,7 +42,8 @@ class HomePage extends StatelessWidget {
           ),
         ),
         PersistentTabConfig(
-          screen: const AccountScreenNotLogin(),
+          screen: const AccountScreen(),
+          // : const AccountScreenNotLogin(),
           item: ItemConfig(
               icon: const Icon(
                 Icons.person,
@@ -53,16 +55,18 @@ class HomePage extends StatelessWidget {
       ];
 
   @override
-  Widget build(BuildContext context) => PersistentTabView(
-        popAllScreensOnTapAnyTabs: true,
-        popActionScreens: PopActionScreensType.all,
-        screenTransitionAnimation: const ScreenTransitionAnimation(
-            duration: Duration(milliseconds: 300)),
-        tabs: _tabs(),
-        navBarBuilder: (navBarConfig) => Style1BottomNavBar(
-          navBarDecoration:
-              const NavBarDecoration(color: AppColors.lightIconGuardColor),
-          navBarConfig: navBarConfig,
-        ),
-      );
+  Widget build(BuildContext context) {
+    return PersistentTabView(
+      popAllScreensOnTapAnyTabs: true,
+      popActionScreens: PopActionScreensType.all,
+      screenTransitionAnimation: const ScreenTransitionAnimation(
+          duration: Duration(milliseconds: 300)),
+      tabs: _tabs(),
+      navBarBuilder: (navBarConfig) => Style1BottomNavBar(
+        navBarDecoration:
+            const NavBarDecoration(color: AppColors.lightIconGuardColor),
+        navBarConfig: navBarConfig,
+      ),
+    );
+  }
 }
