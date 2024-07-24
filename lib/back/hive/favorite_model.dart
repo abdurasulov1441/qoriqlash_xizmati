@@ -3,8 +3,8 @@ import 'package:hive/hive.dart';
 part 'favorite_model.g.dart';
 
 @HiveType(typeId: 1)
-class FavoriteModel {
+class UsersModel {
   @HiveField(0)
-  final String cityName;
-  const FavoriteModel({required this.cityName});
+  final bool userAuth;
+  const UsersModel({required this.userAuth});
 }
