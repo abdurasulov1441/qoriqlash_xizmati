@@ -5,8 +5,11 @@ import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
 
 class AppDataProvider with ChangeNotifier {
   bool _isDarkTheme = false;
+  bool _isAuthenticated =
+      HiveBox.favotiresBox.get('userstate')?.userAuth ?? false;
 
   bool get isDarkTheme => _isDarkTheme;
+  bool get isAuthenticated => _isAuthenticated;
 
   ThemeData get currentTheme => _isDarkTheme ? darkTheme : lightTheme;
 
@@ -39,6 +42,14 @@ class AppDataProvider with ChangeNotifier {
         iconTheme: const IconThemeData(color: AppColors.darkIconColor),
       );
 
+  void updateAuthenticationStatus(bool status) async {
+    _isAuthenticated = status;
+    notifyListeners();
+    final box = HiveBox.favotiresBox;
+    final userModel = FavoriteModel(userAuth: status);
+    await box.put('userstate', userModel);
+  }
+
   Map<String, TimeOfDay> startTimes = {};
   Map<String, TimeOfDay> endTimes = {};
 
@@ -60,20 +71,6 @@ class AppDataProvider with ChangeNotifier {
     _imagePath = _imagePath == 'assets/images/step1.svg'
         ? 'assets/images/step2.svg'
         : 'assets/images/step2.svg';
-    notifyListeners();
-  }
-
-  Future<void> login(int index) async {
-    final box = HiveBox.favotiresBox;
-    final user = FavoriteModel(userAuth: true);
-    await box.putAt(index, user);
-    notifyListeners();
-  }
-
-  Future<void> logout(int index) async {
-    final box = HiveBox.favotiresBox;
-    final user = FavoriteModel(userAuth: false);
-    await box.putAt(index, user);
     notifyListeners();
   }
 }

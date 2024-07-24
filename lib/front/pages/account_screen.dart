@@ -44,7 +44,12 @@ class _AccountScreenState extends State<AccountScreen> {
               child: const Text('Yo\'q'),
             ),
             TextButton(
-              onPressed: () {
+              onPressed: () async {
+                // Update authentication status
+                final provider =
+                    Provider.of<AppDataProvider>(context, listen: false);
+                provider.updateAuthenticationStatus(false);
+
                 signOut();
                 Navigator.of(context).pop();
               },

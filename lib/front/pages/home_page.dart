@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
 import 'package:qoriqlash_xizmati/back/hive/favorite_model.dart';
+import 'package:qoriqlash_xizmati/back/hive/hive_box.dart'; // Import HiveBox
 import 'package:qoriqlash_xizmati/front/pages/account_screen.dart';
 import 'package:qoriqlash_xizmati/front/pages/home_page/home_page_elements.dart';
 import 'package:qoriqlash_xizmati/front/pages/news_screen.dart';
@@ -15,13 +16,18 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late FavoriteModel model;
+  late Future<FavoriteModel?> _modelFuture;
 
   @override
   void initState() {
     super.initState();
-    // Initialize your FavoriteModel here and update the state based on real data
-    model = FavoriteModel(userAuth: false); // Replace with real initialization
+    // Fetch the user authentication state from Hive
+    _modelFuture = _fetchFavoriteModel();
+  }
+
+  Future<FavoriteModel?> _fetchFavoriteModel() async {
+    final box = HiveBox.favotiresBox;
+    return box.get('userstate');
   }
 
   List<PersistentTabConfig> _tabs(bool userAuth) => [
@@ -70,20 +76,31 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final bool userAuth =
-        model.userAuth; // Fetch the userAuth state from the model
+    return FutureBuilder<FavoriteModel?>(
+      future: _modelFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else if (!snapshot.hasData || snapshot.data == null) {
+          return const Center(child: Text('No data available'));
+        }
 
-    return PersistentTabView(
-      popAllScreensOnTapAnyTabs: true,
-      popActionScreens: PopActionScreensType.all,
-      screenTransitionAnimation: const ScreenTransitionAnimation(
-          duration: Duration(milliseconds: 300)),
-      tabs: _tabs(userAuth),
-      navBarBuilder: (navBarConfig) => Style1BottomNavBar(
-        navBarDecoration:
-            const NavBarDecoration(color: AppColors.lightIconGuardColor),
-        navBarConfig: navBarConfig,
-      ),
+        final bool userAuth = snapshot.data!.userAuth;
+        return PersistentTabView(
+          popAllScreensOnTapAnyTabs: true,
+          popActionScreens: PopActionScreensType.all,
+          screenTransitionAnimation: const ScreenTransitionAnimation(
+              duration: Duration(milliseconds: 300)),
+          tabs: _tabs(userAuth),
+          navBarBuilder: (navBarConfig) => Style1BottomNavBar(
+            navBarDecoration:
+                const NavBarDecoration(color: AppColors.lightIconGuardColor),
+            navBarConfig: navBarConfig,
+          ),
+        );
+      },
     );
   }
 }

@@ -6,16 +6,15 @@ import 'package:qoriqlash_xizmati/back/hive/favorite_model.dart';
 import 'package:qoriqlash_xizmati/qoriqlash_xizmati_app.dart';
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
+  Hive.registerAdapter(FavoriteModelAdapter());
+  await Hive.openBox<FavoriteModel>('userstate');
   await Hive.initFlutter();
 
   // Регистрация адаптера
-  Hive.registerAdapter(FavoriteModelAdapter());
 
   // Открытие коробки
-  await Hive.openBox<FavoriteModel>('favorites');
-  WidgetsFlutterBinding.ensureInitialized();
-
-  WidgetsFlutterBinding.ensureInitialized();
 
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
