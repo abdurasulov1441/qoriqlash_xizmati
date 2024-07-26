@@ -11,6 +11,7 @@ import 'package:qoriqlash_xizmati/front/components/changeColorProvider.dart';
 import 'package:qoriqlash_xizmati/front/pages/accaount_screens/shartnomalar.dart';
 import 'package:qoriqlash_xizmati/front/pages/accaount_screens/visacard.dart';
 import 'package:qoriqlash_xizmati/front/pages/accaount_screens/yordam_page.dart';
+import 'package:qoriqlash_xizmati/front/pages/pult_boshligi_pages/pult_boshligi_home.dart';
 import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
 import 'package:qoriqlash_xizmati/front/style/app_style.dart';
 
@@ -272,11 +273,13 @@ class _AccountScreenNotLoginState extends State<AccountScreenNotLogin> {
       'Yordam',
       'Qorong\'u rejim',
       'Chiqish',
-      'Ro\'yxatdan o\'tish'
+      'Ro\'yxatdan o\'tish',
+      'Pult Boshligi',
     ];
     final List image = [
       'yordam.svg',
       'tungi_rejim.svg',
+      'logout.svg',
       'logout.svg',
       'logout.svg',
     ];
@@ -284,7 +287,8 @@ class _AccountScreenNotLoginState extends State<AccountScreenNotLogin> {
       FaqPage(),
       Divider(),
       Shartnomalar(),
-      SignUpScreen()
+      SignUpScreen(),
+      PultBoshligiHome(),
     ];
     return Scaffold(
       body: SizedBox(

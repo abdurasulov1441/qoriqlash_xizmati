@@ -6,7 +6,7 @@ import 'package:qoriqlash_xizmati/back/api/api_sms.dart';
 import 'package:qoriqlash_xizmati/back/auth_reg_reset/login_page/login_page.dart';
 import 'package:qoriqlash_xizmati/back/auth_reg_reset/sign_up/sms_verify_page.dart';
 import 'package:qoriqlash_xizmati/back/snack_bar.dart';
-import 'package:qoriqlash_xizmati/front/components/mini_red_app_bar.dart';
+
 import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
 import 'package:qoriqlash_xizmati/front/style/app_style.dart';
 

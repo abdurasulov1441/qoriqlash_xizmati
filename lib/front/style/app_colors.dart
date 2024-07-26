@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 
 abstract class AppColors {
@@ -20,8 +18,10 @@ abstract class AppColors {
   static const homeOrange2 = Color.fromARGB(20, 255, 158, 78);
   static const homeDarkBlue = Color(0xFF4B18BD);
   static const homeDarkBlue2 = Color.fromARGB(20, 76, 24, 189);
-  static const fillColor = Color(0xFFF8F7FB);
-
+  static const fillColor = Color.fromARGB(87, 248, 247, 251);
+  static const uxuiColor = Color(0xFFF8F8F8);
+  static const customAppBarColor = Color(0xFF242744);
+  static const selectedIconColor = Color(0xFF5C55BE);
   static const darkBackgroundColor = Color.fromARGB(255, 18, 18, 18);
   static const darkHeaderColor = Color.fromARGB(255, 30, 30, 30);
   static const darkTextColor = Colors.white;
