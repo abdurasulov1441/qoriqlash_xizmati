@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:qoriqlash_xizmati/front/components/changeColorProvider.dart';
 import 'package:qoriqlash_xizmati/front/pages/home_page.dart';
 import 'package:provider/provider.dart';
-import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
 import 'package:qoriqlash_xizmati/front/style/app_style.dart';
 
 class QoriqlashXizmatiApp extends StatelessWidget {

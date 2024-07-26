@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+import 'package:qoriqlash_xizmati/back/hive/hive_box.dart';
+import 'package:qoriqlash_xizmati/back/hive/notes_data.dart';
 import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
 
 class AppDataProvider with ChangeNotifier {
@@ -50,14 +53,15 @@ class AppDataProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  String _imagePath = 'assets/images/step1.svg';
+  Future<void> onLogin(BuildContext context) async {
+    var box = Hive.box<bool>('userBox');
+    await box.put(0, true);
+    notifyListeners();
+  }
 
-  String get imagePath => _imagePath;
-
-  void changeImage() {
-    _imagePath = _imagePath == 'assets/images/step1.svg'
-        ? 'assets/images/step2.svg'
-        : 'assets/images/step2.svg';
+  Future<void> onExit(BuildContext context) async {
+    var box = Hive.box<bool>('userBox');
+    await box.delete(0);
     notifyListeners();
   }
 }

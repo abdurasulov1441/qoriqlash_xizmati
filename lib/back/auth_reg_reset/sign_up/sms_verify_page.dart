@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/io_client.dart';
 import 'package:pinput/pinput.dart';
+import 'package:provider/provider.dart';
 
 import 'package:qoriqlash_xizmati/back/auth_reg_reset/sign_up/sign_up_succes_page.dart';
+import 'package:qoriqlash_xizmati/front/components/changeColorProvider.dart';
 
 import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
 import 'package:qoriqlash_xizmati/front/style/app_style.dart';
@@ -76,6 +78,7 @@ class _ConfirmSmsPageState extends State<ConfirmSmsPage> {
     print(widget.code);
     if (_smsController.text == widget.code) {
       _sendDataToServer();
+      Provider.of<AppDataProvider>(context, listen: false).onLogin(context);
       if (_mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

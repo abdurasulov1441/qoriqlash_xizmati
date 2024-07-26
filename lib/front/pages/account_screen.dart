@@ -29,6 +29,7 @@ class _AccountScreenState extends State<AccountScreen> {
   }
 
   void showLogoutDialog(BuildContext context) {
+    final model = Provider.of<AppDataProvider>(context, listen: false);
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -44,7 +45,7 @@ class _AccountScreenState extends State<AccountScreen> {
             ),
             TextButton(
               onPressed: () {
-                signOut();
+                model.onExit(context);
                 Navigator.of(context).pop();
               },
               child: const Text('Chiqish'),

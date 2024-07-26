@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_faq/flutter_faq.dart';
-import 'package:qoriqlash_xizmati/front/components/appbar_title.dart';
 import 'package:qoriqlash_xizmati/front/components/mini_red_app_bar.dart';
 import 'package:qoriqlash_xizmati/front/style/app_style.dart';
 

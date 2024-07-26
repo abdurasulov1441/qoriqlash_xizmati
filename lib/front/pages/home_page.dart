@@ -5,11 +5,13 @@ import 'package:qoriqlash_xizmati/front/pages/home_page/home_page_elements.dart'
 import 'package:qoriqlash_xizmati/front/pages/news_screen.dart';
 import 'package:qoriqlash_xizmati/front/pages/tarifs_screen.dart';
 import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
-  List<PersistentTabConfig> _tabs() => [
+  List<PersistentTabConfig> _tabs(BuildContext context, bool isLoggedIn) => [
         PersistentTabConfig(
           screen: const HomePageElements(),
           item: ItemConfig(
@@ -41,7 +43,7 @@ class HomePage extends StatelessWidget {
           ),
         ),
         PersistentTabConfig(
-          screen: const AccountScreenNotLogin(),
+          screen: isLoggedIn ? AccountScreen() : AccountScreenNotLogin(),
           item: ItemConfig(
               icon: const Icon(
                 Icons.person,
@@ -53,16 +55,24 @@ class HomePage extends StatelessWidget {
       ];
 
   @override
-  Widget build(BuildContext context) => PersistentTabView(
-        popAllScreensOnTapAnyTabs: true,
-        popActionScreens: PopActionScreensType.all,
-        screenTransitionAnimation: const ScreenTransitionAnimation(
-            duration: Duration(milliseconds: 300)),
-        tabs: _tabs(),
-        navBarBuilder: (navBarConfig) => Style1BottomNavBar(
-          navBarDecoration:
-              const NavBarDecoration(color: AppColors.lightIconGuardColor),
-          navBarConfig: navBarConfig,
-        ),
-      );
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder(
+      valueListenable: Hive.box<bool>('userBox').listenable(),
+      builder: (context, Box<bool> box, _) {
+        bool isLoggedIn = box.get(0, defaultValue: false) ?? false;
+        return PersistentTabView(
+          popAllScreensOnTapAnyTabs: true,
+          popActionScreens: PopActionScreensType.all,
+          screenTransitionAnimation: const ScreenTransitionAnimation(
+              duration: Duration(milliseconds: 300)),
+          tabs: _tabs(context, isLoggedIn),
+          navBarBuilder: (navBarConfig) => Style1BottomNavBar(
+            navBarDecoration:
+                const NavBarDecoration(color: AppColors.lightIconGuardColor),
+            navBarConfig: navBarConfig,
+          ),
+        );
+      },
+    );
+  }
 }

@@ -53,6 +53,8 @@ dependencies:
   d_chart: ^2.8.0
   hive: ^2.2.3
   hive_flutter: ^1.1.0
+  livelyness_detection: ^0.0.1+4
+  biopassid_face_sdk: ^4.0.0
 
 
 dev_dependencies:
