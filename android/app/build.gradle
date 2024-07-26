@@ -25,8 +25,8 @@ if (flutterVersionName == null) {
 
 android {
     namespace = "com.example.qoriqlash_xizmati"
-    compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    compileSdk = 34 // Use the appropriate compile SDK version
+    ndkVersion = "21.3.6528147" // Ensure NDK version is specified correctly
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -35,14 +35,16 @@ android {
 
     defaultConfig {
         applicationId = "com.example.qoriqlash_xizmati"
-        minSdkVersion 24 // Set the minimum SDK version directly
-        targetSdk = flutter.targetSdkVersion
+        minSdkVersion 24 // Set the minimum SDK version you need
+        targetSdkVersion 33 // Set the target SDK version
         versionCode = flutterVersionCode.toInteger()
         versionName = flutterVersionName
     }
 
     buildTypes {
         release {
+            // TODO: Add your own signing config for the release build.
+            // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.debug
         }
     }

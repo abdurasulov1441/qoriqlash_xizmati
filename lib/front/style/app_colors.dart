@@ -20,6 +20,7 @@ abstract class AppColors {
   static const homeOrange2 = Color.fromARGB(20, 255, 158, 78);
   static const homeDarkBlue = Color(0xFF4B18BD);
   static const homeDarkBlue2 = Color.fromARGB(20, 76, 24, 189);
+  static const fillColor = Color(0xFFF8F7FB);
 
   static const darkBackgroundColor = Color.fromARGB(255, 18, 18, 18);
   static const darkHeaderColor = Color.fromARGB(255, 30, 30, 30);

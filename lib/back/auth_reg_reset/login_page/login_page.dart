@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:qoriqlash_xizmati/back/snack_bar.dart';
 import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
@@ -51,18 +53,18 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       backgroundColor: AppColors.lightBackgroundColor,
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        backgroundColor: AppColors.lightHeaderColor,
-        centerTitle: true,
-        // leading: IconButton(
-        //     onPressed: () {
-        //       Navigator.pop(context);
-        //     },
-        //     icon: Icon(
-        //       Icons.arrow_back,
-        //       color: AppColors.textColor,
-        //     )),
-      ),
+      // appBar: AppBar(
+      //   backgroundColor: AppColors.lightHeaderColor,
+      //   centerTitle: true,
+      //   // leading: IconButton(
+      //   //     onPressed: () {
+      //   //       Navigator.pop(context);
+      //   //     },
+      //   //     icon: Icon(
+      //   //       Icons.arrow_back,
+      //   //       color: AppColors.textColor,
+      //   //     )),
+      // ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(30.0),
@@ -71,6 +73,9 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                SizedBox(
+                  height: 50,
+                ),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
@@ -106,7 +111,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     Row(
                       children: [
                         Text(
-                          'Email',
+                          'Telefon raqam',
                           style: AppStyle.fontStyle
                               .copyWith(fontWeight: FontWeight.bold),
                         )
@@ -118,16 +123,18 @@ class _LoginScreenState extends State<LoginScreen> {
                     TextFormField(
                       style:
                           const TextStyle(color: AppColors.lightDividerColor),
-                      keyboardType: TextInputType.emailAddress,
+                      keyboardType: TextInputType.phone,
                       autocorrect: false,
                       decoration: const InputDecoration(
+                        fillColor: AppColors.fillColor,
+                        filled: true,
                         border: OutlineInputBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(15))),
-                        hintText: 'Emailni kiriting',
+                        hintText: '998901234567 formatida',
                         hintStyle: AppStyle.fontStyle,
                         label: Icon(
-                          Icons.mail,
+                          Icons.phone,
                           color: AppColors.lightIconGuardColor,
                         ),
                       ),
@@ -156,6 +163,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           : null,
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       decoration: InputDecoration(
+                        fillColor: AppColors.fillColor,
+                        filled: true,
                         border: const OutlineInputBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(15))),
@@ -193,6 +202,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10)),
                           backgroundColor: AppColors.lightIconGuardColor),
                       onPressed: login,
                       child: Center(
@@ -213,8 +224,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       style: AppStyle.fontStyle,
                     ),
                     TextButton(
-                      onPressed: () =>
-                          Navigator.of(context).pushNamed('/signup'),
+                      onPressed: () => Navigator.pop(context),
                       child: Text('Ro\'yxatdan o\'ting',
                           style: AppStyle.fontStyle
                               .copyWith(color: AppColors.lightIconGuardColor)),

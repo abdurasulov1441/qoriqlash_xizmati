@@ -81,14 +81,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.2.2"
-  biopassid_face_sdk:
-    dependency: "direct main"
-    description:
-      name: biopassid_face_sdk
-      sha256: f99dc272fbc4a104bdf839d6a6aede0c69d460547a0b114dc5b7485e9c579cca
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.0.0"
   boolean_selector:
     dependency: transitive
     description:
@@ -688,14 +680,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.0"
-  livelyness_detection:
+  live_photo_detector:
     dependency: "direct main"
     description:
-      name: livelyness_detection
-      sha256: fdd7117e935ea00d86d12f66a3a7741d432e1e99a7e57b44def60be7feb9700d
+      name: live_photo_detector
+      sha256: "31e90de9192189c48eb21f65d8cbf4c6b61564d3a4b00949450a7bb9a5eafcbc"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.1+4"
+    version: "1.0.5"
   logging:
     dependency: transitive
     description:
@@ -752,6 +744,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.5"
+  myid:
+    dependency: "direct main"
+    description:
+      name: myid
+      sha256: "1007691d690a84cd4474c3b2bc1af21db3fda1807be84ac197a74239b00b7617"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.5"
   nested:
     dependency: transitive
     description:
@@ -957,14 +957,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.10.0"
-  sprintf:
-    dependency: transitive
-    description:
-      name: sprintf
-      sha256: "1fc9ffe69d4df602376b52949af107d8f5703b77cda567c4d7d86a0693120f23"
-      url: "https://pub.dev"
-    source: hosted
-    version: "7.0.0"
   stack_trace:
     dependency: transitive
     description:
@@ -1037,14 +1029,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.0"
-  uuid:
-    dependency: transitive
-    description:
-      name: uuid
-      sha256: "83d37c7ad7aaf9aa8e275490669535c8080377cfa7a7004c24dfac53afffaa90"
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.4.2"
   vector_graphics:
     dependency: transitive
     description:

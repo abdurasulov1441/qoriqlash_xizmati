@@ -1,7 +1,9 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
 import 'package:qoriqlash_xizmati/back/api/api_sms.dart';
+import 'package:qoriqlash_xizmati/back/auth_reg_reset/login_page/login_page.dart';
 import 'package:qoriqlash_xizmati/back/auth_reg_reset/sign_up/sms_verify_page.dart';
 import 'package:qoriqlash_xizmati/back/snack_bar.dart';
 import 'package:qoriqlash_xizmati/front/components/mini_red_app_bar.dart';
@@ -87,10 +89,12 @@ class _SignUpScreen extends State<SignUpScreen> {
           key: formKey,
           child: Column(
             children: [
-              const MiniRedAppBar(),
+              SizedBox(
+                height: 50,
+              ),
               Container(
                 width: double.infinity,
-                height: 200,
+                height: 220,
                 child: Column(
                   children: [
                     SizedBox(
@@ -106,13 +110,13 @@ class _SignUpScreen extends State<SignUpScreen> {
                     ),
                     Image.asset(
                       'assets/images/set.png',
-                      width: 80,
-                      height: 80,
+                      width: 100,
+                      height: 100,
                     ),
                     Text(
-                      'Qo\'riqlash Xizmati',
+                      'Qo\'riqlash Xizmati'.toUpperCase(),
                       style: AppStyle.fontStyle
-                          .copyWith(fontWeight: FontWeight.bold, fontSize: 20),
+                          .copyWith(fontWeight: FontWeight.bold, fontSize: 25),
                     ),
                   ],
                 ),
@@ -155,6 +159,8 @@ class _SignUpScreen extends State<SignUpScreen> {
                         return null;
                       },
                       decoration: const InputDecoration(
+                          fillColor: AppColors.fillColor,
+                          filled: true,
                           border: OutlineInputBorder(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(15))),
@@ -190,6 +196,8 @@ class _SignUpScreen extends State<SignUpScreen> {
                           ? 'Минимум 6 символов'
                           : null,
                       decoration: InputDecoration(
+                        fillColor: AppColors.fillColor,
+                        filled: true,
                         border: const OutlineInputBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(15))),
@@ -233,6 +241,8 @@ class _SignUpScreen extends State<SignUpScreen> {
                           ? 'Минимум 6 символов'
                           : null,
                       decoration: InputDecoration(
+                        fillColor: AppColors.fillColor,
+                        filled: true,
                         border: const OutlineInputBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(15))),
@@ -287,7 +297,8 @@ class _SignUpScreen extends State<SignUpScreen> {
                           style: AppStyle.fontStyle,
                         ),
                         TextButton(
-                          onPressed: () => Navigator.of(context).pop(),
+                          onPressed: () =>
+                              pushScreenWithoutNavBar(context, LoginScreen()),
                           child: Text('Kirish',
                               style: AppStyle.fontStyle.copyWith(
                                   color: AppColors.lightIconGuardColor)),
