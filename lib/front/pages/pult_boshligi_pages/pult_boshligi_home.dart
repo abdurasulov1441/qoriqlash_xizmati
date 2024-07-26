@@ -1,11 +1,15 @@
 import 'package:d_chart/commons/data_model/data_model.dart';
 import 'package:d_chart/numeric/pie.dart';
 import 'package:flutter/material.dart';
+import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
 import 'package:qoriqlash_xizmati/front/components/custom_appbar.dart';
+import 'package:qoriqlash_xizmati/front/pages/pult_boshligi_pages/kelib_tushgan_arizalar_page.dart';
 import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
 
 class PultBoshligiHome extends StatelessWidget {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  PultBoshligiHome({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -66,6 +70,8 @@ class PultBoshligiHome extends StatelessWidget {
                       style: TextStyle(color: Colors.white)),
                   onTap: () {
                     Navigator.pop(context);
+                    pushScreenWithoutNavBar(
+                        context, KelibTushganArizalarPage());
                   },
                 ),
                 ListTile(
