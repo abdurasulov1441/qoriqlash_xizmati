@@ -9,6 +9,7 @@ import 'package:qoriqlash_xizmati/back/auth_reg_reset/sign_up/singn_up_page.dart
 import 'package:qoriqlash_xizmati/front/components/appbar_title.dart';
 import 'package:qoriqlash_xizmati/front/components/changeColorProvider.dart';
 import 'package:qoriqlash_xizmati/front/pages/accaount_screens/shartnomalar.dart';
+import 'package:qoriqlash_xizmati/front/pages/accaount_screens/shaxsiy_malumotlar.dart';
 import 'package:qoriqlash_xizmati/front/pages/accaount_screens/visacard.dart';
 import 'package:qoriqlash_xizmati/front/pages/accaount_screens/yordam_page.dart';
 import 'package:qoriqlash_xizmati/front/pages/pult_boshligi_pages/pult_boshligi_home.dart';
@@ -62,6 +63,7 @@ class _AccountScreenState extends State<AccountScreen> {
     final themeProvider = Provider.of<AppDataProvider>(context);
     final List name = [
       'Shartnomalar',
+      'Arizalar',
       'Xavfsizlik',
       'Shaxsiy ma\'lumotlar',
       'Mening kartalarim',
@@ -71,6 +73,7 @@ class _AccountScreenState extends State<AccountScreen> {
     ];
     final List image = [
       'shartnoma.svg',
+      'arizalar.svg',
       'havfsizlik.svg',
       'shaxsiy_malumotlar.svg',
       'mening_kartalarim.svg',
@@ -82,6 +85,7 @@ class _AccountScreenState extends State<AccountScreen> {
       Shartnomalar(),
       Shartnomalar(),
       Shartnomalar(),
+      ShaxsiyMalumotlar(),
       Cards(),
       FaqPage(),
       Divider(),
@@ -96,8 +100,8 @@ class _AccountScreenState extends State<AccountScreen> {
             const CircleAvatar(
               backgroundColor: AppColors.lightBackgroundColor,
               radius: 50, // Radius of the inner circle (avatar)
-              backgroundImage: NetworkImage(
-                  'https://appdata.uz/qbb-data/avatar.png'), // Image for the avatar
+              backgroundImage: AssetImage(
+                  'assets/images/person.png'), // Image for the avatar
             ),
             Text(
               'Raximov Voris Avazbek o\'g\'li',
@@ -173,8 +177,8 @@ class _AccountScreenState extends State<AccountScreen> {
                   itemCount: name.length,
                   itemBuilder: (context, index) {
                     return ListTile(
-                        leading: SvgPicture.network(
-                          'https://appdata.uz/qbb-data/${image[index]}',
+                        leading: SvgPicture.asset(
+                          'assets/images/${image[index]}',
                           width: 30,
                           height: 30,
                         ),

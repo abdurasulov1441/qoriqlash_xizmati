@@ -5,10 +5,8 @@ import 'package:http/http.dart' as http;
 import 'package:http/io_client.dart';
 import 'package:pinput/pinput.dart';
 import 'package:provider/provider.dart';
-
 import 'package:qoriqlash_xizmati/back/auth_reg_reset/sign_up/sign_up_succes_page.dart';
 import 'package:qoriqlash_xizmati/front/components/changeColorProvider.dart';
-
 import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
 import 'package:qoriqlash_xizmati/front/style/app_style.dart';
 
@@ -47,39 +45,23 @@ class _ConfirmSmsPageState extends State<ConfirmSmsPage> {
     return httpClient;
   }
 
-  Future<void> _sendDataToServer() async {
+  Future<void> _verifyCode() async {
     final httpClient = await _createHttpClient();
 
     final response = await httpClient.post(
-      Uri.parse('https://appdata.uz/get_login.php'),
+      Uri.parse('http://10.100.9.145:7684/api/v1/auth/check_verification_code'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, String>{
-        'phone': widget.phone,
-        'password': widget.password,
+        'phone_number': widget.phone,
+        'verification_code': _smsController.text,
       }),
     );
 
     if (_mounted) {
       if (response.statusCode == 200) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Data sent successfully')),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to send data to the server')),
-        );
-      }
-    }
-  }
-
-  void _verifyCode() {
-    print(widget.code);
-    if (_smsController.text == widget.code) {
-      _sendDataToServer();
-      Provider.of<AppDataProvider>(context, listen: false).onLogin(context);
-      if (_mounted) {
+        Provider.of<AppDataProvider>(context, listen: false).onLogin(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
@@ -89,27 +71,25 @@ class _ConfirmSmsPageState extends State<ConfirmSmsPage> {
         );
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => SingnUpSuccesPage()),
+          MaterialPageRoute(builder: (context) => SignUpSuccessPage()),
         );
-      }
-    } else {
-      if (_mounted) {
+      } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Invalid SMS code')),
+          SnackBar(content: Text('Failed to verify code: ${response.body}')),
         );
       }
     }
   }
 
+  String maskPhoneNumber(String phoneNumber) {
+    if (phoneNumber.length >= 11) {
+      return phoneNumber.replaceRange(4, 10, '******');
+    }
+    return phoneNumber;
+  }
+
   @override
   Widget build(BuildContext context) {
-    String maskPhoneNumber(String phoneNumber) {
-      if (phoneNumber.length >= 11) {
-        return phoneNumber.replaceRange(4, 10, '******');
-      }
-      return phoneNumber;
-    }
-
     return Scaffold(
       body: Container(
         padding: EdgeInsets.only(left: 20, right: 20),
@@ -131,7 +111,7 @@ class _ConfirmSmsPageState extends State<ConfirmSmsPage> {
                   .copyWith(fontWeight: FontWeight.bold, fontSize: 20),
             ),
             Text(
-              'Biz sizga 4 tali raqam jo‘natdik',
+              'Biz sizga 6 tali raqam jo‘natdik',
               style: AppStyle.fontStyle.copyWith(color: Colors.grey),
             ),
             Text(
@@ -155,6 +135,7 @@ class _ConfirmSmsPageState extends State<ConfirmSmsPage> {
               height: 20,
             ),
             Pinput(
+              length: 6,
               animationCurve: Curves.fastLinearToSlowEaseIn,
               controller: _smsController,
             ),

@@ -1,12 +1,11 @@
-import 'dart:math';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
-import 'package:qoriqlash_xizmati/back/api/api_sms.dart';
 import 'package:qoriqlash_xizmati/back/auth_reg_reset/login_page/login_page.dart';
 import 'package:qoriqlash_xizmati/back/auth_reg_reset/sign_up/sms_verify_page.dart';
 import 'package:qoriqlash_xizmati/back/snack_bar.dart';
-
+import 'package:http/http.dart' as http;
 import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
 import 'package:qoriqlash_xizmati/front/style/app_style.dart';
 
@@ -55,28 +54,43 @@ class _SignUpScreen extends State<SignUpScreen> {
       return;
     }
 
-    // Generate a random 6-digit code
-    final random = Random();
-    final code = (random.nextInt(9000) + 1000).toString();
+    final url = Uri.parse('http://10.100.9.145:7684/api/v1/auth/register');
+    final headers = {"Content-Type": "application/json"};
+    final body = jsonEncode({
+      "password": passwordTextInputController.text,
+      "phone_number": _phoneController.text
+    });
 
-    // Send the SMS (this should be done through your SMS service)
-    SmsService().sendSms([
-      {
-        'phone': _phoneController.text,
-        'text': 'Qo\'riqlash xizmati shaxsiy kabineti uchun kod: $code'
+    try {
+      final response = await http.post(url, headers: headers, body: body);
+
+      if (response.statusCode == 201) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ConfirmSmsPage(
+              phone: _phoneController.text,
+              password: passwordTextInputController.text,
+              code: '', // No code generated
+            ),
+          ),
+        );
+      } else {
+        // Handle error response
+        SnackBarService.showSnackBar(
+          context,
+          'Failed to register user: ${response.body}',
+          true,
+        );
       }
-    ]);
-
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ConfirmSmsPage(
-          phone: _phoneController.text,
-          password: passwordTextInputController.text,
-          code: code,
-        ),
-      ),
-    );
+    } catch (e) {
+      // Handle network or other errors
+      SnackBarService.showSnackBar(
+        context,
+        'Error occurred: $e',
+        true,
+      );
+    }
   }
 
   @override
@@ -146,15 +160,15 @@ class _SignUpScreen extends State<SignUpScreen> {
                       autocorrect: false,
                       controller: _phoneController,
                       inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly,
+                        FilteringTextInputFormatter.allow(RegExp(r'[0-9+]')),
                         LengthLimitingTextInputFormatter(
-                            12), // Ограничение на длину
+                            13), // Ограничение на длину
                       ],
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Поле не может быть пустым';
-                        } else if (value.length != 12) {
-                          return 'Длина номера должна быть 12 символов';
+                        } else if (value.length != 13) {
+                          return 'Длина номера должна быть 13 символов';
                         }
                         return null;
                       },
@@ -164,7 +178,7 @@ class _SignUpScreen extends State<SignUpScreen> {
                           border: OutlineInputBorder(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(15))),
-                          hintText: '998901234567 formatida',
+                          hintText: '+998901234567 formatida',
                           hintStyle: AppStyle.fontStyle,
                           label: Icon(
                             Icons.phone,
@@ -270,17 +284,7 @@ class _SignUpScreen extends State<SignUpScreen> {
                           side: const BorderSide(
                               color: AppColors.lightBackgroundColor),
                           backgroundColor: AppColors.lightIconGuardColor),
-                      // onPressed: () {
-                      //   pushScreenWithoutNavBar(
-                      //       context,
-                      //       ConfirmSmsPage(
-                      //         code: '',
-                      //         phone: '',
-                      //         password: '',
-                      //       ));
-                      // },
-                      onPressed:
-                          signUp, ////////////////////////////////////////////////////////////////////////////
+                      onPressed: signUp,
                       child: Center(
                           child: Text(
                         'Ro\'yxatdan o\'tish',

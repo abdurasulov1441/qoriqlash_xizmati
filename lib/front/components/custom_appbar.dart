@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:qoriqlash_xizmati/front/components/changeColorProvider.dart';
 import 'package:qoriqlash_xizmati/front/components/mini_red_app_bar.dart';
 import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
 
@@ -12,8 +14,10 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<AppDataProvider>(context);
     return AppBar(
-      flexibleSpace: MiniRedAppBar(),
+      surfaceTintColor: Colors.white,
+      flexibleSpace: const MiniRedAppBar(),
       automaticallyImplyLeading: false, // Prevents back button from appearing
       backgroundColor: Colors.white, // Change to match your color scheme
       shape: RoundedRectangleBorder(
@@ -61,6 +65,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             IconButton(
               icon: Icon(Icons.nightlight_round, color: Colors.blue),
               onPressed: () {
+                themeProvider.toggleTheme();
                 // Your dark mode button action
               },
             ),
@@ -74,7 +79,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         ),
       ),
       centerTitle: true,
-      elevation: 0,
+      elevation: 10,
     );
   }
 }

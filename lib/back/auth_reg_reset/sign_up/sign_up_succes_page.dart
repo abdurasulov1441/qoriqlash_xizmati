@@ -5,8 +5,8 @@ import 'package:qoriqlash_xizmati/front/pages/home_page.dart';
 import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
 import 'package:qoriqlash_xizmati/front/style/app_style.dart';
 
-class SingnUpSuccesPage extends StatelessWidget {
-  const SingnUpSuccesPage({super.key});
+class SignUpSuccessPage extends StatelessWidget {
+  const SignUpSuccessPage({super.key});
 
   @override
   Widget build(BuildContext context) {
