@@ -11,6 +11,7 @@ import 'package:qoriqlash_xizmati/front/components/changeColorProvider.dart';
 import 'package:qoriqlash_xizmati/front/pages/accaount_screens/shartnomalar.dart';
 import 'package:qoriqlash_xizmati/front/pages/accaount_screens/shaxsiy_malumotlar.dart';
 import 'package:qoriqlash_xizmati/front/pages/accaount_screens/visacard.dart';
+import 'package:qoriqlash_xizmati/front/pages/accaount_screens/xavfsizlik.dart';
 import 'package:qoriqlash_xizmati/front/pages/accaount_screens/yordam_page.dart';
 import 'package:qoriqlash_xizmati/front/pages/pult_boshligi_pages/pult_boshligi_home.dart';
 import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
@@ -84,7 +85,7 @@ class _AccountScreenState extends State<AccountScreen> {
     final List<Widget> route = [
       Shartnomalar(),
       Shartnomalar(),
-      Shartnomalar(),
+      XavfsizlikPage(),
       ShaxsiyMalumotlar(),
       Cards(),
       FaqPage(),

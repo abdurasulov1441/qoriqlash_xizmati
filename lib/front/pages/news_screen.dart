@@ -49,7 +49,7 @@ class _NewsPageState extends State<NewsPage> {
                 return Column(
                   children: [
                     ProgressForNews(),
-                    ProgressForNews(),
+                    //ProgressForNews(),
                   ],
                 );
               },
