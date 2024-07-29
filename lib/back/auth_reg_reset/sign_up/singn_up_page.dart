@@ -4,7 +4,6 @@ import 'package:qoriqlash_xizmati/back/auth_reg_reset/login_page/login_page.dart
 import 'package:qoriqlash_xizmati/back/auth_reg_reset/sign_up/sms_verify_page.dart';
 import 'package:qoriqlash_xizmati/back/snack_bar.dart';
 import 'package:http/http.dart' as http;
-import 'package:qoriqlash_xizmati/front/components/changeColorProvider.dart';
 import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
 import 'package:qoriqlash_xizmati/front/style/app_style.dart';
 

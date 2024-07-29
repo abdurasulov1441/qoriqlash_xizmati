@@ -1,10 +1,9 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
+
 import 'package:http/http.dart' as http;
-import 'package:provider/provider.dart';
+
 import 'package:qoriqlash_xizmati/back/auth_reg_reset/forgot_password/forgot_password.dart';
-import 'package:qoriqlash_xizmati/back/hive/notes_data.dart';
 import 'package:qoriqlash_xizmati/back/snack_bar.dart';
 import 'package:qoriqlash_xizmati/front/components/changeColorProvider.dart';
 import 'package:qoriqlash_xizmati/front/pages/home_page.dart';
