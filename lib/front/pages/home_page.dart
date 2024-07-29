@@ -80,9 +80,15 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
-      valueListenable: Hive.box<NotesData>('userBox').listenable(),
+      valueListenable: Hive.box<NotesData>('notes').listenable(),
       builder: (context, Box<NotesData> box, _) {
-        bool isLoggedIn = box.isNotEmpty && box.getAt(0) != null;
+        bool isLoggedIn;
+        if (box.isEmpty) {
+          isLoggedIn = false;
+        } else {
+          isLoggedIn = true;
+        }
+
         return Scaffold(
           body: Container(child: _child),
           bottomNavigationBar: SafeArea(

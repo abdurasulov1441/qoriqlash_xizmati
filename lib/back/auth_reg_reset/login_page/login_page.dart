@@ -2,9 +2,12 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 import 'package:qoriqlash_xizmati/back/auth_reg_reset/forgot_password/forgot_password.dart';
 import 'package:qoriqlash_xizmati/back/hive/notes_data.dart';
 import 'package:qoriqlash_xizmati/back/snack_bar.dart';
+import 'package:qoriqlash_xizmati/front/components/changeColorProvider.dart';
+import 'package:qoriqlash_xizmati/front/pages/home_page.dart';
 import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
 import 'package:qoriqlash_xizmati/front/style/app_style.dart';
 
@@ -47,27 +50,37 @@ class _LoginScreenState extends State<LoginScreen> {
 
     try {
       final response = await http.post(url, headers: headers, body: body);
+      final responseBody = jsonDecode(response.body);
+
       if (response.statusCode == 200) {
-        final responseBody = jsonDecode(response.body);
         final accessToken = responseBody['data']['access_token'];
-        var box = Hive.box<NotesData>('userBox');
+        AppDataProvider().addUser(accessToken, context);
 
-        // Сохранить новые данные с статусом 2
-        await box.put(
-            'user', NotesData(userStatus: '2', userToken: accessToken));
-
-        // Получить сохраненные данные из Hive
-        NotesData? savedData = box.get('user');
-
-        // Вывести сохраненные данные в SnackBar
-        SnackBarService.showSnackBar(
+        Navigator.push(
           context,
-          'Status: ${savedData?.userStatus}, Token: ${savedData?.userToken}',
-          false,
+          MaterialPageRoute(builder: (context) => HomePage()),
         );
+      } else if (response.statusCode == 400) {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Xatolik!'),
+              content: Text('Parol yoki telefon raqamingiz noto\'g\'ri'),
+              actions: <Widget>[
+                TextButton(
+                  child: Text('OK'),
+                  onPressed: () {
+                    passwordTextInputController.clear();
+                    emailTextInputController.clear();
 
-        // Перейти на домашний экран
-        Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
       } else {
         SnackBarService.showSnackBar(
           context,

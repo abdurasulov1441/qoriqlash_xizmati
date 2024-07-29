@@ -66,7 +66,7 @@ class _ConfirmSmsPageState extends State<ConfirmSmsPage> {
         final userToken = responseBody['token'];
 
         // Save the token using Hive
-        var box = Hive.box<String>('userBox');
+        var box = Hive.box<AppDataProvider>('notes');
         await box.put('user_token', userToken);
 
         Provider.of<AppDataProvider>(context, listen: false)

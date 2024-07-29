@@ -62,6 +62,6 @@ class AppDataProvider with ChangeNotifier {
   }
 
   Future<void> deleteUser() async {
-    await HiveBox.notes.delete('notes');
+    await HiveBox.notes.clear();
   }
 }
