@@ -1,4 +1,8 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+import 'package:http/http.dart' as http;
+import 'package:qoriqlash_xizmati/back/hive/notes_data.dart';
 import 'package:qoriqlash_xizmati/back/snack_bar.dart';
 import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
 import 'package:qoriqlash_xizmati/front/style/app_style.dart';
@@ -20,7 +24,6 @@ class _LoginScreenState extends State<LoginScreen> {
   void dispose() {
     emailTextInputController.dispose();
     passwordTextInputController.dispose();
-
     super.dispose();
   }
 
@@ -32,37 +35,52 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> login() async {
     final isValid = formKey.currentState!.validate();
-    if (!isValid)
-      return;
-    else {
+    if (!isValid) return;
+
+    final url = Uri.parse('http://10.100.9.145:7684/api/v1/auth/login');
+    final headers = {"Content-Type": "application/json"};
+    final body = jsonEncode({
+      "password": passwordTextInputController.text,
+      "phone_number": emailTextInputController.text
+    });
+
+    try {
+      final response = await http.post(url, headers: headers, body: body);
+
+      if (response.statusCode == 200) {
+        final responseBody = jsonDecode(response.body);
+        final accessToken = responseBody['data']['access_token'];
+        var box = Hive.box<NotesData>('notes');
+
+        // Check if data exists at index 0 and delete if necessary
+        if (box.isNotEmpty && box.length > 0) {
+          box.deleteAt(0);
+        }
+
+        await box.putAt(0, NotesData(isChecked: true, userToken: accessToken));
+
+        Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+      } else {
+        SnackBarService.showSnackBar(
+          context,
+          'Failed to log in: ${response.body}',
+          true,
+        );
+      }
+    } catch (e) {
       SnackBarService.showSnackBar(
         context,
-        'Неизвестная ошибка! Попробуйте еще раз или обратитесь в поддержку.',
+        'Error occurred: $e',
         true,
       );
-      return;
     }
   }
-
-  // navigator.pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.lightBackgroundColor,
       resizeToAvoidBottomInset: false,
-      // appBar: AppBar(
-      //   backgroundColor: AppColors.lightHeaderColor,
-      //   centerTitle: true,
-      //   // leading: IconButton(
-      //   //     onPressed: () {
-      //   //       Navigator.pop(context);
-      //   //     },
-      //   //     icon: Icon(
-      //   //       Icons.arrow_back,
-      //   //       color: AppColors.textColor,
-      //   //     )),
-      // ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(30.0),
@@ -71,28 +89,25 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                SizedBox(
-                  height: 50,
-                ),
+                SizedBox(height: 50),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Text(
                       'Xush kelibsiz !',
-                      style: AppStyle.fontStyle
-                          .copyWith(fontSize: 20, fontWeight: FontWeight.bold),
+                      style: AppStyle.fontStyle.copyWith(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                    const SizedBox(
-                      height: 10,
-                    ),
+                    const SizedBox(height: 10),
                     Text(
                       'Tizimga kirishingiz mumkin',
-                      style: AppStyle.fontStyle
-                          .copyWith(color: AppColors.lightDividerColor),
+                      style: AppStyle.fontStyle.copyWith(
+                        color: AppColors.lightDividerColor,
+                      ),
                     ),
-                    const SizedBox(
-                      height: 10,
-                    ),
+                    const SizedBox(height: 10),
                     Image.asset(
                       'assets/images/set.png',
                       width: 100,
@@ -100,35 +115,35 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     Text(
                       'Qo\'riqlash Xizmati'.toUpperCase(),
-                      style: AppStyle.fontStyle
-                          .copyWith(fontSize: 25, fontWeight: FontWeight.bold),
+                      style: AppStyle.fontStyle.copyWith(
+                        fontSize: 25,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                    const SizedBox(
-                      height: 10,
-                    ),
+                    const SizedBox(height: 10),
                     Row(
                       children: [
                         Text(
                           'Telefon raqam',
-                          style: AppStyle.fontStyle
-                              .copyWith(fontWeight: FontWeight.bold),
-                        )
+                          style: AppStyle.fontStyle.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ],
                     ),
-                    const SizedBox(
-                      height: 5,
-                    ),
+                    const SizedBox(height: 5),
                     TextFormField(
                       style:
                           const TextStyle(color: AppColors.lightDividerColor),
                       keyboardType: TextInputType.phone,
                       autocorrect: false,
+                      controller: emailTextInputController,
                       decoration: const InputDecoration(
                         fillColor: AppColors.fillColor,
                         filled: true,
                         border: OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(15))),
+                          borderRadius: BorderRadius.all(Radius.circular(15)),
+                        ),
                         hintText: '998901234567 formatida',
                         hintStyle: AppStyle.fontStyle,
                         label: Icon(
@@ -142,14 +157,13 @@ class _LoginScreenState extends State<LoginScreen> {
                       children: [
                         Text(
                           'Parol',
-                          style: AppStyle.fontStyle
-                              .copyWith(fontWeight: FontWeight.bold),
-                        )
+                          style: AppStyle.fontStyle.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ],
                     ),
-                    const SizedBox(
-                      height: 5,
-                    ),
+                    const SizedBox(height: 5),
                     TextFormField(
                       style:
                           const TextStyle(color: AppColors.lightDividerColor),
@@ -164,8 +178,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         fillColor: AppColors.fillColor,
                         filled: true,
                         border: const OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(15))),
+                          borderRadius: BorderRadius.all(Radius.circular(15)),
+                        ),
                         hintText: 'Parolingizni kiriting',
                         hintStyle: AppStyle.fontStyle,
                         label: const Icon(
@@ -192,25 +206,30 @@ class _LoginScreenState extends State<LoginScreen> {
                               .pushNamed('/reset_password'),
                           child: Text(
                             'Parolingizni unutdingizmi?',
-                            style: AppStyle.fontStyle
-                                .copyWith(color: AppColors.lightIconGuardColor),
+                            style: AppStyle.fontStyle.copyWith(
+                              color: AppColors.lightIconGuardColor,
+                            ),
                           ),
                         ),
                       ],
                     ),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10)),
-                          backgroundColor: AppColors.lightIconGuardColor),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        backgroundColor: AppColors.lightIconGuardColor,
+                      ),
                       onPressed: login,
                       child: Center(
-                          child: Text(
-                        'Kirish',
-                        style: AppStyle.fontStyle.copyWith(
+                        child: Text(
+                          'Kirish',
+                          style: AppStyle.fontStyle.copyWith(
                             color: AppColors.lightBackgroundColor,
-                            fontWeight: FontWeight.bold),
-                      )),
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -223,12 +242,15 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     TextButton(
                       onPressed: () => Navigator.pop(context),
-                      child: Text('Ro\'yxatdan o\'ting',
-                          style: AppStyle.fontStyle
-                              .copyWith(color: AppColors.lightIconGuardColor)),
+                      child: Text(
+                        'Ro\'yxatdan o\'ting',
+                        style: AppStyle.fontStyle.copyWith(
+                          color: AppColors.lightIconGuardColor,
+                        ),
+                      ),
                     ),
                   ],
-                )
+                ),
               ],
             ),
           ),

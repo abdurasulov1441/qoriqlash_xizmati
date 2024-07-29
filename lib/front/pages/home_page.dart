@@ -62,7 +62,9 @@ class _HomePageState extends State<HomePage> {
           _child = const SendRequestSafingScreen();
           break;
         case 3:
-          _child = isLoggedIn ? AccountScreen() : AccountScreenNotLogin();
+          _child = isLoggedIn
+              ? const AccountScreen()
+              : const AccountScreenNotLogin();
           break;
       }
       _child = AnimatedSwitcher(
@@ -81,9 +83,6 @@ class _HomePageState extends State<HomePage> {
       builder: (context, Box<bool> box, _) {
         bool isLoggedIn = box.get(0, defaultValue: false) ?? false;
         return Scaffold(
-          //  backgroundColor: Colors.transparent,
-          // backgroundColor: const Color(0xFF75B7E1),
-          // extendBody: true,
           body: Container(child: _child),
           bottomNavigationBar: SafeArea(
             child: FluidNavBar(

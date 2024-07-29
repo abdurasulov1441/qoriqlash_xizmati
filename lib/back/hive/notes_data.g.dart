@@ -18,15 +18,18 @@ class NotesDataAdapter extends TypeAdapter<NotesData> {
     };
     return NotesData(
       isChecked: fields[0] as bool,
+      userToken: fields[1] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, NotesData obj) {
     writer
-      ..writeByte(1)
+      ..writeByte(2)
       ..writeByte(0)
-      ..write(obj.isChecked);
+      ..write(obj.isChecked)
+      ..writeByte(1)
+      ..write(obj.userToken);
   }
 
   @override

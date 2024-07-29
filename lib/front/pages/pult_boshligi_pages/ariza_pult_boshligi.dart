@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:qoriqlash_xizmati/front/components/mini_red_app_bar.dart';
+import 'package:qoriqlash_xizmati/front/pages/pult_boshligi_pages/bayonnoma_pult_boshligi.dart';
 import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
 import 'package:qoriqlash_xizmati/front/style/app_style.dart';
 
@@ -168,7 +169,13 @@ class ArizaPultBoshligiPage extends StatelessWidget {
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10)),
                             backgroundColor: AppColors.lightIconGuardColor),
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => BayonnomaPultBoshligi()),
+                          );
+                        },
                         child: Text(
                           'Bayonnoma',
                           style: AppStyle.fontStyle

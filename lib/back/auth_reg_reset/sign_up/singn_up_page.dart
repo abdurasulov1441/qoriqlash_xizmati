@@ -62,9 +62,6 @@ class _SignUpScreen extends State<SignUpScreen> {
     try {
       final response = await http.post(url, headers: headers, body: body);
 
-      print(response.statusCode);
-      print(response.body);
-
       if (response.statusCode == 201) {
         final responseBody = jsonDecode(response.body);
         if (responseBody['status_code'] == 400) {
