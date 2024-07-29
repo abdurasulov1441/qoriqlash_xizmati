@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
+import 'package:qoriqlash_xizmati/back/auth_reg_reset/forgot_password/forgot_password.dart';
 import 'package:qoriqlash_xizmati/back/hive/notes_data.dart';
 import 'package:qoriqlash_xizmati/back/snack_bar.dart';
 import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
@@ -46,19 +47,26 @@ class _LoginScreenState extends State<LoginScreen> {
 
     try {
       final response = await http.post(url, headers: headers, body: body);
-
       if (response.statusCode == 200) {
         final responseBody = jsonDecode(response.body);
         final accessToken = responseBody['data']['access_token'];
-        var box = Hive.box<NotesData>('notes');
+        var box = Hive.box<NotesData>('userBox');
 
-        // Check if data exists at index 0 and delete if necessary
-        if (box.isNotEmpty && box.length > 0) {
-          box.deleteAt(0);
-        }
+        // Сохранить новые данные с статусом 2
+        await box.put(
+            'user', NotesData(userStatus: '2', userToken: accessToken));
 
-        await box.putAt(0, NotesData(isChecked: true, userToken: accessToken));
+        // Получить сохраненные данные из Hive
+        NotesData? savedData = box.get('user');
 
+        // Вывести сохраненные данные в SnackBar
+        SnackBarService.showSnackBar(
+          context,
+          'Status: ${savedData?.userStatus}, Token: ${savedData?.userToken}',
+          false,
+        );
+
+        // Перейти на домашний экран
         Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
       } else {
         SnackBarService.showSnackBar(
@@ -73,6 +81,7 @@ class _LoginScreenState extends State<LoginScreen> {
         'Error occurred: $e',
         true,
       );
+      print(e);
     }
   }
 
@@ -202,8 +211,13 @@ class _LoginScreenState extends State<LoginScreen> {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         TextButton(
-                          onPressed: () => Navigator.of(context)
-                              .pushNamed('/reset_password'),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => PasswordForgotPage()),
+                            );
+                          },
                           child: Text(
                             'Parolingizni unutdingizmi?',
                             style: AppStyle.fontStyle.copyWith(

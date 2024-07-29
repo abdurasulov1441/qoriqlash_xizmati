@@ -11,8 +11,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
   Hive.registerAdapter(NotesDataAdapter());
-  await Hive.openBox<NotesData>('notes'); // Open 'notes' box once here
-  await Hive.openBox<bool>('userBox'); // Open 'userBox' here
+  await Hive.openBox<NotesData>('userBox'); // Open 'userBox' here
 
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(

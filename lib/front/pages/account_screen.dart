@@ -1,7 +1,5 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
-
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:qoriqlash_xizmati/back/auth_reg_reset/reset_password/reset_password.dart';
@@ -24,12 +22,6 @@ class AccountScreen extends StatefulWidget {
 }
 
 class _AccountScreenState extends State<AccountScreen> {
-  Future<void> signOut() async {
-    final navigator = Navigator.of(context);
-
-    navigator.pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false);
-  }
-
   void showLogoutDialog(BuildContext context) {
     final model = Provider.of<AppDataProvider>(context, listen: false);
     showDialog(
@@ -47,7 +39,7 @@ class _AccountScreenState extends State<AccountScreen> {
             ),
             TextButton(
               onPressed: () {
-                model.onExit(context);
+                model.deleteUser();
                 Navigator.of(context).pop();
               },
               child: const Text('Chiqish'),

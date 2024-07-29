@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 import 'package:qoriqlash_xizmati/back/hive/notes_data.dart';
+import 'package:qoriqlash_xizmati/back/hive/hive_box.dart';
 import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
 
 class AppDataProvider with ChangeNotifier {
@@ -52,25 +52,16 @@ class AppDataProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> onLogin(BuildContext context, String token) async {
-    var box = Hive.box<NotesData>('notes');
-    await box.putAt(0, NotesData(isChecked: true, userToken: token));
-    notifyListeners();
+  Future<void> addUser(token, BuildContext context) async {
+    await HiveBox.notes.add(
+      NotesData(
+        userStatus: '2',
+        userToken: token,
+      ),
+    );
   }
 
-  Future<void> onExit(BuildContext context) async {
-    var box = Hive.box<NotesData>('notes');
-    await box.deleteAt(0);
-    notifyListeners();
-  }
-
-  String? get userToken {
-    var box = Hive.box<NotesData>('notes');
-    return box.getAt(0)?.userToken;
-  }
-
-  bool get isUserLoggedIn {
-    var box = Hive.box<NotesData>('notes');
-    return box.getAt(0)?.isChecked ?? false;
+  Future<void> deleteUser() async {
+    await HiveBox.notes.delete('notes');
   }
 }

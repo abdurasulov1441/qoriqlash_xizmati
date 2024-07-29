@@ -1,31 +1,20 @@
+import 'dart:ui';
+
 import 'package:hive/hive.dart';
 
+// flutter packages pub run build_runner build --delete-conflicting-outputs
 part 'notes_data.g.dart';
 
 @HiveType(typeId: 0)
 class NotesData {
   @HiveField(0)
-  bool isChecked;
+  String? userStatus;
 
   @HiveField(1)
-  String userToken;
+  String? userToken;
 
   NotesData({
-    this.isChecked = false,
-    this.userToken = '',
+    this.userStatus,
+    this.userToken,
   });
-
-  factory NotesData.fromJson(Map<String, dynamic> json) {
-    return NotesData(
-      isChecked: true, // Setting status to true when token is received
-      userToken: json['access_token'],
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'isChecked': isChecked,
-      'userToken': userToken,
-    };
-  }
 }

@@ -70,7 +70,7 @@ class _ConfirmSmsPageState extends State<ConfirmSmsPage> {
         await box.put('user_token', userToken);
 
         Provider.of<AppDataProvider>(context, listen: false)
-            .onLogin(context, userToken);
+            .addUser(context, userToken);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(

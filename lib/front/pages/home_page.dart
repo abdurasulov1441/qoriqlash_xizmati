@@ -7,6 +7,7 @@ import 'package:qoriqlash_xizmati/front/pages/tarifs_screen.dart';
 import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:qoriqlash_xizmati/back/hive/notes_data.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -79,9 +80,9 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
-      valueListenable: Hive.box<bool>('userBox').listenable(),
-      builder: (context, Box<bool> box, _) {
-        bool isLoggedIn = box.get(0, defaultValue: false) ?? false;
+      valueListenable: Hive.box<NotesData>('userBox').listenable(),
+      builder: (context, Box<NotesData> box, _) {
+        bool isLoggedIn = box.isNotEmpty && box.getAt(0) != null;
         return Scaffold(
           body: Container(child: _child),
           bottomNavigationBar: SafeArea(
