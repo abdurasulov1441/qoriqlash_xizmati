@@ -1,7 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
 import 'package:qoriqlash_xizmati/front/components/button.dart';
 import 'package:qoriqlash_xizmati/front/components/mini_red_app_bar.dart';
 import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
@@ -105,9 +104,12 @@ class ContractsPage extends StatelessWidget {
                     contract.type,
                   ),
                   onTap: () {
-                    pushScreen(context,
-                        screen: Shartnoma(
-                          shartnomaNumber: index.toString(),
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Shartnoma(
+                            shartnomaNumber: index.toString(),
+                          ),
                         ));
                   },
                   subtitle: Column(

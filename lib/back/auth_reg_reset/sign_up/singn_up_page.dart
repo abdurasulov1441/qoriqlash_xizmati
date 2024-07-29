@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
 import 'package:qoriqlash_xizmati/back/auth_reg_reset/login_page/login_page.dart';
 import 'package:qoriqlash_xizmati/back/auth_reg_reset/sign_up/sms_verify_page.dart';
 import 'package:qoriqlash_xizmati/back/snack_bar.dart';
@@ -329,8 +328,11 @@ class _SignUpScreen extends State<SignUpScreen> {
                           style: AppStyle.fontStyle,
                         ),
                         TextButton(
-                          onPressed: () =>
-                              pushScreenWithoutNavBar(context, LoginScreen()),
+                          onPressed: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => LoginScreen()),
+                          ),
                           child: Text('Kirish',
                               style: AppStyle.fontStyle.copyWith(
                                   color: AppColors.lightIconGuardColor)),

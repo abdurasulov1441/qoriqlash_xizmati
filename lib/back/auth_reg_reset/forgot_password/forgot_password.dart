@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
+
 import 'package:qoriqlash_xizmati/back/auth_reg_reset/forgot_password/forgot_sms_confirm.dart';
 import 'package:qoriqlash_xizmati/front/components/mini_red_app_bar.dart';
 import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
@@ -18,7 +18,11 @@ class PasswordForgotPage extends StatelessWidget {
           width: double.infinity,
           child: ElevatedButton(
             onPressed: () {
-              pushScreenWithoutNavBar(context, PasswordForgotSMSConfirmPage());
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => PasswordForgotSMSConfirmPage()),
+              );
             },
             child: Text(
               'Yuborish',

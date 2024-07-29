@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
-import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
 import 'package:provider/provider.dart';
 import 'package:qoriqlash_xizmati/front/components/changeColorProvider.dart';
 import 'package:qoriqlash_xizmati/front/components/mini_red_app_bar.dart';
@@ -504,7 +503,10 @@ class _DropdownButtonExampleState extends State<DropdownButtonExample> {
                     borderRadius: BorderRadius.all(Radius.circular(10))),
                 backgroundColor: AppColors.lightButtonGreen),
             onPressed: () {
-              pushScreenWithoutNavBar(context, ArizaTexnikObyekt());
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ArizaTexnikObyekt()),
+              );
             },
             child: Text('Ariza berish',
                 style: AppStyle.fontStyle

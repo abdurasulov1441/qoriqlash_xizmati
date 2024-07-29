@@ -6,7 +6,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:qoriqlash_xizmati/front/components/appbar_title.dart';
 import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
 import 'package:qoriqlash_xizmati/front/style/app_style.dart';
-import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class HomePageElements extends StatelessWidget {
   const HomePageElements({super.key});
@@ -145,50 +144,50 @@ class HomePageElements extends StatelessWidget {
   }
 }
 
-class VideoPlayerScreen extends StatefulWidget {
-  const VideoPlayerScreen({super.key});
+// class VideoPlayerScreen extends StatefulWidget {
+//   const VideoPlayerScreen({super.key});
 
-  @override
-  _VideoPlayerScreenState createState() => _VideoPlayerScreenState();
-}
+//   @override
+//   _VideoPlayerScreenState createState() => _VideoPlayerScreenState();
+// }
 
-class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
-  late YoutubePlayerController _controller;
+// class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
+//   late YoutubePlayerController _controller;
 
-  @override
-  void initState() {
-    super.initState();
-    _controller = YoutubePlayerController(
-      initialVideoId: 'L4VB7rFwryQ', // Add the YouTube video ID here
-      flags: const YoutubePlayerFlags(
-          autoPlay: false,
-          mute: false,
-          forceHD: false,
-          enableCaption: true,
-          showLiveFullscreenButton: false),
-    );
-  }
+//   @override
+//   void initState() {
+//     super.initState();
+//     _controller = YoutubePlayerController(
+//       initialVideoId: 'L4VB7rFwryQ', // Add the YouTube video ID here
+//       flags: const YoutubePlayerFlags(
+//           autoPlay: false,
+//           mute: false,
+//           forceHD: false,
+//           enableCaption: true,
+//           showLiveFullscreenButton: false),
+//     );
+//   }
 
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
+//   @override
+//   void dispose() {
+//     _controller.dispose();
+//     super.dispose();
+//   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: YoutubePlayer(
-        controller: _controller,
-        showVideoProgressIndicator: true,
-        progressIndicatorColor: Colors.amber,
-        onReady: () {
-          _controller.addListener(() {});
-        },
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       body: YoutubePlayer(
+//         controller: _controller,
+//         showVideoProgressIndicator: true,
+//         progressIndicatorColor: Colors.amber,
+//         onReady: () {
+//           _controller.addListener(() {});
+//         },
+//       ),
+//     );
+//   }
+// }
 
 class OuterContainer extends StatelessWidget {
   const OuterContainer({

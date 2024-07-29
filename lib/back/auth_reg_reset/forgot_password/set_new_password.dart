@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
 import 'package:qoriqlash_xizmati/back/auth_reg_reset/reset_password/reset_password.dart';
 import 'package:qoriqlash_xizmati/front/pages/account_screen.dart';
 import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
@@ -17,7 +16,10 @@ class PasswordForgotSetNewPassPage extends StatelessWidget {
           width: double.infinity,
           child: ElevatedButton(
             onPressed: () {
-              pushScreenWithoutNavBar(context, AccountScreen());
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => AccountScreen()),
+              );
             },
             child: Text(
               'Tasdiqlash',

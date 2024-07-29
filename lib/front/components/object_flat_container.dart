@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
 import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
 import 'package:qoriqlash_xizmati/front/style/app_style.dart';
 
@@ -36,7 +35,10 @@ class ObjectFlatContainer extends StatelessWidget {
             Center(
               child: GestureDetector(
                 onTap: () {
-                  pushScreenWithoutNavBar(context, route);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => route),
+                  );
                 },
                 child: Container(
                     width: double.infinity,
@@ -105,7 +107,10 @@ class CustomScreenWithImage extends StatelessWidget {
             Center(
               child: GestureDetector(
                 onTap: () {
-                  pushScreenWithoutNavBar(context, route);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => route),
+                  );
                 },
                 child: Container(
                   width: double.infinity,

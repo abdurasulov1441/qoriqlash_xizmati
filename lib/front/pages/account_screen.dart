@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_svg/svg.dart';
-import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
 import 'package:provider/provider.dart';
 import 'package:qoriqlash_xizmati/back/auth_reg_reset/reset_password/reset_password.dart';
 import 'package:qoriqlash_xizmati/back/auth_reg_reset/sign_up/singn_up_page.dart';
@@ -199,10 +198,11 @@ class _AccountScreenState extends State<AccountScreen> {
                           } else if (name[index] == 'Qorong\'u rejim') {
                             null;
                           } else {
-                            pushWithoutNavBar(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => route[index]));
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => route[index]),
+                            );
                           }
                         },
                         //leading: Image.asset(images[index],width: 50,height: 50,),
@@ -349,10 +349,11 @@ class _AccountScreenNotLoginState extends State<AccountScreenNotLogin> {
                           } else if (name[index] == 'Qorong\'u rejim') {
                             null;
                           } else {
-                            pushWithoutNavBar(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => route[index]));
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => route[index]),
+                            );
                           }
                         },
                         //leading: Image.asset(images[index],width: 50,height: 50,),

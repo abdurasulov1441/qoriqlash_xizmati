@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
 import 'package:qoriqlash_xizmati/front/pages/home_page.dart';
 import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
 import 'package:qoriqlash_xizmati/front/style/app_style.dart';
@@ -71,7 +70,10 @@ class BuildStep4Page extends StatelessWidget {
             height: 60,
             child: ElevatedButton(
               onPressed: () {
-                pushScreenWithNavBar(context, HomePage());
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => HomePage()),
+                );
               },
               style: ElevatedButton.styleFrom(
                 foregroundColor: Colors.white,

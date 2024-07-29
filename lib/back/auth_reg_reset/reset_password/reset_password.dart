@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
 import 'package:qoriqlash_xizmati/back/auth_reg_reset/forgot_password/forgot_password.dart';
 import 'package:qoriqlash_xizmati/back/auth_reg_reset/reset_password/reset_password_succes.dart';
 
@@ -21,7 +20,11 @@ class XavfsizlikPage extends StatelessWidget {
             width: double.infinity,
             child: ElevatedButton(
               onPressed: () {
-                pushScreenWithoutNavBar(context, PasswordResetSuccesPage());
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => PasswordResetSuccesPage()),
+                );
               },
               child: Text(
                 'Tasdiqlash',
@@ -112,9 +115,11 @@ class XavfsizlikPage extends StatelessWidget {
                       children: [
                         GestureDetector(
                           onTap: () {
-                            pushScreenWithoutNavBar(
-                                context, PasswordForgotPage());
-                            // Implement forgot password functionality
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => PasswordForgotPage()),
+                            );
                           },
                           child: Text(
                             'Parolni unutdingizmi',

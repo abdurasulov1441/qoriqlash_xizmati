@@ -51,15 +51,20 @@ class AppDataProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> onLogin(BuildContext context) async {
-    var box = Hive.box<bool>('userBox');
-    await box.put(0, true);
+  Future<void> onLogin(BuildContext context, String token) async {
+    var box = Hive.box<String>('userBox');
+    await box.put('user_token', token);
     notifyListeners();
   }
 
   Future<void> onExit(BuildContext context) async {
-    var box = Hive.box<bool>('userBox');
-    await box.delete(0);
+    var box = Hive.box<String>('userBox');
+    await box.delete('user_token');
     notifyListeners();
+  }
+
+  String? get userToken {
+    var box = Hive.box<String>('userBox');
+    return box.get('user_token');
   }
 }

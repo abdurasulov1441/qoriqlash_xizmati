@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
 import 'package:qoriqlash_xizmati/front/components/custom_appbar.dart';
 import 'package:qoriqlash_xizmati/front/pages/pult_boshligi_pages/pult_boshligi_home.dart';
 import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
@@ -48,7 +47,11 @@ class KelibTushganArizalarPage extends StatelessWidget {
                           .copyWith(color: AppColors.lightHeaderColor)),
                   onTap: () {
                     Navigator.pop(context);
-                    pushScreenWithoutNavBar(context, PultBoshligiHome());
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => PultBoshligiHome()),
+                    );
                   },
                 ),
                 Container(
