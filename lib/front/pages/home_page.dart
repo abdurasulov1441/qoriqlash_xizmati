@@ -87,6 +87,7 @@ class _HomePageState extends State<HomePage> {
           body: Container(child: _child),
           bottomNavigationBar: SafeArea(
             child: FluidNavBar(
+              animationFactor: 0.5,
               icons: _buildIcons(),
               onChange: (index) => _handleNavigationChange(index, isLoggedIn),
               style: const FluidNavBarStyle(
