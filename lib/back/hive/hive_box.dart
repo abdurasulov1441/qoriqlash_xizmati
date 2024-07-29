@@ -1,5 +1,5 @@
 import 'package:hive/hive.dart';
 
 abstract class HiveBox {
-  static final userBox = Hive.box<bool>('userBox');
+  static final userBox = Hive.box<String>('userBox');
 }

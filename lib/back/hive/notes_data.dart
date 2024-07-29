@@ -10,8 +10,12 @@ class NotesData {
   @HiveField(0)
   bool isChecked;
 
+  @HiveField(1)
+  String userToken;
+
   NotesData({
     this.isChecked = false,
+    this.userToken = '',
   });
 
   set color(Color color) {}

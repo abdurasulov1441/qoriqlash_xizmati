@@ -9,6 +9,7 @@ import 'package:qoriqlash_xizmati/back/auth_reg_reset/sign_up/sign_up_succes_pag
 import 'package:qoriqlash_xizmati/front/components/changeColorProvider.dart';
 import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
 import 'package:qoriqlash_xizmati/front/style/app_style.dart';
+import 'package:hive/hive.dart';
 
 class ConfirmSmsPage extends StatefulWidget {
   final String phone;
@@ -61,7 +62,15 @@ class _ConfirmSmsPageState extends State<ConfirmSmsPage> {
 
     if (_mounted) {
       if (response.statusCode == 200) {
-        Provider.of<AppDataProvider>(context, listen: false).onLogin(context);
+        final responseBody = jsonDecode(response.body);
+        final userToken = responseBody['token'];
+
+        // Save the token using Hive
+        var box = Hive.box<String>('userBox');
+        await box.put('user_token', userToken);
+
+        Provider.of<AppDataProvider>(context, listen: false)
+            .onLogin(context, userToken);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
@@ -115,7 +124,7 @@ class _ConfirmSmsPageState extends State<ConfirmSmsPage> {
               style: AppStyle.fontStyle.copyWith(color: Colors.grey),
             ),
             Text(
-              maskPhoneNumber('+${widget.phone}'),
+              maskPhoneNumber('${widget.phone}'),
               style: AppStyle.fontStyle
                   .copyWith(color: AppColors.lightIconGuardColor),
             ),
