@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
+import 'package:qoriqlash_xizmati/back/auth_reg_reset/forgot_password/forgot_sms_confirm.dart';
 import 'package:qoriqlash_xizmati/front/components/mini_red_app_bar.dart';
-import 'package:qoriqlash_xizmati/front/pages/accaount_screens/xavfsizlik.dart';
 import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
 import 'package:qoriqlash_xizmati/front/style/app_style.dart';
 
