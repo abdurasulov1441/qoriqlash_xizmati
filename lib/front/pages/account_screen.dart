@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
@@ -114,8 +113,8 @@ class _AccountScreenState extends State<AccountScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Image.network(
-                  'https://appdata.uz/qbb-data/house.png',
+                Image.asset(
+                  'assets/images/house.png',
                   width: 60,
                   height: 60,
                 ),
@@ -151,13 +150,13 @@ class _AccountScreenState extends State<AccountScreen> {
                   width: 20,
                   // height: 20,
                 ),
-                Image.network(
-                  'https://appdata.uz/qbb-data/lock.png',
+                Image.asset(
+                  'assets/images/lock.png',
                   width: 60,
                   height: 60,
                 ),
-                Image.network(
-                  'https://appdata.uz/qbb-data/emerency_on.png',
+                Image.asset(
+                  'assets/images/emerency_on.png',
                   width: 60,
                   height: 60,
                 )
@@ -305,8 +304,8 @@ class _AccountScreenNotLoginState extends State<AccountScreenNotLogin> {
             const CircleAvatar(
               backgroundColor: AppColors.lightBackgroundColor,
               radius: 50, // Radius of the inner circle (avatar)
-              backgroundImage: NetworkImage(
-                  'https://appdata.uz/qbb-data/avatar.png'), // Image for the avatar
+              backgroundImage: AssetImage(
+                  'assets/images/avatar.png'), // Image for the avatar
             ),
             Text(
               'Verifikatsiyadan o\'tmagan foydalanuvchi',

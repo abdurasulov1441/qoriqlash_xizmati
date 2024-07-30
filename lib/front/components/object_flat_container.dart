@@ -27,7 +27,7 @@ class ObjectFlatContainer extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Image.network(
+            Image.asset(
               image,
               width: 250,
               height: 250,
@@ -97,7 +97,7 @@ class CustomScreenWithImage extends StatelessWidget {
               borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(15),
                   topRight: Radius.circular(15)), // Установите нужный радиус
-              child: Image.network(
+              child: Image.asset(
                 image,
                 width: 295,
                 height: 250,

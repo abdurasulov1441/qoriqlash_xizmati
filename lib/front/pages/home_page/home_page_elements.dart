@@ -31,13 +31,13 @@ class HomePageElements extends StatelessWidget {
                       OuterContainer(
                           text:
                               'Fuqarolar yashash uylarida oldi olingan o’g’irliklar',
-                          icon: 'https://appdata.uz/qbb-data/home_page_1.svg',
+                          icon: 'assets/images/home_page_1.svg',
                           number: '535',
                           colorborder: AppColors.homeLightBlue,
                           backColor: AppColors.homeLightBlue2),
                       OuterContainer(
                           text: 'Qo’riqlovdagi fuqarolar yashash uylari',
-                          icon: 'https://appdata.uz/qbb-data/home_page_2.svg',
+                          icon: 'assets/images/home_page_2.svg',
                           number: '33 755',
                           colorborder: AppColors.homePink,
                           backColor: AppColors.homePink2),
@@ -51,13 +51,13 @@ class HomePageElements extends StatelessWidget {
                     children: [
                       OuterContainer(
                           text: 'Obyektlarda oldi olingan o’g’irliklar',
-                          icon: 'https://appdata.uz/qbb-data/home_page_3.svg',
+                          icon: 'assets/images/home_page_3.svg',
                           number: '435',
                           colorborder: AppColors.homeOrange,
                           backColor: AppColors.homeOrange2),
                       OuterContainer(
                           text: 'Qo’riqlovdagi obyektlar',
-                          icon: 'https://appdata.uz/qbb-data/home_page_4.svg',
+                          icon: 'assets/images/home_page_4.svg',
                           number: '51 584',
                           colorborder: AppColors.homeDarkBlue,
                           backColor: AppColors.homeDarkBlue2),
@@ -239,7 +239,7 @@ class OuterContainer extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  SvgPicture.network(
+                  SvgPicture.asset(
                     icon,
                     width: 25,
                     height: 25,

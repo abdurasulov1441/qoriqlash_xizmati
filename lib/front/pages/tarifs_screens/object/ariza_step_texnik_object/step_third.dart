@@ -10,8 +10,8 @@ class BuildStep3Page extends StatelessWidget {
       children: [
         Container(
             padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: SvgPicture.network(
-              'https://appdata.uz/qbb-data/step3.svg',
+            child: SvgPicture.asset(
+              'assets/images/step3.svg',
               width: 50,
               height: 50,
             )),

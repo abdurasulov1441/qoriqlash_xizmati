@@ -15,7 +15,7 @@ class BuildStep4Page extends StatelessWidget {
         const SizedBox(
           height: 20,
         ),
-        SvgPicture.network('https://appdata.uz/qbb-data/ariza_muvofaqiyat.svg'),
+        SvgPicture.asset('assets/images/ariza_muvofaqiyat.svg'),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

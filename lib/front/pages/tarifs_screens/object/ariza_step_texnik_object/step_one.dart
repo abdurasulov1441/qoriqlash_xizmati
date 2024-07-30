@@ -11,8 +11,8 @@ class BuildStep1Page extends StatelessWidget {
       children: [
         Container(
             padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: SvgPicture.network(
-              'https://appdata.uz/qbb-data/step1.svg',
+            child: SvgPicture.asset(
+              'assets/images/step1.svg',
               width: 50,
               height: 50,
             )),

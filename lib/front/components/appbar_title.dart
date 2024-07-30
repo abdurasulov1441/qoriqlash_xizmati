@@ -32,8 +32,8 @@ class AppbarTitle extends StatelessWidget {
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Image.network(
-                        'https://appdata.uz/qbb-data/set.png',
+                      Image.asset(
+                        'assets/images/set.png',
                         width: 50,
                         height: 50,
                       )

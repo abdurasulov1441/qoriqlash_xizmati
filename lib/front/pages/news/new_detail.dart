@@ -23,7 +23,7 @@ class NewsDetailPage extends StatelessWidget {
                 children: [
                   ClipRRect(
                     borderRadius: BorderRadius.circular(15),
-                    child: Image.network(
+                    child: Image.asset(
                       newsItem.img!,
                       width: double.infinity,
                       height: 200,

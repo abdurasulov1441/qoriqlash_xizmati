@@ -8,8 +8,8 @@ Widget _buildStepPage2() {
     crossAxisAlignment: CrossAxisAlignment.end,
     children: [
       Container(
-          child: SvgPicture.network(
-        'https://appdata.uz/qbb-data/step2.svg',
+          child: SvgPicture.asset(
+        'assets/images/step2.svg',
         width: 50,
         height: 50,
       )),
@@ -289,8 +289,8 @@ class BuildStep2Page extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         Container(
-            child: SvgPicture.network(
-          'https://appdata.uz/qbb-data/step2.svg',
+            child: SvgPicture.asset(
+          'assets/images/step2.svg',
           width: 50,
           height: 50,
         )),

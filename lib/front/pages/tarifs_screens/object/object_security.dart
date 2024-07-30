@@ -29,7 +29,7 @@ class ObjectSecurity extends StatelessWidget {
               height: 25,
             ),
             CustomScreenWithImage(
-                image: 'https://appdata.uz/qbb-data/texnik_test2.png',
+                image: 'assets/images/texnik_test2.png',
                 text: 'Texnik qo\'riqlash markazlari orqali qo\'riqlash',
                 route: TexnikObject()),
             SizedBox(
