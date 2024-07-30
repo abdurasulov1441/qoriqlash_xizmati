@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:qoriqlash_xizmati/front/pages/home_page.dart';
+import 'package:qoriqlash_xizmati/back/auth_reg_reset/login_page/login_page.dart';
 import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
 import 'package:qoriqlash_xizmati/front/style/app_style.dart';
 
@@ -74,7 +74,7 @@ class SignUpSuccessPage extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => HomePage()),
+                    MaterialPageRoute(builder: (context) => LoginScreen()),
                   );
                 },
                 child: Text(

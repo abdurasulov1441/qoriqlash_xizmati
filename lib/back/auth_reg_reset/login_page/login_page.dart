@@ -1,9 +1,12 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 
 import 'package:http/http.dart' as http;
 
 import 'package:qoriqlash_xizmati/back/auth_reg_reset/forgot_password/forgot_password.dart';
+import 'package:qoriqlash_xizmati/back/auth_reg_reset/sign_up/singn_up_page.dart';
+import 'package:qoriqlash_xizmati/back/hive/notes_data.dart';
 import 'package:qoriqlash_xizmati/back/snack_bar.dart';
 import 'package:qoriqlash_xizmati/front/components/changeColorProvider.dart';
 import 'package:qoriqlash_xizmati/front/pages/home_page.dart';
@@ -39,8 +42,8 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> login() async {
     final isValid = formKey.currentState!.validate();
     if (!isValid) return;
-
     final url = Uri.parse('http://10.100.9.145:7684/api/v1/auth/login');
+    //final url = Uri.parse('http://84.54.96.157:17041/api/v1/auth/login');
     final headers = {"Content-Type": "application/json"};
     final body = jsonEncode({
       "password": passwordTextInputController.text,
@@ -99,6 +102,14 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final box = Hive.box<NotesData>('notes');
+    if (box.isNotEmpty) {
+      String? token = box.getAt(0)?.userToken;
+      print(token);
+    } else {
+      print('data in hive not found aniqrogi bom bosh');
+    }
+
     return Scaffold(
       backgroundColor: AppColors.lightBackgroundColor,
       resizeToAvoidBottomInset: false,
@@ -267,7 +278,12 @@ class _LoginScreenState extends State<LoginScreen> {
                       style: AppStyle.fontStyle,
                     ),
                     TextButton(
-                      onPressed: () => Navigator.pop(context),
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => SignUpScreen()));
+                      },
                       child: Text(
                         'Ro\'yxatdan o\'ting',
                         style: AppStyle.fontStyle.copyWith(

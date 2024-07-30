@@ -1,5 +1,8 @@
 import 'package:another_flutter_splash_screen/another_flutter_splash_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:qoriqlash_xizmati/back/auth_reg_reset/login_page/login_page.dart';
+import 'package:qoriqlash_xizmati/back/hive/notes_data.dart';
 import 'package:qoriqlash_xizmati/front/components/changeColorProvider.dart';
 import 'package:qoriqlash_xizmati/front/pages/home_page.dart';
 import 'package:provider/provider.dart';
@@ -35,12 +38,28 @@ class SplashScreenWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FlutterSplashScreen.fadeIn(
-      backgroundColor: Colors.white,
-      duration: const Duration(seconds: 3),
-      childWidget: const SplashScreenContent(),
-      nextScreen: HomePage(),
-    );
+    bool isLoggedIn;
+
+    return ValueListenableBuilder(
+        valueListenable: Hive.box<NotesData>('notes').listenable(),
+        builder: (context, Box<NotesData> box, _) {
+          final box = Hive.box<NotesData>('notes');
+          if (box.isNotEmpty) {
+            String? token = box.getAt(0)?.userToken;
+            print(token);
+            isLoggedIn = true;
+          } else {
+            print('data in hive not found aniqrogi bom bosh');
+            isLoggedIn = false;
+          }
+
+          return FlutterSplashScreen.fadeIn(
+            backgroundColor: Colors.white,
+            duration: const Duration(seconds: 3),
+            childWidget: const SplashScreenContent(),
+            nextScreen: isLoggedIn ? HomePage() : LoginScreen(),
+          );
+        });
   }
 }
 

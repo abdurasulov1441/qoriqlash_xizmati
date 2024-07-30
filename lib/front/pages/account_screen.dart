@@ -2,8 +2,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+import 'package:qoriqlash_xizmati/back/auth_reg_reset/login_page/login_page.dart';
 import 'package:qoriqlash_xizmati/back/auth_reg_reset/reset_password/reset_password.dart';
-import 'package:qoriqlash_xizmati/back/auth_reg_reset/sign_up/singn_up_page.dart';
 import 'package:qoriqlash_xizmati/front/components/appbar_title.dart';
 import 'package:qoriqlash_xizmati/front/components/changeColorProvider.dart';
 import 'package:qoriqlash_xizmati/front/pages/accaount_screens/shartnomalar.dart';
@@ -40,7 +40,11 @@ class _AccountScreenState extends State<AccountScreen> {
             TextButton(
               onPressed: () {
                 model.deleteUser();
-                Navigator.of(context).pop();
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginScreen()),
+                  (Route<dynamic> route) => false,
+                );
               },
               child: const Text('Chiqish'),
             ),
@@ -233,7 +237,13 @@ class AccountScreenNotLogin extends StatefulWidget {
 
 class _AccountScreenNotLoginState extends State<AccountScreenNotLogin> {
   Future<void> signOut() async {
-    exit(0);
+    final model = Provider.of<AppDataProvider>(context, listen: false);
+    model.deleteUser();
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => LoginScreen()),
+      (Route<dynamic> route) => false,
+    );
   }
 
   void showLogoutDialog(BuildContext context) {
@@ -253,7 +263,6 @@ class _AccountScreenNotLoginState extends State<AccountScreenNotLogin> {
             TextButton(
               onPressed: () {
                 signOut();
-                Navigator.of(context).pop();
               },
               child: const Text('Chiqish'),
             ),
@@ -270,7 +279,7 @@ class _AccountScreenNotLoginState extends State<AccountScreenNotLogin> {
       'Yordam',
       'Qorong\'u rejim',
       'Chiqish',
-      'Ro\'yxatdan o\'tish',
+      'Verifikatiyadan o\'tish',
       'Pult Boshligi',
     ];
     final List image = [
@@ -284,7 +293,7 @@ class _AccountScreenNotLoginState extends State<AccountScreenNotLogin> {
       FaqPage(),
       Divider(),
       Shartnomalar(),
-      SignUpScreen(),
+      LoginScreen(),
       PultBoshligiHome(),
     ];
     return Scaffold(
@@ -300,7 +309,7 @@ class _AccountScreenNotLoginState extends State<AccountScreenNotLogin> {
                   'https://appdata.uz/qbb-data/avatar.png'), // Image for the avatar
             ),
             Text(
-              'Nomalum foydalanuvchi',
+              'Verifikatsiyadan o\'tmagan foydalanuvchi',
               style: AppStyle.fontStyle.copyWith(
                   fontWeight: FontWeight.bold,
                   color: themeProvider.isDarkTheme
