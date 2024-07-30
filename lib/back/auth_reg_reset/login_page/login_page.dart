@@ -165,8 +165,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     const SizedBox(height: 5),
                     TextFormField(
-                      style:
-                          const TextStyle(color: AppColors.lightDividerColor),
+                      // style: TextStyle(color: AppColors.lightTextColor),
                       keyboardType: TextInputType.phone,
                       autocorrect: false,
                       controller: emailTextInputController,
@@ -176,7 +175,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(15)),
                         ),
-                        hintText: '998901234567 formatida',
+                        hintText: '+998901234567 formatida',
                         hintStyle: AppStyle.fontStyle,
                         label: Icon(
                           Icons.phone,
@@ -197,8 +196,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     const SizedBox(height: 5),
                     TextFormField(
-                      style:
-                          const TextStyle(color: AppColors.lightDividerColor),
+                      // style:
+                      //     const TextStyle(color: AppColors.lightDividerColor),
                       autocorrect: false,
                       controller: passwordTextInputController,
                       obscureText: isHiddenPassword,
@@ -293,6 +292,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ],
                 ),
+                SizedBox(
+                  height: 250,
+                )
               ],
             ),
           ),

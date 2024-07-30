@@ -1,10 +1,65 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:qoriqlash_xizmati/back/hive/notes_data.dart';
 import 'package:qoriqlash_xizmati/front/components/mini_red_app_bar.dart';
 import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
 import 'package:qoriqlash_xizmati/front/style/app_style.dart';
+import 'package:hive/hive.dart';
+import 'package:http/http.dart' as http;
 
-class ShaxsiyMalumotlar extends StatelessWidget {
+class ShaxsiyMalumotlar extends StatefulWidget {
   const ShaxsiyMalumotlar({super.key});
+
+  @override
+  State<ShaxsiyMalumotlar> createState() => _ShaxsiyMalumotlarState();
+}
+
+class _ShaxsiyMalumotlarState extends State<ShaxsiyMalumotlar> {
+  String fullName = 'Raximov Voris Avazbek o\'g\'li'; // Default name
+  String phoneNumber = '+998 (99) 786-25-51'; // Default phone number
+  String passportSeriesAndNumber =
+      'AA 1234567'; // Default passport series and number
+  String passportGivenDate = '15.02.2018'; // Default passport given date
+  String passportGivenBy =
+      'Toshkent viloyati Qibray tumani'; // Default passport given by
+  String jshshir = '12 34 56 78 90 12 34'; // Default JSHSHIR
+  String address =
+      'Toshkent vil. M.Ulug’bek tum. A.Temur MFY'; // Default address
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserData();
+  }
+
+  Future<void> fetchUserData() async {
+    final box = Hive.box<NotesData>('notes');
+    String? token = box.getAt(0)?.userToken;
+
+    final response = await http.get(
+      Uri.parse('http://10.100.9.145:7684/api/v1/user/info'),
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body)['data'];
+      setState(() {
+        fullName =
+            '${data['surname']} ${data['first_name']} ${data['last_name']}'; //first_name  last_name surname
+        phoneNumber = data['phone_number'];
+        passportSeriesAndNumber =
+            '${data['passport_series']} ${data['passport_number']}';
+        passportGivenDate = data['given_date'];
+        passportGivenBy = data['given_by'];
+        jshshir = '12 34 56 78 90 12 34';
+        address = 'Toshkent vil. M.Ulug’bek tum. A.Temur MFY';
+      });
+    } else {
+      // Handle error
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,285 +70,71 @@ class ShaxsiyMalumotlar extends StatelessWidget {
           children: [
             MiniRedAppBar(),
             MiniRedTitle(title: 'Shaxsiy Ma\'lumotlar'),
-            SizedBox(
-              height: 20,
-            ),
+            const SizedBox(height: 20),
             CircleAvatar(
               radius: 50,
               child: Image.asset('assets/images/person.png'),
             ),
-            SizedBox(
-              height: 20,
-            ),
+            const SizedBox(height: 20),
             Container(
-              padding: EdgeInsets.symmetric(horizontal: 20),
+              padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
                 children: [
-                  Row(
-                    children: [
-                      SizedBox(
-                        width: 20,
-                      ),
-                      Text(
-                        'F.I.SH',
-                        style: AppStyle.fontStyle
-                            .copyWith(fontWeight: FontWeight.bold),
-                      )
-                    ],
-                  ),
-                  SizedBox(
-                    height: 8,
-                  ),
-                  TextFormField(
-                    style: const TextStyle(color: AppColors.lightTextColor),
-                    keyboardType: TextInputType.text,
-                    autocorrect: false,
-                    // controller: _phoneController,
-
-                    decoration: const InputDecoration(
-                        fillColor: AppColors.fillColor,
-                        filled: true,
-                        border: OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(15))),
-                        hintText: 'Rahimov Voris Avazbek o\'g\'li',
-                        hintStyle: AppStyle.fontStyle,
-                        label: Icon(
-                          Icons.person,
-                          color: AppColors.lightIconGuardColor,
-                        )),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Row(
-                    children: [
-                      SizedBox(
-                        width: 20,
-                      ),
-                      Text(
-                        'Telefon raqam',
-                        style: AppStyle.fontStyle
-                            .copyWith(fontWeight: FontWeight.bold),
-                      )
-                    ],
-                  ),
-                  SizedBox(
-                    height: 8,
-                  ),
-                  TextFormField(
-                    style: const TextStyle(color: AppColors.lightTextColor),
-                    keyboardType: TextInputType.phone,
-                    autocorrect: false,
-                    // controller: _phoneController,
-
-                    decoration: const InputDecoration(
-                        fillColor: AppColors.fillColor,
-                        filled: true,
-                        border: OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(15))),
-                        hintText: '+998 (99) 786-25-51',
-                        hintStyle: AppStyle.fontStyle,
-                        label: Icon(
-                          Icons.phone,
-                          color: AppColors.lightIconGuardColor,
-                        )),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Row(
-                    children: [
-                      SizedBox(
-                        width: 20,
-                      ),
-                      Text(
-                        'Passport seriyasi va raqami',
-                        style: AppStyle.fontStyle
-                            .copyWith(fontWeight: FontWeight.bold),
-                      )
-                    ],
-                  ),
-                  SizedBox(
-                    height: 8,
-                  ),
-                  TextFormField(
-                    style: const TextStyle(color: AppColors.lightTextColor),
-                    keyboardType: TextInputType.text,
-                    autocorrect: false,
-                    // controller: _phoneController,
-
-                    decoration: const InputDecoration(
-                        fillColor: AppColors.fillColor,
-                        filled: true,
-                        border: OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(15))),
-                        hintText: 'AA 1234567',
-                        hintStyle: AppStyle.fontStyle,
-                        label: Icon(
-                          Icons.edit_document,
-                          color: AppColors.lightIconGuardColor,
-                        )),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Row(
-                    children: [
-                      SizedBox(
-                        width: 20,
-                      ),
-                      Text(
-                        'Passport berilgan sana',
-                        style: AppStyle.fontStyle
-                            .copyWith(fontWeight: FontWeight.bold),
-                      )
-                    ],
-                  ),
-                  SizedBox(
-                    height: 8,
-                  ),
-                  TextFormField(
-                    style: const TextStyle(color: AppColors.lightTextColor),
-                    keyboardType: TextInputType.phone,
-                    autocorrect: false,
-                    // controller: _phoneController,
-
-                    decoration: const InputDecoration(
-                        fillColor: AppColors.fillColor,
-                        filled: true,
-                        border: OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(15))),
-                        hintText: '15.02.2018',
-                        hintStyle: AppStyle.fontStyle,
-                        label: Icon(
-                          Icons.date_range,
-                          color: AppColors.lightIconGuardColor,
-                        )),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Row(
-                    children: [
-                      SizedBox(
-                        width: 20,
-                      ),
-                      Text(
-                        'Passport kim tomonidan berilgan',
-                        style: AppStyle.fontStyle
-                            .copyWith(fontWeight: FontWeight.bold),
-                      )
-                    ],
-                  ),
-                  SizedBox(
-                    height: 8,
-                  ),
-                  TextFormField(
-                    style: const TextStyle(color: AppColors.lightTextColor),
-                    keyboardType: TextInputType.phone,
-                    autocorrect: false,
-                    // controller: _phoneController,
-
-                    decoration: const InputDecoration(
-                        fillColor: AppColors.fillColor,
-                        filled: true,
-                        border: OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(15))),
-                        hintText: 'Toshkent viloyati Qibray tumani',
-                        hintStyle: AppStyle.fontStyle,
-                        label: Icon(
-                          Icons.corporate_fare,
-                          color: AppColors.lightIconGuardColor,
-                        )),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Row(
-                    children: [
-                      SizedBox(
-                        width: 20,
-                      ),
-                      Text(
-                        'JSHSHIR',
-                        style: AppStyle.fontStyle
-                            .copyWith(fontWeight: FontWeight.bold),
-                      )
-                    ],
-                  ),
-                  SizedBox(
-                    height: 8,
-                  ),
-                  TextFormField(
-                    style: const TextStyle(color: AppColors.lightTextColor),
-                    keyboardType: TextInputType.phone,
-                    autocorrect: false,
-                    // controller: _phoneController,
-
-                    decoration: const InputDecoration(
-                        fillColor: AppColors.fillColor,
-                        filled: true,
-                        border: OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(15))),
-                        hintText: '12 34 56 78 90 12 34',
-                        hintStyle: AppStyle.fontStyle,
-                        label: Icon(
-                          Icons.code,
-                          color: AppColors.lightIconGuardColor,
-                        )),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Row(
-                    children: [
-                      SizedBox(
-                        width: 20,
-                      ),
-                      Text(
-                        'Manzil',
-                        style: AppStyle.fontStyle
-                            .copyWith(fontWeight: FontWeight.bold),
-                      )
-                    ],
-                  ),
-                  SizedBox(
-                    height: 8,
-                  ),
-                  TextFormField(
-                    style: const TextStyle(color: AppColors.lightTextColor),
-                    keyboardType: TextInputType.phone,
-                    autocorrect: false,
-                    // controller: _phoneController,
-
-                    decoration: const InputDecoration(
-                        fillColor: AppColors.fillColor,
-                        filled: true,
-                        border: OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(15))),
-                        hintText: 'Toshkent vil. M.Ulug’bek tum. A.Temur MFY',
-                        hintStyle: AppStyle.fontStyle,
-                        label: Icon(
-                          Icons.location_on,
-                          color: AppColors.lightIconGuardColor,
-                        )),
-                  ),
+                  buildStaticField('F.I.SH', fullName),
+                  buildStaticField('Telefon raqam', phoneNumber),
+                  buildStaticField(
+                      'Passport seriyasi va raqami', passportSeriesAndNumber),
+                  buildStaticField('Passport berilgan sana', passportGivenDate),
+                  buildStaticField(
+                      'Passport kim tomonidan berilgan', passportGivenBy),
+                  buildStaticField('JSHSHIR', jshshir),
+                  buildStaticField('Manzil', address),
                 ],
               ),
             ),
-            SizedBox(
-              height: 80,
-            )
+            const SizedBox(height: 80),
           ],
         ),
       ),
+    );
+  }
+
+  Widget buildStaticField(String label, String value) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            const SizedBox(width: 20),
+            Text(
+              label,
+              style: AppStyle.fontStyle.copyWith(fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        Row(
+          children: [
+            Expanded(
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                decoration: BoxDecoration(
+                  color: AppColors.fillColor,
+                  borderRadius: const BorderRadius.all(Radius.circular(15)),
+                  border: Border.all(color: AppColors.lightIconGuardColor),
+                ),
+                child: Text(
+                  value,
+                  style: AppStyle.fontStyle
+                      .copyWith(color: AppColors.lightTextColor),
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 20),
+      ],
     );
   }
 }

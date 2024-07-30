@@ -204,7 +204,7 @@ class _SignUpScreen extends State<SignUpScreen> {
                           border: OutlineInputBorder(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(15))),
-                          hintText: '+998901234567 formatida',
+                          hintText: '+998901234567',
                           hintStyle: AppStyle.fontStyle,
                           label: Icon(
                             Icons.phone,
@@ -339,6 +339,9 @@ class _SignUpScreen extends State<SignUpScreen> {
                   ],
                 ),
               ),
+              SizedBox(
+                height: 250,
+              )
             ],
           ),
         ),
