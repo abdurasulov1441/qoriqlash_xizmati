@@ -323,7 +323,7 @@ class _AccountScreenNotLoginState extends State<AccountScreenNotLogin> {
       FaqPage(),
       Divider(),
       Shartnomalar(),
-      M7ExpampleScreen(),
+      M7ExampleScreen(),
       PultBoshligiHome(),
     ];
     return Scaffold(

@@ -1,25 +1,25 @@
 import 'dart:io';
-
+import 'package:http/http.dart' as http;
 import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:live_photo_detector/m7_livelyness_detection.dart';
 
-class M7ExpampleScreen extends StatefulWidget {
-  const M7ExpampleScreen({super.key});
+class M7ExampleScreen extends StatefulWidget {
+  const M7ExampleScreen({super.key});
 
   @override
-  State<M7ExpampleScreen> createState() => _M7ExpampleScreenState();
+  State<M7ExampleScreen> createState() => _M7ExampleScreenState();
 }
 
-class _M7ExpampleScreenState extends State<M7ExpampleScreen> {
+class _M7ExampleScreenState extends State<M7ExampleScreen> {
   //* MARK: - Private Variables
   //? =========================================================
   String? _capturedImagePath;
-  final bool _isLoading = false;
+  bool _isLoading = false;
   bool _startWithInfo = true;
   bool _allowAfterTimeOut = false;
-  final List<M7LivelynessStepItem> _veificationSteps = [];
+  final List<M7LivelynessStepItem> _verificationSteps = [];
   int _timeOutDuration = 30;
 
   //* MARK: - Life Cycle Methods
@@ -41,7 +41,7 @@ class _M7ExpampleScreenState extends State<M7ExpampleScreen> {
   //* MARK: - Private Methods for Business Logic
   //? =========================================================
   void _initValues() {
-    _veificationSteps.addAll(
+    _verificationSteps.addAll(
       [
         M7LivelynessStepItem(
           step: M7LivelynessStep.smile,
@@ -75,7 +75,7 @@ class _M7ExpampleScreenState extends State<M7ExpampleScreen> {
         await M7LivelynessDetection.instance.detectLivelyness(
       context,
       config: M7DetectionConfig(
-        steps: _veificationSteps,
+        steps: _verificationSteps,
         startWithInfoScreen: _startWithInfo,
         maxSecToDetect: _timeOutDuration == 100 ? 2500 : _timeOutDuration,
         allowAfterMaxSec: _allowAfterTimeOut,
@@ -85,9 +85,57 @@ class _M7ExpampleScreenState extends State<M7ExpampleScreen> {
     if (response == null) {
       return;
     }
-    setState(
-      () => _capturedImagePath = response,
-    );
+    setState(() => _capturedImagePath = response);
+
+    if (_capturedImagePath != null) {
+      _sendImageToServer(_capturedImagePath!);
+    }
+  }
+
+  void _sendImageToServer(String imagePath) async {
+    setState(() => _isLoading = true);
+    try {
+      var request = http.MultipartRequest(
+        'POST',
+        Uri.parse('http://10.100.9.145:7684/api/vi/user/'),
+      );
+      request.files.add(await http.MultipartFile.fromPath('file', imagePath));
+      var response = await request.send();
+
+      if (response.statusCode == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text(
+              "Image uploaded successfully!",
+              style: TextStyle(color: Colors.white),
+            ),
+            backgroundColor: Colors.green,
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text(
+              "Failed to upload image.",
+              style: TextStyle(color: Colors.white),
+            ),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            "Error: $e",
+            style: const TextStyle(color: Colors.white),
+          ),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      setState(() => _isLoading = false);
+    }
   }
 
   String _getTitle(M7LivelynessStep step) {
@@ -121,34 +169,31 @@ class _M7ExpampleScreenState extends State<M7ExpampleScreen> {
   }
 
   bool _isSelected(M7LivelynessStep step) {
-    final M7LivelynessStepItem? doesExist = _veificationSteps.firstWhereOrNull(
+    final M7LivelynessStepItem? doesExist = _verificationSteps.firstWhereOrNull(
       (p0) => p0.step == step,
     );
     return doesExist != null;
   }
 
   void _onStepValChanged(M7LivelynessStep step, bool value) {
-    if (!value && _veificationSteps.length == 1) {
+    if (!value && _verificationSteps.length == 1) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: const Text(
-            "Need to have atleast 1 step of verification",
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 20,
-            ),
+            "Need to have at least 1 step of verification",
+            style: TextStyle(color: Colors.white, fontSize: 20),
           ),
           backgroundColor: Colors.red.shade900,
         ),
       );
       return;
     }
-    final M7LivelynessStepItem? doesExist = _veificationSteps.firstWhereOrNull(
+    final M7LivelynessStepItem? doesExist = _verificationSteps.firstWhereOrNull(
       (p0) => p0.step == step,
     );
 
     if (doesExist == null && value) {
-      _veificationSteps.add(
+      _verificationSteps.add(
         M7LivelynessStepItem(
           step: step,
           title: _getTitle(step),
@@ -157,9 +202,7 @@ class _M7ExpampleScreenState extends State<M7ExpampleScreen> {
       );
     } else {
       if (!value) {
-        _veificationSteps.removeWhere(
-          (p0) => p0.step == step,
-        );
+        _verificationSteps.removeWhere((p0) => p0.step == step);
       }
     }
     setState(() {});
@@ -169,9 +212,7 @@ class _M7ExpampleScreenState extends State<M7ExpampleScreen> {
   //? =========================================================
   AppBar _buildAppBar() {
     return AppBar(
-      title: const Text(
-        "M7 Livelyness Detection",
-      ),
+      title: const Text("M7 Livelyness Detection"),
     );
   }
 
@@ -182,9 +223,7 @@ class _M7ExpampleScreenState extends State<M7ExpampleScreen> {
         _buildContent(),
         Visibility(
           visible: _isLoading,
-          child: const Center(
-            child: CircularProgressIndicator.adaptive(),
-          ),
+          child: const Center(child: CircularProgressIndicator.adaptive()),
         ),
       ],
     );
@@ -196,9 +235,7 @@ class _M7ExpampleScreenState extends State<M7ExpampleScreen> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.min,
       children: [
-        const Spacer(
-          flex: 4,
-        ),
+        const Spacer(flex: 4),
         Visibility(
           visible: _capturedImagePath != null,
           child: Expanded(
@@ -223,9 +260,7 @@ class _M7ExpampleScreenState extends State<M7ExpampleScreen> {
             ),
             child: const Text(
               "Detect Livelyness",
-              style: TextStyle(
-                fontSize: 22,
-              ),
+              style: TextStyle(fontSize: 22),
             ),
           ),
         ),
@@ -235,26 +270,17 @@ class _M7ExpampleScreenState extends State<M7ExpampleScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Spacer(
-              flex: 3,
-            ),
+            const Spacer(flex: 3),
             const Text(
               "Start with info screen:",
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-              ),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
             ),
             const Spacer(),
             CupertinoSwitch(
               value: _startWithInfo,
-              onChanged: (value) => setState(
-                () => _startWithInfo = value,
-              ),
+              onChanged: (value) => setState(() => _startWithInfo = value),
             ),
-            const Spacer(
-              flex: 3,
-            ),
+            const Spacer(flex: 3),
           ],
         ),
         const Spacer(),
@@ -263,44 +289,31 @@ class _M7ExpampleScreenState extends State<M7ExpampleScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Spacer(
-              flex: 3,
-            ),
+            const Spacer(flex: 3),
             const Text(
               "Allow after timer is completed:",
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-              ),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
             ),
             const Spacer(),
             CupertinoSwitch(
               value: _allowAfterTimeOut,
-              onChanged: (value) => setState(
-                () => _allowAfterTimeOut = value,
-              ),
+              onChanged: (value) => setState(() => _allowAfterTimeOut = value),
             ),
-            const Spacer(
-              flex: 3,
-            ),
+            const Spacer(flex: 3),
           ],
         ),
         const Spacer(),
         Text(
-          "Detection Time-out Duration(In Seconds): ${_timeOutDuration == 100 ? "No Limit" : _timeOutDuration}",
+          "Detection Time-out Duration (In Seconds): ${_timeOutDuration == 100 ? "No Limit" : _timeOutDuration}",
           textAlign: TextAlign.center,
-          style: const TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-          ),
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
         ),
         Slider(
           min: 0,
           max: 100,
           value: _timeOutDuration.toDouble(),
-          onChanged: (value) => setState(
-            () => _timeOutDuration = value.toInt(),
-          ),
+          onChanged: (value) =>
+              setState(() => _timeOutDuration = value.toInt()),
         ),
         Expanded(
           flex: 14,
@@ -309,33 +322,21 @@ class _M7ExpampleScreenState extends State<M7ExpampleScreen> {
             itemCount: M7LivelynessStep.values.length,
             itemBuilder: (context, index) => ExpansionTile(
               title: Text(
-                _getTitle(
-                  M7LivelynessStep.values[index],
-                ),
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                ),
+                _getTitle(M7LivelynessStep.values[index]),
+                style:
+                    const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
               ),
               children: [
                 ListTile(
                   title: Text(
-                    _getSubTitle(
-                      M7LivelynessStep.values[index],
-                    ),
+                    _getSubTitle(M7LivelynessStep.values[index]),
                     style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.normal,
-                    ),
+                        fontSize: 16, fontWeight: FontWeight.normal),
                   ),
                   trailing: CupertinoSwitch(
-                    value: _isSelected(
-                      M7LivelynessStep.values[index],
-                    ),
+                    value: _isSelected(M7LivelynessStep.values[index]),
                     onChanged: (value) => _onStepValChanged(
-                      M7LivelynessStep.values[index],
-                      value,
-                    ),
+                        M7LivelynessStep.values[index], value),
                   ),
                 ),
               ],
