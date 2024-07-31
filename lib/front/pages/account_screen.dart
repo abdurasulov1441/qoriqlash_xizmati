@@ -9,6 +9,7 @@ import 'package:qoriqlash_xizmati/front/components/appbar_title.dart';
 import 'package:qoriqlash_xizmati/front/components/changeColorProvider.dart';
 import 'package:qoriqlash_xizmati/front/pages/accaount_screens/shartnomalar.dart';
 import 'package:qoriqlash_xizmati/front/pages/accaount_screens/shaxsiy_malumotlar.dart';
+import 'package:qoriqlash_xizmati/front/pages/accaount_screens/verification_page.dart';
 import 'package:qoriqlash_xizmati/front/pages/accaount_screens/visacard.dart';
 import 'package:qoriqlash_xizmati/front/pages/accaount_screens/yordam_page.dart';
 import 'package:qoriqlash_xizmati/front/pages/pult_boshligi_pages/pult_boshligi_home.dart';
@@ -16,6 +17,7 @@ import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
 import 'package:qoriqlash_xizmati/front/style/app_style.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
+import 'package:qoriqlash_xizmati/test/exapmle.dart';
 
 class AccountScreen extends StatefulWidget {
   const AccountScreen({super.key});
@@ -321,7 +323,7 @@ class _AccountScreenNotLoginState extends State<AccountScreenNotLogin> {
       FaqPage(),
       Divider(),
       Shartnomalar(),
-      LoginScreen(),
+      M7ExpampleScreen(),
       PultBoshligiHome(),
     ];
     return Scaffold(

@@ -49,11 +49,11 @@ class _LoginScreenState extends State<LoginScreen> {
       "password": passwordTextInputController.text,
       "phone_number": emailTextInputController.text
     });
-
     try {
       final response = await http.post(url, headers: headers, body: body);
       final responseBody = jsonDecode(response.body);
-
+      print(responseBody);
+      print(response.body);
       if (response.statusCode == 200) {
         final accessToken = responseBody['data']['access_token'];
         AppDataProvider().addUser(accessToken, context);

@@ -111,8 +111,8 @@ class _HomePageState extends State<HomePage> {
           break;
         case 3:
           _child = userStatus == 1
-              ? const AccountScreenNotLogin()
-              : const AccountScreen();
+              ? const AccountScreen()
+              : const AccountScreenNotLogin();
           break;
       }
       _child = AnimatedSwitcher(
