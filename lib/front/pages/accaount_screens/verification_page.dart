@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:live_photo_detector/m7_livelyness_detection.dart';
+import 'package:qoriqlash_xizmati/front/components/mini_red_app_bar.dart';
 
 class M7ExampleScreen extends StatefulWidget {
   const M7ExampleScreen({super.key});
@@ -13,7 +14,7 @@ class M7ExampleScreen extends StatefulWidget {
 
 class _M7ExampleScreenState extends State<M7ExampleScreen> {
   String? _capturedImagePath;
-  bool _isLoading = false;
+  // bool _isLoading = false;
   final List<M7LivelynessStepItem> _verificationSteps = [
     M7LivelynessStepItem(
       step: M7LivelynessStep.smile,
@@ -67,7 +68,7 @@ class _M7ExampleScreenState extends State<M7ExampleScreen> {
   }
 
   void _sendImageToServer(String imagePath) async {
-    setState(() => _isLoading = true);
+    // setState(() => _isLoading = true);
     try {
       var request = http.MultipartRequest(
         'POST',
@@ -108,63 +109,57 @@ class _M7ExampleScreenState extends State<M7ExampleScreen> {
         ),
       );
     } finally {
-      setState(() => _isLoading = false);
+      //setState(() => _isLoading = false);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("M7 Livelyness Detection"),
-      ),
-      body: Stack(
-        fit: StackFit.expand,
+      body: Column(
+        // mainAxisAlignment: MainAxisAlignment.center,
+        // crossAxisAlignment: CrossAxisAlignment.stretch,
+        // mainAxisSize: MainAxisSize.min,
         children: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Spacer(flex: 4),
-              Visibility(
-                visible: _capturedImagePath != null,
-                child: Expanded(
-                  flex: 7,
-                  child: Image.file(
-                    File(_capturedImagePath ?? ""),
-                    fit: BoxFit.contain,
-                  ),
-                ),
+          MiniRedAppBar(),
+          MiniRedTitle(title: 'Kabinet'),
+          //   const Spacer(flex: 4),
+          Visibility(
+            visible: _capturedImagePath != null,
+            child: Expanded(
+              flex: 7,
+              child: Image.file(
+                File(_capturedImagePath ?? ""),
+                fit: BoxFit.contain,
               ),
-              Visibility(
-                visible: _capturedImagePath != null,
-                child: const Spacer(),
-              ),
-              Center(
-                child: ElevatedButton(
-                  onPressed: _onStartLivelyness,
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 12),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5)),
-                  ),
-                  child: const Text(
-                    "Detect Livelyness",
-                    style: TextStyle(fontSize: 22),
-                  ),
-                ),
-              ),
-              const Spacer(),
-            ],
+            ),
           ),
           Visibility(
-            visible: _isLoading,
-            child: const Center(child: CircularProgressIndicator.adaptive()),
+            visible: _capturedImagePath != null,
+            child: const Spacer(),
           ),
+          Center(
+            child: ElevatedButton(
+              onPressed: _onStartLivelyness,
+              style: ElevatedButton.styleFrom(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5)),
+              ),
+              child: const Text(
+                "Shaxsni tasdiqlash",
+                style: TextStyle(fontSize: 22),
+              ),
+            ),
+          ),
+          //  const Spacer(),
         ],
       ),
+      // Visibility(
+      //   visible: _isLoading,
+      //   child: const Center(child: CircularProgressIndicator.adaptive()),
+      // ),
     );
   }
 }
