@@ -1,15 +1,72 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 import 'package:qoriqlash_xizmati/back/auth_reg_reset/forgot_password/forgot_password.dart';
 import 'package:qoriqlash_xizmati/back/auth_reg_reset/reset_password/reset_password_succes.dart';
-
+import 'package:qoriqlash_xizmati/back/hive/notes_data.dart';
 import 'package:qoriqlash_xizmati/front/components/mini_red_app_bar.dart';
-
 import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
 import 'package:qoriqlash_xizmati/front/style/app_style.dart';
 
-class XavfsizlikPage extends StatelessWidget {
+class XavfsizlikPage extends StatefulWidget {
   const XavfsizlikPage({super.key});
+
+  @override
+  _XavfsizlikPageState createState() => _XavfsizlikPageState();
+}
+
+class _XavfsizlikPageState extends State<XavfsizlikPage> {
+  final _oldPasswordController = TextEditingController();
+  final _newPasswordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
+  bool _isLoading = false;
+
+  Future<void> _changePassword() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    final box = Hive.box<NotesData>('notes');
+    String? token = box.getAt(0)?.userToken;
+
+    if (token == null) {
+      print('Token is null');
+      setState(() {
+        _isLoading = false;
+      });
+      return;
+    }
+
+    final url =
+        Uri.parse('http://10.100.9.145:7684/api/v1/auth/change_password');
+    final response = await http.put(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: json.encode({
+        'old_password': _oldPasswordController.text,
+        'new_password': _newPasswordController.text,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      print('Password changed successfully');
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => PasswordResetSuccesPage()),
+      );
+    } else {
+      print('Failed to change password: ${response.body}');
+    }
+
+    setState(() {
+      _isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,18 +76,17 @@ class XavfsizlikPage extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: 20),
             width: double.infinity,
             child: ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => PasswordResetSuccesPage()),
-                );
-              },
-              child: Text(
-                'Tasdiqlash',
-                style: AppStyle.fontStyle
-                    .copyWith(color: AppColors.lightHeaderColor),
-              ),
+              onPressed: _isLoading ? null : _changePassword,
+              child: _isLoading
+                  ? CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                          AppColors.lightHeaderColor),
+                    )
+                  : Text(
+                      'Tasdiqlash',
+                      style: AppStyle.fontStyle
+                          .copyWith(color: AppColors.lightHeaderColor),
+                    ),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.lightIconGuardColor,
                 side: BorderSide(color: AppColors.lightIconGuardColor),
@@ -70,7 +126,10 @@ class XavfsizlikPage extends StatelessWidget {
                     SizedBox(
                       height: 8,
                     ),
-                    PasswordField(hint: 'Parolni kiriting...'),
+                    PasswordField(
+                      controller: _oldPasswordController,
+                      hint: 'Parolni kiriting...',
+                    ),
                     SizedBox(
                       height: 20,
                     ),
@@ -89,7 +148,10 @@ class XavfsizlikPage extends StatelessWidget {
                     SizedBox(
                       height: 8,
                     ),
-                    PasswordField(hint: 'Parolni kiriting...'),
+                    PasswordField(
+                      controller: _newPasswordController,
+                      hint: 'Parolni kiriting...',
+                    ),
                     SizedBox(
                       height: 20,
                     ),
@@ -108,7 +170,10 @@ class XavfsizlikPage extends StatelessWidget {
                     SizedBox(
                       height: 8,
                     ),
-                    PasswordField(hint: 'Parolni kiriting...'),
+                    PasswordField(
+                      controller: _confirmPasswordController,
+                      hint: 'Parolni kiriting...',
+                    ),
                     SizedBox(height: 16),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
@@ -140,8 +205,13 @@ class XavfsizlikPage extends StatelessWidget {
 
 class PasswordField extends StatefulWidget {
   final String hint;
+  final TextEditingController controller;
 
-  const PasswordField({super.key, required this.hint});
+  const PasswordField({
+    super.key,
+    required this.hint,
+    required this.controller,
+  });
 
   @override
   _PasswordFieldState createState() => _PasswordFieldState();
@@ -153,6 +223,7 @@ class _PasswordFieldState extends State<PasswordField> {
   @override
   Widget build(BuildContext context) {
     return TextField(
+      controller: widget.controller,
       obscureText: _obscureText,
       decoration: InputDecoration(
         hintText: widget.hint,

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:qoriqlash_xizmati/back/auth_reg_reset/reset_password/reset_password.dart';
+
 import 'package:qoriqlash_xizmati/front/pages/account_screen.dart';
 import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
 import 'package:qoriqlash_xizmati/front/style/app_style.dart';
@@ -9,6 +9,9 @@ class PasswordForgotSetNewPassPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final _newPasswordController = TextEditingController();
+    final _confirmPasswordController = TextEditingController();
+
     return Scaffold(
       bottomNavigationBar: SafeArea(
         child: Container(
@@ -58,7 +61,7 @@ class PasswordForgotSetNewPassPage extends StatelessWidget {
                   width: 20,
                 ),
                 Text(
-                  'Avvalgi parol',
+                  'Yangi parol',
                   style:
                       AppStyle.fontStyle.copyWith(fontWeight: FontWeight.bold),
                 )
@@ -66,7 +69,10 @@ class PasswordForgotSetNewPassPage extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-              child: PasswordField(hint: 'Parolni kiriting...'),
+              child: PasswordField(
+                controller: _newPasswordController,
+                hint: 'Parolni kiriting...',
+              ),
             ),
             Row(
               children: [
@@ -82,9 +88,58 @@ class PasswordForgotSetNewPassPage extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-              child: PasswordField(hint: 'Parolni kiriting...'),
+              child: PasswordField(
+                controller: _confirmPasswordController,
+                hint: 'Parolni kiriting...',
+              ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class PasswordField extends StatefulWidget {
+  final String hint;
+  final TextEditingController controller;
+
+  const PasswordField({
+    super.key,
+    required this.hint,
+    required this.controller,
+  });
+
+  @override
+  _PasswordFieldState createState() => _PasswordFieldState();
+}
+
+class _PasswordFieldState extends State<PasswordField> {
+  bool _obscureText = true;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      controller: widget.controller,
+      obscureText: _obscureText,
+      decoration: InputDecoration(
+        hintText: widget.hint,
+        prefixIcon: Icon(
+          Icons.lock,
+          color: AppColors.lightIconGuardColor,
+        ),
+        suffixIcon: IconButton(
+          icon: Icon(
+            _obscureText ? Icons.visibility_off : Icons.visibility,
+          ),
+          onPressed: () {
+            setState(() {
+              _obscureText = !_obscureText;
+            });
+          },
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
         ),
       ),
     );

@@ -36,8 +36,8 @@ class _HomePageState extends State<HomePage> {
       if (token != null) {
         try {
           final response = await http.get(
-            Uri.parse('http://10.100.9.145:7684/api/v1/user/'),
-            //  Uri.parse('http://84.54.96.157:17041/api/v1/user/'),
+            Uri.parse('http://10.100.9.145:7684/api/v1/user/status'),
+            //    Uri.parse('http://84.54.96.157:17041/api/v1/user/'),
             headers: {
               'Authorization': 'Bearer $token',
             },
@@ -52,12 +52,12 @@ class _HomePageState extends State<HomePage> {
               });
             } else if (data['status'] == 200 &&
                 data['data']['user_status'] == 2) {
-              print('User is logged in');
+              print('User is logged in ${data['data']['user_status']}');
               setState(() {
                 userStatus = 2;
               });
             } else {
-              print('User is not logged in');
+              print('User is not logged in  ${data['data']['user_status']}');
               setState(() {
                 userStatus = 0;
               });
@@ -111,8 +111,8 @@ class _HomePageState extends State<HomePage> {
           break;
         case 3:
           _child = userStatus == 1
-              ? const AccountScreen()
-              : const AccountScreenNotLogin();
+              ? const AccountScreenNotLogin()
+              : const AccountScreen();
           break;
       }
       _child = AnimatedSwitcher(

@@ -17,7 +17,6 @@ import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
 import 'package:qoriqlash_xizmati/front/style/app_style.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
-import 'package:qoriqlash_xizmati/test/exapmle.dart';
 
 class AccountScreen extends StatefulWidget {
   const AccountScreen({super.key});
@@ -76,6 +75,7 @@ class _AccountScreenState extends State<AccountScreen> {
 
     final response = await http.get(
       Uri.parse('http://10.100.9.145:7684/api/v1/user/info'),
+      // Uri.parse('http://84.54.96.157:17041/api/v1/user/info'),
       headers: {
         'Authorization': 'Bearer $token',
       },

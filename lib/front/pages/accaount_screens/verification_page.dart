@@ -73,6 +73,7 @@ class _M7ExampleScreenState extends State<M7ExampleScreen> {
       var request = http.MultipartRequest(
         'POST',
         Uri.parse('http://10.100.9.145:7684/api/vi/user/'),
+        //  Uri.parse('http://84.54.96.157:17041/api/vi/user/'),
       );
       request.files.add(await http.MultipartFile.fromPath('file', imagePath));
       var response = await request.send();
