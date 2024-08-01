@@ -47,9 +47,9 @@ class _ConfirmSmsPageState extends State<ConfirmSmsPage> {
     final httpClient = await _createHttpClient();
 
     final response = await httpClient.post(
-      // Uri.parse('http://10.100.9.145:7684/api/v1/auth/check_verification_code'),
-      Uri.parse(
-          'http://84.54.96.157:17041/api/v1/auth/check_verification_code'),
+       Uri.parse('http://10.100.9.145:7684/api/v1/auth/check_verification_code'),
+      // Uri.parse(
+      //     'http://84.54.96.157:17041/api/v1/auth/check_verification_code'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },

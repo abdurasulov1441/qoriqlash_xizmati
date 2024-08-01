@@ -52,10 +52,10 @@ class AppDataProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> addUser(token, BuildContext context) async {
+  Future<void> addUser(token, status, BuildContext context) async {
     await HiveBox.notes.add(
       NotesData(
-        userStatus: '2',
+        userStatus: status,
         userToken: token,
       ),
     );

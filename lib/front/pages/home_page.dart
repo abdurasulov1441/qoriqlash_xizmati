@@ -36,8 +36,8 @@ class _HomePageState extends State<HomePage> {
       if (token != null) {
         try {
           final response = await http.get(
-            //  Uri.parse('http://10.100.9.145:7684/api/v1/user/status'),
-            Uri.parse('http://84.54.96.157:17041/api/v1/user/status'),
+            Uri.parse('http://10.100.9.145:7684/api/v1/user/status'),
+            //    Uri.parse('http://84.54.96.157:17041/api/v1/user/status'),
             headers: {
               'Authorization': 'Bearer $token',
             },
@@ -45,19 +45,20 @@ class _HomePageState extends State<HomePage> {
 
           if (response.statusCode == 200) {
             final Map<String, dynamic> data = json.decode(response.body);
-            if (data['status'] == 200 && data['data']['user_status'] == 1) {
-              print('User is logged in');
+            if (data['status'] == 200) {
+              int status = data['data']['user_status'];
+              print('User status: $status');
               setState(() {
-                userStatus = 1;
+                userStatus = status;
               });
-            } else if (data['status'] == 200 &&
-                data['data']['user_status'] == 2) {
-              print('User is logged in ${data['data']['user_status']}');
-              setState(() {
-                userStatus = 2;
-              });
+              // Save user status to Hive
+              box.putAt(
+                  0,
+                  NotesData()
+                    ..userToken = token
+                    ..userStatus = status);
             } else {
-              print('User is not logged in  ${data['data']['user_status']}');
+              print('User status fetch failed: ${data['data']['user_status']}');
               setState(() {
                 userStatus = 0;
               });

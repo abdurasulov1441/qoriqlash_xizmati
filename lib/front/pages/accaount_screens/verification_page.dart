@@ -93,8 +93,8 @@ class _M7ExampleScreenState extends State<M7ExampleScreen> {
     try {
       var request = http.MultipartRequest(
         'POST',
-        //  Uri.parse('http://10.100.9.145:7684/api/v1/user/upload-photo/'),
-        Uri.parse('http://84.54.96.157:17041/api/v1/user/upload-photo/'),
+        Uri.parse('http://10.100.9.145:7684/api/v1/user/upload-photo/'),
+        //    Uri.parse('http://84.54.96.157:17041/api/v1/user/upload-photo/'),
       );
       request.files.add(await http.MultipartFile.fromPath('file', imagePath));
       // request.fields['passport_series'] = _passportSeries!;
