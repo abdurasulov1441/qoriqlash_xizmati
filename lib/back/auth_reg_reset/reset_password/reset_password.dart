@@ -40,7 +40,8 @@ class _XavfsizlikPageState extends State<XavfsizlikPage> {
     }
 
     final url =
-        Uri.parse('http://10.100.9.145:7684/api/v1/auth/change_password');
+        // Uri.parse('http://10.100.9.145:7684/api/v1/auth/change_password');
+        Uri.parse('http://84.54.96.157:17041/api/v1/auth/change_password');
     final response = await http.put(
       url,
       headers: {

@@ -74,8 +74,8 @@ class _AccountScreenState extends State<AccountScreen> {
     }
 
     final response = await http.get(
-      Uri.parse('http://10.100.9.145:7684/api/v1/user/info'),
-      // Uri.parse('http://84.54.96.157:17041/api/v1/user/info'),
+      // Uri.parse('http://10.100.9.145:7684/api/v1/user/info'),
+      Uri.parse('http://84.54.96.157:17041/api/v1/user/info'),
       headers: {
         'Authorization': 'Bearer $token',
       },

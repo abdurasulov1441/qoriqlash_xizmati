@@ -42,8 +42,8 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> login() async {
     final isValid = formKey.currentState!.validate();
     if (!isValid) return;
-    final url = Uri.parse('http://10.100.9.145:7684/api/v1/auth/login');
-    // final url = Uri.parse('http://84.54.96.157:17041/api/v1/auth/login');
+    // final url = Uri.parse('http://10.100.9.145:7684/api/v1/auth/login');
+    final url = Uri.parse('http://84.54.96.157:17041/api/v1/auth/login');
     final headers = {"Content-Type": "application/json"};
     final body = jsonEncode({
       "password": passwordTextInputController.text,

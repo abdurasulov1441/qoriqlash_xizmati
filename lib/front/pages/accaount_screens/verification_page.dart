@@ -1,9 +1,10 @@
 import 'dart:io';
 import 'package:http/http.dart' as http;
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:live_photo_detector/m7_livelyness_detection.dart';
+import 'package:qoriqlash_xizmati/back/hive/notes_data.dart';
 import 'package:qoriqlash_xizmati/front/components/mini_red_app_bar.dart';
+import 'package:hive/hive.dart';
 
 class M7ExampleScreen extends StatefulWidget {
   const M7ExampleScreen({super.key});
@@ -14,16 +15,19 @@ class M7ExampleScreen extends StatefulWidget {
 
 class _M7ExampleScreenState extends State<M7ExampleScreen> {
   String? _capturedImagePath;
-  // bool _isLoading = false;
+  String? _passportSeries;
+  String? _passportNumber;
+  DateTime? _birthDate;
+
   final List<M7LivelynessStepItem> _verificationSteps = [
     M7LivelynessStepItem(
       step: M7LivelynessStep.smile,
-      title: "Smile",
+      title: "Jilmaying",
       isCompleted: false,
     ),
     M7LivelynessStepItem(
       step: M7LivelynessStep.blink,
-      title: "Blink",
+      title: "Ko'zingizni yumib oching",
       isCompleted: false,
     ),
   ];
@@ -68,31 +72,65 @@ class _M7ExampleScreenState extends State<M7ExampleScreen> {
   }
 
   void _sendImageToServer(String imagePath) async {
-    // setState(() => _isLoading = true);
+    final box = Hive.box<NotesData>('notes');
+    String? token = box.getAt(0)?.userToken;
+
+    if (_passportSeries == null ||
+        _passportNumber == null ||
+        _birthDate == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text(
+            "Please fill in all the fields.",
+            style: TextStyle(color: Colors.white),
+          ),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
     try {
       var request = http.MultipartRequest(
         'POST',
-        Uri.parse('http://10.100.9.145:7684/api/vi/user/'),
-        //  Uri.parse('http://84.54.96.157:17041/api/vi/user/'),
+        //  Uri.parse('http://10.100.9.145:7684/api/v1/user/upload-photo/'),
+        Uri.parse('http://84.54.96.157:17041/api/v1/user/upload-photo/'),
       );
       request.files.add(await http.MultipartFile.fromPath('file', imagePath));
+      // request.fields['passport_series'] = _passportSeries!;
+      //  request.fields['passport_number'] = _passportNumber!;
+      // request.fields['birth_date'] = _birthDate!.toIso8601String();
+      request.headers['Authorization'] = 'Bearer $token';
+
       var response = await request.send();
 
       if (response.statusCode == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: const Text(
-              "Image uploaded successfully!",
+              "Data uploaded successfully!",
               style: TextStyle(color: Colors.white),
             ),
             backgroundColor: Colors.green,
           ),
         );
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => SuccessPage()),
+        );
       } else {
+        print(response.statusCode);
+        print(response.statusCode);
+        print(response.statusCode);
+        print(response.statusCode);
+
+        print(response.statusCode);
+        print(response.statusCode);
+        print(response.statusCode);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: const Text(
-              "Failed to upload image.",
+              "Failed ",
               style: TextStyle(color: Colors.white),
             ),
             backgroundColor: Colors.red,
@@ -109,22 +147,30 @@ class _M7ExampleScreenState extends State<M7ExampleScreen> {
           backgroundColor: Colors.red,
         ),
       );
-    } finally {
-      //setState(() => _isLoading = false);
     }
+  }
+
+  void _showRulesPage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => RulesPage(
+          onProceed: () {
+            Navigator.pop(context); // Close the rules page
+            _onStartLivelyness(); // Start livelyness detection
+          },
+        ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
-        // mainAxisAlignment: MainAxisAlignment.center,
-        // crossAxisAlignment: CrossAxisAlignment.stretch,
-        // mainAxisSize: MainAxisSize.min,
         children: [
           MiniRedAppBar(),
           MiniRedTitle(title: 'Kabinet'),
-          //   const Spacer(flex: 4),
           Visibility(
             visible: _capturedImagePath != null,
             child: Expanded(
@@ -139,9 +185,72 @@ class _M7ExampleScreenState extends State<M7ExampleScreen> {
             visible: _capturedImagePath != null,
             child: const Spacer(),
           ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                TextField(
+                  decoration: const InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(width: 1, color: Colors.red),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(15),
+                        )),
+                    labelText: "Passport Series",
+                  ),
+                  onChanged: (value) {
+                    _passportSeries = value;
+                  },
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                TextField(
+                  decoration: const InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(15))),
+                    labelText: "Passport Number",
+                  ),
+                  onChanged: (value) {
+                    _passportNumber = value;
+                  },
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                GestureDetector(
+                  onTap: () async {
+                    DateTime? pickedDate = await showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime(1900),
+                      lastDate: DateTime.now(),
+                    );
+                    if (pickedDate != null) {
+                      setState(() {
+                        _birthDate = pickedDate;
+                      });
+                    }
+                  },
+                  child: InputDecorator(
+                    decoration: InputDecoration(
+                      enabledBorder: OutlineInputBorder(),
+                      labelText: "Birth Date",
+                      errorText: _birthDate == null ? "Select a date" : null,
+                    ),
+                    child: Text(
+                      _birthDate == null
+                          ? "Select your birth date"
+                          : "${_birthDate!.toLocal()}".split(' ')[0],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
           Center(
             child: ElevatedButton(
-              onPressed: _onStartLivelyness,
+              onPressed: _showRulesPage,
               style: ElevatedButton.styleFrom(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
@@ -154,13 +263,61 @@ class _M7ExampleScreenState extends State<M7ExampleScreen> {
               ),
             ),
           ),
-          //  const Spacer(),
         ],
       ),
-      // Visibility(
-      //   visible: _isLoading,
-      //   child: const Center(child: CircularProgressIndicator.adaptive()),
-      // ),
+    );
+  }
+}
+
+class RulesPage extends StatelessWidget {
+  final VoidCallback onProceed;
+
+  const RulesPage({Key? key, required this.onProceed}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.all(0.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            MiniRedAppBar(),
+            MiniRedTitle(title: 'Kabinet'),
+            Text(
+              "Please follow these rules for face verification:",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 10),
+            Text("1. Make sure you are in a well-lit area."),
+            SizedBox(height: 5),
+            Text("2. Remove any glasses or masks."),
+            SizedBox(height: 5),
+            Text("3. Keep a neutral expression."),
+            SizedBox(height: 5),
+            Image.asset('assets/images/face.gif'),
+            Text(
+                "4. Follow the instructions on the screen (e.g., smile, blink)."),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: onProceed,
+              child: Text("Proceed to Verification"),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class SuccessPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("Success")),
+      body: Center(
+        child: Text("Verification successful!"),
+      ),
     );
   }
 }
