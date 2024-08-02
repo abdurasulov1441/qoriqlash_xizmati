@@ -86,7 +86,7 @@
 
 //     if (token != null) {
 //       final uri =
-//           Uri.parse('http://10.100.9.145:7684/api/v1/user/upload-photo/');
+//           Uri.parse('${AppConfig.serverAddress}/api/v1/user/upload-photo/');
 //       final request = http.MultipartRequest('POST', uri)
 //         ..headers['Authorization'] = 'Bearer $token'
 //         ..files.add(await http.MultipartFile.fromPath('file', image.path));

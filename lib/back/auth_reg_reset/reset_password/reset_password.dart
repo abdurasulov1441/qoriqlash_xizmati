@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:qoriqlash_xizmati/back/api/appConfig.dart';
 import 'dart:convert';
 import 'package:qoriqlash_xizmati/back/auth_reg_reset/forgot_password/forgot_password.dart';
 import 'package:qoriqlash_xizmati/back/auth_reg_reset/reset_password/reset_password_succes.dart';
@@ -41,7 +42,7 @@ class _XavfsizlikPageState extends State<XavfsizlikPage> {
     }
 
     final url =
-        Uri.parse('http://10.100.9.145:7684/api/v1/auth/change_password');
+        Uri.parse('${AppConfig.serverAddress}/api/v1/auth/change_password');
     final response = await http.put(
       url,
       headers: {

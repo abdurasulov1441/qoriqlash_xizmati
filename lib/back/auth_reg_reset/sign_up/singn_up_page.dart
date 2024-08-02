@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:qoriqlash_xizmati/back/api/appConfig.dart';
 import 'package:qoriqlash_xizmati/back/auth_reg_reset/sign_up/sms_verify_page.dart';
 import 'package:qoriqlash_xizmati/back/snack_bar.dart';
 import 'package:http/http.dart' as http;
@@ -50,7 +51,7 @@ class _SignUpScreen extends State<SignUpScreen> {
       );
       return;
     }
-    final url = Uri.parse('http://10.100.9.145:7684/api/v1/auth/register');
+    final url = Uri.parse('${AppConfig.serverAddress}/api/v1/auth/register');
     //final url = Uri.parse('http://84.54.96.157:17041/api/v1/auth/register');
     final headers = {"Content-Type": "application/json"};
     final body = jsonEncode({

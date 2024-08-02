@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:qoriqlash_xizmati/back/api/appConfig.dart';
 import 'dart:convert';
 import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
 
@@ -91,7 +92,7 @@ class AppDataProvider with ChangeNotifier {
     if (token != null) {
       try {
         final response = await http.get(
-          Uri.parse('http://10.100.9.145:7684/api/v1/user/status'),
+          Uri.parse('${AppConfig.serverAddress}/api/v1/user/status'),
           headers: {
             'Authorization': 'Bearer $token',
           },

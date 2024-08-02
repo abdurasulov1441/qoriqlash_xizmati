@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+import 'package:qoriqlash_xizmati/back/api/appConfig.dart';
 import 'package:qoriqlash_xizmati/back/auth_reg_reset/login_page/login_page.dart';
 import 'package:qoriqlash_xizmati/back/auth_reg_reset/reset_password/reset_password.dart';
 import 'package:qoriqlash_xizmati/front/components/appbar_title.dart';
@@ -72,7 +73,7 @@ class _AccountScreenState extends State<AccountScreen> {
 
     if (token != null) {
       final response = await http.get(
-        Uri.parse('http://10.100.9.145:7684/api/v1/user/info'),
+        Uri.parse('${AppConfig.serverAddress}/api/v1/user/info'),
         headers: {
           'Authorization': 'Bearer $token',
         },

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:live_photo_detector/m7_livelyness_detection.dart';
+import 'package:qoriqlash_xizmati/back/api/appConfig.dart';
 
 class M7ExampleScreen extends StatefulWidget {
   const M7ExampleScreen({super.key});
@@ -92,7 +93,7 @@ class _M7ExampleScreenState extends State<M7ExampleScreen> {
       print(token);
       var request = http.MultipartRequest(
         'POST',
-        Uri.parse('http://10.100.9.145:7684/api/v1/user/upload-photo/'),
+        Uri.parse('${AppConfig.serverAddress}/api/v1/user/upload-photo/'),
       );
 
       request.headers.addAll(headers);

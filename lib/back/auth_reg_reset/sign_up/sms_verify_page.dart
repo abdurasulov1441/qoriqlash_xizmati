@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/io_client.dart';
 import 'package:pinput/pinput.dart';
+import 'package:qoriqlash_xizmati/back/api/appConfig.dart';
 import 'package:qoriqlash_xizmati/back/auth_reg_reset/sign_up/sign_up_succes_page.dart';
 import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
 import 'package:qoriqlash_xizmati/front/style/app_style.dart';
@@ -47,7 +48,8 @@ class _ConfirmSmsPageState extends State<ConfirmSmsPage> {
     final httpClient = await _createHttpClient();
 
     final response = await httpClient.post(
-      Uri.parse('http://10.100.9.145:7684/api/v1/auth/check_verification_code'),
+      Uri.parse(
+          '${AppConfig.serverAddress}/api/v1/auth/check_verification_code'),
       // Uri.parse(
       //     'http://84.54.96.157:17041/api/v1/auth/check_verification_code'),
       headers: <String, String>{

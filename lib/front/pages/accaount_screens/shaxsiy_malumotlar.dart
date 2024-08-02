@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:qoriqlash_xizmati/back/api/appConfig.dart';
 import 'package:qoriqlash_xizmati/front/components/mini_red_app_bar.dart';
 import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
 import 'package:qoriqlash_xizmati/front/style/app_style.dart';
@@ -40,7 +41,7 @@ class _ShaxsiyMalumotlarState extends State<ShaxsiyMalumotlar> {
 
     if (token != null) {
       final response = await http.get(
-        Uri.parse('http://10.100.9.145:7684/api/v1/user/info'),
+        Uri.parse('${AppConfig.serverAddress}/api/v1/user/info'),
         headers: {
           'Authorization': 'Bearer $token',
         },
