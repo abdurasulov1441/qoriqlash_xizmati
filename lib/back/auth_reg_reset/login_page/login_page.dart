@@ -56,8 +56,8 @@ class _LoginScreenState extends State<LoginScreen> {
       print(response.body);
       if (response.statusCode == 200) {
         final accessToken = responseBody['data']['access_token'];
-        int status = 1;
-        AppDataProvider().addUser(accessToken, status, context);
+ 
+        AppDataProvider().addUser(accessToken, context);
 
         Navigator.push(
           context,

@@ -17,7 +17,7 @@ class NotesDataAdapter extends TypeAdapter<NotesData> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return NotesData(
-      userStatus: fields[0] as int?,
+      userRefreshToken: fields[0] as String?,
       userToken: fields[1] as String?,
     );
   }
@@ -27,7 +27,7 @@ class NotesDataAdapter extends TypeAdapter<NotesData> {
     writer
       ..writeByte(2)
       ..writeByte(0)
-      ..write(obj.userStatus)
+      ..write(obj.userRefreshToken)
       ..writeByte(1)
       ..write(obj.userToken);
   }

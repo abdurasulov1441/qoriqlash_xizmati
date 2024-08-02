@@ -6,13 +6,13 @@ part 'notes_data.g.dart';
 @HiveType(typeId: 0)
 class NotesData {
   @HiveField(0)
-  int? userStatus;
+  String? userRefreshToken;
 
   @HiveField(1)
   String? userToken;
 
   NotesData({
-    this.userStatus,
+    this.userRefreshToken,
     this.userToken,
   });
 }

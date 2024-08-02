@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluid_bottom_nav_bar/fluid_bottom_nav_bar.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:qoriqlash_xizmati/back/auth_reg_reset/login_page/login_page.dart';
 import 'package:qoriqlash_xizmati/front/pages/account_screen.dart';
 import 'package:qoriqlash_xizmati/front/pages/home_page/home_page_elements.dart';
 import 'package:qoriqlash_xizmati/front/pages/news_screen.dart';
@@ -37,7 +38,6 @@ class _HomePageState extends State<HomePage> {
         try {
           final response = await http.get(
             Uri.parse('http://10.100.9.145:7684/api/v1/user/status'),
-            //    Uri.parse('http://84.54.96.157:17041/api/v1/user/status'),
             headers: {
               'Authorization': 'Bearer $token',
             },
@@ -52,25 +52,40 @@ class _HomePageState extends State<HomePage> {
                 userStatus = status;
               });
               // Save user status to Hive
-              box.putAt(
-                  0,
-                  NotesData()
-                    ..userToken = token
-                    ..userStatus = status);
+              box.putAt(0, NotesData()..userToken = token);
             } else {
               print('User status fetch failed: ${data['data']['user_status']}');
               setState(() {
                 userStatus = 0;
               });
+              _redirectToLogin();
             }
-          } else {
+          } else if (response.statusCode == 400) {
             print('Failed to fetch user status: ${response.statusCode}');
+            setState(() {
+              userStatus = 0;
+            });
+            _clearLocalStorage();
+            _redirectToLogin();
           }
         } catch (e) {
           print('Error fetching user status: $e');
         }
       }
     }
+  }
+
+  void _clearLocalStorage() {
+    final box = Hive.box<NotesData>('notes');
+    box.deleteAt(0); // Clear the stored token
+  }
+
+  void _redirectToLogin() {
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => LoginScreen()),
+      (Route<dynamic> route) => false,
+    ); // Redirect to login page
   }
 
   List<FluidNavBarIcon> _buildIcons() {
@@ -113,7 +128,7 @@ class _HomePageState extends State<HomePage> {
         case 3:
           _child = userStatus == 1
               ? const AccountScreenNotLogin()
-              : const AccountScreen();
+              : (userStatus == 2 ? const AccountScreen() : LoginScreen());
           break;
       }
       _child = AnimatedSwitcher(

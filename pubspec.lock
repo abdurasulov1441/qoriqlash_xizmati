@@ -448,6 +448,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.2"
+  google_ml_vision:
+    dependency: "direct main"
+    description:
+      name: google_ml_vision
+      sha256: d063d8885398d28391aac543e3476a5f8bab5dfc699eca466dd3484f822f4dd1
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.8"
   google_mlkit_commons:
     dependency: transitive
     description:
@@ -601,7 +609,7 @@ packages:
     source: hosted
     version: "1.2.0"
   lottie:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: lottie
       sha256: "6a24ade5d3d918c306bb1c21a6b9a04aab0489d51a2582522eea820b4093b62b"
