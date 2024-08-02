@@ -49,7 +49,15 @@ class _AccountScreenState extends State<AccountScreen> {
               child: const Text('Yo\'q'),
             ),
             TextButton(
-              onPressed: () {
+              onPressed: () async {
+                // Create an instance of FlutterSecureStorage
+                final storage = FlutterSecureStorage();
+
+                // Clear the tokens
+                await storage.delete(key: 'accessToken');
+                await storage.delete(key: 'refreshToken');
+
+                // Navigate to LoginScreen
                 Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(builder: (context) => LoginScreen()),
@@ -330,7 +338,7 @@ class _AccountScreenNotLoginState extends State<AccountScreenNotLogin> {
       FaqPage(),
       Divider(),
       Shartnomalar(),
-      M7ExampleScreen(),
+      FaceVirify(),
       PultBoshligiHome(),
     ];
     return Scaffold(

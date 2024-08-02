@@ -48,7 +48,7 @@ class SplashScreenWidget extends StatelessWidget {
     if (accessToken != null) {
       // Проверка статуса пользователя с помощью токена доступа
       final response = await http.get(
-        Uri.parse('http://${AppConfig.serverAddress}/api/v1/user/status'),
+        Uri.parse('${AppConfig.serverAddress}/api/v1/user/status'),
         headers: {
           'Authorization': 'Bearer $accessToken',
         },
@@ -114,7 +114,7 @@ class SplashScreenWidget extends StatelessWidget {
         } else if (snapshot.hasError) {
           return Scaffold(
             body: Center(
-              child: Text('Error: ${snapshot.error}'),
+              child: Text('Erraaaor: ${snapshot.error}'),
             ),
           );
         } else {

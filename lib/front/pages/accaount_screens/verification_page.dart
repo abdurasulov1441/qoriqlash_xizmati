@@ -1,9 +1,274 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:live_photo_detector/m7_livelyness_detection.dart';
+import 'package:intl/intl.dart'; // For date formatting
+import 'package:live_photo_detector/index.dart';
 import 'package:qoriqlash_xizmati/back/api/appConfig.dart';
+
+import 'package:qoriqlash_xizmati/front/components/mini_red_app_bar.dart';
+import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
+import 'package:qoriqlash_xizmati/front/style/app_style.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'My App',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: FaceVirify(),
+    );
+  }
+}
+
+class FaceVirify extends StatefulWidget {
+  const FaceVirify({super.key});
+
+  @override
+  _FaceVirifyState createState() => _FaceVirifyState();
+}
+
+class _FaceVirifyState extends State<FaceVirify> {
+  final _passportNumberController = TextEditingController();
+  final _dateController = TextEditingController();
+  String? _selectedSeries;
+  DateTime? _selectedDate;
+
+  bool _isFormValid = false;
+
+  final List<String> _seriesOptions = [
+    'AA',
+    'AB',
+    'AC',
+    'AD',
+    'AE',
+    'AF',
+    'AG',
+    'AH',
+    'AI',
+    'AJ',
+    'AK',
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Listen to changes in the form fields
+    _passportNumberController.addListener(_validateForm);
+    _dateController.addListener(_validateForm);
+  }
+
+  @override
+  void dispose() {
+    _passportNumberController.dispose();
+    _dateController.dispose();
+    super.dispose();
+  }
+
+  // Validate form to enable or disable the button
+  void _validateForm() {
+    setState(() {
+      _isFormValid = _selectedSeries != null &&
+          _passportNumberController.text.length == 7 &&
+          _selectedDate != null;
+    });
+  }
+
+  Future<void> _submitData() async {
+    final storage = FlutterSecureStorage();
+    String? token = await storage.read(key: 'accessToken');
+
+    if (token == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            "Authorization token not found!",
+            style: TextStyle(color: Colors.white),
+          ),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    try {
+      var response = await http.post(
+        Uri.parse('http://10.100.9.145:7684/api/v1/user/passport-data'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+        body: {
+          'series': _selectedSeries,
+          'number': _passportNumberController.text,
+          'birthdate': DateFormat('yyyy-MM-dd').format(_selectedDate!),
+        },
+      );
+
+      if (response.statusCode == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              "Data submitted successfully!",
+              style: TextStyle(color: Colors.white),
+            ),
+            backgroundColor: Colors.green,
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              "Failed to submit data.",
+              style: TextStyle(color: Colors.white),
+            ),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            "Error: $e",
+            style: const TextStyle(color: Colors.white),
+          ),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Column(
+        children: [
+          MiniRedAppBar(),
+          const Padding(
+            padding: EdgeInsets.all(0),
+            child: MiniRedTitle(title: 'Kabinet'),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Passport Series Dropdown
+                DropdownButtonFormField<String>(
+                  value: _selectedSeries,
+                  hint: const Text('Выберите серию паспорта'),
+                  items: _seriesOptions.map((series) {
+                    return DropdownMenuItem<String>(
+                      value: series,
+                      child: Text(series),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedSeries = value;
+                      _validateForm();
+                    });
+                  },
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Серия паспорта',
+                  ),
+                ),
+                const SizedBox(height: 10),
+
+                // Passport Number TextField
+                TextFormField(
+                  controller: _passportNumberController,
+                  keyboardType: TextInputType.number,
+                  maxLength: 7,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Номер паспорта',
+                  ),
+                  inputFormatters: [
+                    // Ensure only numeric input
+                    FilteringTextInputFormatter.digitsOnly,
+                    LengthLimitingTextInputFormatter(7),
+                  ],
+                ),
+                const SizedBox(height: 10),
+
+                // Date of Birth Picker
+                TextFormField(
+                  controller: _dateController,
+                  readOnly: true,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Дата рождения',
+                  ),
+                  onTap: () async {
+                    DateTime? pickedDate = await showDatePicker(
+                      context: context,
+                      initialDate: DateTime(2000),
+                      firstDate: DateTime(1900),
+                      lastDate: DateTime.now(),
+                    );
+                    if (pickedDate != null) {
+                      setState(() {
+                        _selectedDate = pickedDate;
+                        _dateController.text =
+                            DateFormat('dd.MM.yyyy').format(pickedDate);
+                        _validateForm();
+                      });
+                    }
+                  },
+                ),
+                const SizedBox(height: 50),
+
+                // Button
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: _isFormValid
+                        ? () async {
+                            await _submitData();
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => M7ExampleScreen(),
+                              ),
+                            );
+                          }
+                        : null,
+                    child: Text(
+                      'Yuzni identifikatsiya qilish',
+                      style: AppStyle.fontStyle
+                          .copyWith(color: AppColors.lightHeaderColor),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.lightIconGuardColor,
+                      side: BorderSide(color: AppColors.lightIconGuardColor),
+                      elevation: 5,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 10),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
 
 class M7ExampleScreen extends StatefulWidget {
   const M7ExampleScreen({super.key});
@@ -18,12 +283,12 @@ class _M7ExampleScreenState extends State<M7ExampleScreen> {
   final List<M7LivelynessStepItem> _verificationSteps = [
     M7LivelynessStepItem(
       step: M7LivelynessStep.smile,
-      title: "Smile",
+      title: "Jilmaying",
       isCompleted: false,
     ),
     M7LivelynessStepItem(
       step: M7LivelynessStep.blink,
-      title: "Blink",
+      title: "Ko'zni pirpirating",
       isCompleted: false,
     ),
   ];
@@ -104,7 +369,8 @@ class _M7ExampleScreenState extends State<M7ExampleScreen> {
       // Send the request
       var response = await request.send();
       print(response.statusCode);
-
+      print(response);
+      print('pizdes boldi ${response.statusCode}');
       // Handle the response
       if (response.statusCode == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -117,6 +383,8 @@ class _M7ExampleScreenState extends State<M7ExampleScreen> {
           ),
         );
       } else {
+        print(response.statusCode);
+        print(response.request);
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text(
@@ -145,16 +413,13 @@ class _M7ExampleScreenState extends State<M7ExampleScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("M7 Livelyness Detection"),
-      ),
       body: Stack(
         fit: StackFit.expand,
         children: [
           Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisSize: MainAxisSize.min,
+            // mainAxisAlignment: MainAxisAlignment.center,
+            // crossAxisAlignment: CrossAxisAlignment.stretch,
+            // mainAxisSize: MainAxisSize.min,
             children: [
               const Spacer(flex: 4),
               Visibility(
@@ -166,6 +431,14 @@ class _M7ExampleScreenState extends State<M7ExampleScreen> {
                     fit: BoxFit.contain,
                   ),
                 ),
+                replacement: Lottie.asset(
+                  'assets/lotties/face.json',
+                  width: 200,
+                  height: 200,
+                ),
+              ),
+              SizedBox(
+                height: 50,
               ),
               Visibility(
                 visible: _capturedImagePath != null,
@@ -175,14 +448,16 @@ class _M7ExampleScreenState extends State<M7ExampleScreen> {
                 child: ElevatedButton(
                   onPressed: _onStartLivelyness,
                   style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.lightIconGuardColor,
                     padding: const EdgeInsets.symmetric(
                         horizontal: 20, vertical: 12),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(5)),
                   ),
-                  child: const Text(
+                  child: Text(
                     "Identifikatsiyadan o\'tish",
-                    style: TextStyle(fontSize: 22),
+                    style: AppStyle.fontStyle
+                        .copyWith(color: AppColors.lightHeaderColor),
                   ),
                 ),
               ),
