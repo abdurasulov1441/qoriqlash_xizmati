@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:qoriqlash_xizmati/back/auth_reg_reset/login_page/login_page.dart';
 import 'package:qoriqlash_xizmati/back/auth_reg_reset/reset_password/reset_password.dart';
-import 'package:qoriqlash_xizmati/back/hive/notes_data.dart';
 import 'package:qoriqlash_xizmati/front/components/appbar_title.dart';
 import 'package:qoriqlash_xizmati/front/components/changeColorProvider.dart';
 import 'package:qoriqlash_xizmati/front/pages/accaount_screens/shartnomalar.dart';
@@ -15,7 +15,6 @@ import 'package:qoriqlash_xizmati/front/pages/accaount_screens/yordam_page.dart'
 import 'package:qoriqlash_xizmati/front/pages/pult_boshligi_pages/pult_boshligi_home.dart';
 import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
 import 'package:qoriqlash_xizmati/front/style/app_style.dart';
-import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 
 class AccountScreen extends StatefulWidget {
@@ -35,7 +34,6 @@ class _AccountScreenState extends State<AccountScreen> {
   }
 
   void showLogoutDialog(BuildContext context) {
-    final model = Provider.of<AppDataProvider>(context, listen: false);
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -51,7 +49,6 @@ class _AccountScreenState extends State<AccountScreen> {
             ),
             TextButton(
               onPressed: () {
-                model.deleteUser();
                 Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(builder: (context) => LoginScreen()),
@@ -67,28 +64,35 @@ class _AccountScreenState extends State<AccountScreen> {
   }
 
   Future<void> fetchUserData() async {
-    final box = Hive.box<NotesData>('notes');
-    String? token = box.getAt(0)?.userToken;
-    if (box.isNotEmpty) {
-      print('box is not empty');
-    }
+    // Create an instance of FlutterSecureStorage
+    final storage = FlutterSecureStorage();
 
-    final response = await http.get(
-      Uri.parse('http://10.100.9.145:7684/api/v1/user/info'),
-      // Uri.parse('http://84.54.96.157:17041/api/v1/user/info'),
-      headers: {
-        'Authorization': 'Bearer $token',
-      },
-    );
-    print(response.body);
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body)['data'];
-      setState(() {
-        fullName =
-            '${data['first_name']} ${data['last_name']} ${data['surname']}';
-      });
+    // Retrieve the token
+    final token = await storage.read(key: 'accessToken');
+
+    if (token != null) {
+      final response = await http.get(
+        Uri.parse('http://10.100.9.145:7684/api/v1/user/info'),
+        headers: {
+          'Authorization': 'Bearer $token',
+        },
+      );
+      print(response.statusCode);
+      print(response.body);
+      print(token);
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body)['data'];
+        setState(() {
+          fullName =
+              '${data['first_name']} ${data['last_name']} ${data['surname']}';
+        });
+      } else {
+        // Handle error
+        print('Failed to fetch user data in account screen');
+      }
     } else {
-      // Handle error
+      // Handle the case where token is not available
+      print('Token not found');
     }
   }
 
@@ -266,16 +270,6 @@ class AccountScreenNotLogin extends StatefulWidget {
 }
 
 class _AccountScreenNotLoginState extends State<AccountScreenNotLogin> {
-  Future<void> signOut() async {
-    final model = Provider.of<AppDataProvider>(context, listen: false);
-    model.deleteUser();
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (context) => LoginScreen()),
-      (Route<dynamic> route) => false,
-    );
-  }
-
   void showLogoutDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -291,8 +285,20 @@ class _AccountScreenNotLoginState extends State<AccountScreenNotLogin> {
               child: const Text('Yo\'q'),
             ),
             TextButton(
-              onPressed: () {
-                signOut();
+              onPressed: () async {
+                // Create an instance of FlutterSecureStorage
+                final storage = FlutterSecureStorage();
+
+                // Clear the tokens
+                await storage.delete(key: 'accessToken');
+                await storage.delete(key: 'refreshToken');
+
+                // Navigate to LoginScreen
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginScreen()),
+                  (Route<dynamic> route) => false,
+                );
               },
               child: const Text('Chiqish'),
             ),

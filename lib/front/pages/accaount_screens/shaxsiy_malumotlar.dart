@@ -1,10 +1,9 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:qoriqlash_xizmati/back/hive/notes_data.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:qoriqlash_xizmati/front/components/mini_red_app_bar.dart';
 import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
 import 'package:qoriqlash_xizmati/front/style/app_style.dart';
-import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 
 class ShaxsiyMalumotlar extends StatefulWidget {
@@ -33,32 +32,40 @@ class _ShaxsiyMalumotlarState extends State<ShaxsiyMalumotlar> {
   }
 
   Future<void> fetchUserData() async {
-    final box = Hive.box<NotesData>('notes');
-    String? token = box.getAt(0)?.userToken;
+    // Create an instance of FlutterSecureStorage
+    final storage = FlutterSecureStorage();
 
-    final response = await http.get(
-       Uri.parse('http://10.100.9.145:7684/api/v1/user/info'),
-    //  Uri.parse('http://84.54.96.157:17041/api/v1/user/info'),
-      headers: {
-        'Authorization': 'Bearer $token',
-      },
-    );
+    // Retrieve the token from secure storage
+    String? token = await storage.read(key: 'accessToken');
 
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body)['data'];
-      setState(() {
-        fullName =
-            '${data['surname']} ${data['first_name']} ${data['last_name']}'; //first_name  last_name surname
-        phoneNumber = data['phone_number'];
-        passportSeriesAndNumber =
-            '${data['passport_series']} ${data['passport_number']}';
-        passportGivenDate = data['given_date'];
-        passportGivenBy = data['given_by'];
-        jshshir = '12 34 56 78 90 12 34';
-        address = 'Toshkent vil. M.Ulug’bek tum. A.Temur MFY';
-      });
+    if (token != null) {
+      final response = await http.get(
+        Uri.parse('http://10.100.9.145:7684/api/v1/user/info'),
+        headers: {
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body)['data'];
+        setState(() {
+          fullName =
+              '${data['surname']} ${data['first_name']} ${data['last_name']}'; //first_name  last_name surname
+          phoneNumber = data['phone_number'];
+          passportSeriesAndNumber =
+              '${data['passport_series']} ${data['passport_number']}';
+          passportGivenDate = data['given_date'];
+          passportGivenBy = data['given_by'];
+          jshshir = '12 34 56 78 90 12 34';
+          address = 'Toshkent vil. M.Ulug’bek tum. A.Temur MFY';
+        });
+      } else {
+        // Handle error
+        print('Failed to fetch user data');
+      }
     } else {
-      // Handle error
+      // Handle the case where token is not available
+      print('Token not found');
     }
   }
 

@@ -1,14 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
-
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
-
 import 'package:qoriqlash_xizmati/back/auth_reg_reset/forgot_password/forgot_password.dart';
 import 'package:qoriqlash_xizmati/back/auth_reg_reset/sign_up/singn_up_page.dart';
-import 'package:qoriqlash_xizmati/back/hive/notes_data.dart';
 import 'package:qoriqlash_xizmati/back/snack_bar.dart';
-import 'package:qoriqlash_xizmati/front/components/changeColorProvider.dart';
 import 'package:qoriqlash_xizmati/front/pages/home_page.dart';
 import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
 import 'package:qoriqlash_xizmati/front/style/app_style.dart';
@@ -43,21 +39,27 @@ class _LoginScreenState extends State<LoginScreen> {
     final isValid = formKey.currentState!.validate();
     if (!isValid) return;
     final url = Uri.parse('http://10.100.9.145:7684/api/v1/auth/login');
-    // final url = Uri.parse('http://84.54.96.157:17041/api/v1/auth/login');
     final headers = {"Content-Type": "application/json"};
     final body = jsonEncode({
       "password": passwordTextInputController.text,
       "phone_number": emailTextInputController.text
     });
+
+    // Create an instance of FlutterSecureStorage
+    final storage = FlutterSecureStorage();
+
     try {
       final response = await http.post(url, headers: headers, body: body);
       final responseBody = jsonDecode(response.body);
       print(responseBody);
-      print(response.body);
+
       if (response.statusCode == 200) {
         final accessToken = responseBody['data']['access_token'];
- 
-        AppDataProvider().addUser(accessToken, context);
+        final refreshToken = responseBody['data']['refresh_token'];
+
+        // Store the tokens in secure storage
+        await storage.write(key: 'accessToken', value: accessToken);
+        await storage.write(key: 'refreshToken', value: refreshToken);
 
         Navigator.push(
           context,
@@ -76,7 +78,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   onPressed: () {
                     passwordTextInputController.clear();
                     emailTextInputController.clear();
-
                     Navigator.of(context).pop();
                   },
                 ),
@@ -103,14 +104,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final box = Hive.box<NotesData>('notes');
-    if (box.isNotEmpty) {
-      String? token = box.getAt(0)?.userToken;
-      print(token);
-    } else {
-      print('data in hive not found aniqrogi bom bosh');
-    }
-
     return Scaffold(
       backgroundColor: AppColors.lightBackgroundColor,
       resizeToAvoidBottomInset: false,

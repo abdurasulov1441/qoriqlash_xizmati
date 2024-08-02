@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
 import 'package:qoriqlash_xizmati/back/auth_reg_reset/forgot_password/forgot_password.dart';
 import 'package:qoriqlash_xizmati/back/auth_reg_reset/reset_password/reset_password_succes.dart';
-import 'package:qoriqlash_xizmati/back/hive/notes_data.dart';
 import 'package:qoriqlash_xizmati/front/components/mini_red_app_bar.dart';
 import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
 import 'package:qoriqlash_xizmati/front/style/app_style.dart';
@@ -28,8 +26,11 @@ class _XavfsizlikPageState extends State<XavfsizlikPage> {
       _isLoading = true;
     });
 
-    final box = Hive.box<NotesData>('notes');
-    String? token = box.getAt(0)?.userToken;
+    // Create an instance of FlutterSecureStorage
+    final storage = FlutterSecureStorage();
+
+    // Retrieve the token from secure storage
+    String? token = await storage.read(key: 'accessToken');
 
     if (token == null) {
       print('Token is null');
@@ -41,7 +42,6 @@ class _XavfsizlikPageState extends State<XavfsizlikPage> {
 
     final url =
         Uri.parse('http://10.100.9.145:7684/api/v1/auth/change_password');
-    //  Uri.parse('http://84.54.96.157:17041/api/v1/auth/change_password');
     final response = await http.put(
       url,
       headers: {

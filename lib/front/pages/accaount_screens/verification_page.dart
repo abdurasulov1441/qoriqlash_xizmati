@@ -1,7 +1,7 @@
 import 'dart:io';
-import 'package:http/http.dart' as http;
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:live_photo_detector/m7_livelyness_detection.dart';
 
 class M7ExampleScreen extends StatefulWidget {
@@ -66,20 +66,49 @@ class _M7ExampleScreenState extends State<M7ExampleScreen> {
     }
   }
 
-  void _sendImageToServer(String imagePath) async {
+  Future<void> _sendImageToServer(String imagePath) async {
     setState(() => _isLoading = true);
+    final storage = FlutterSecureStorage();
+    String? token = await storage.read(key: 'accessToken');
+
+    if (token == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            "Authorization token not found!",
+            style: TextStyle(color: Colors.white),
+          ),
+          backgroundColor: Colors.red,
+        ),
+      );
+      setState(() => _isLoading = false);
+      return;
+    }
+
     try {
+      var headers = {
+        'Authorization': 'Bearer $token',
+      };
+      print(token);
       var request = http.MultipartRequest(
         'POST',
-        Uri.parse('http://10.100.9.145:7684/api/vi/user/'),
+        Uri.parse('http://10.100.9.145:7684/api/v1/user/upload-photo/'),
       );
-      request.files.add(await http.MultipartFile.fromPath('file', imagePath));
-      var response = await request.send();
 
+      request.headers.addAll(headers);
+
+      // Add the file to the request
+      request.files.add(await http.MultipartFile.fromPath('file', imagePath));
+
+      // Send the request
+      var response = await request.send();
+      print(response.statusCode);
+
+      // Handle the response
       if (response.statusCode == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: const Text(
+          const SnackBar(
+            content: Text(
               "Image uploaded successfully!",
               style: TextStyle(color: Colors.white),
             ),
@@ -88,8 +117,8 @@ class _M7ExampleScreenState extends State<M7ExampleScreen> {
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: const Text(
+          const SnackBar(
+            content: Text(
               "Failed to upload image.",
               style: TextStyle(color: Colors.white),
             ),
@@ -151,7 +180,7 @@ class _M7ExampleScreenState extends State<M7ExampleScreen> {
                         borderRadius: BorderRadius.circular(5)),
                   ),
                   child: const Text(
-                    "Detect Livelyness",
+                    "Identifikatsiyadan o\'tish",
                     style: TextStyle(fontSize: 22),
                   ),
                 ),

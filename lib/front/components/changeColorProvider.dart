@@ -1,10 +1,25 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:qoriqlash_xizmati/back/hive/notes_data.dart';
-import 'package:qoriqlash_xizmati/back/hive/hive_box.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
 
 class AppDataProvider with ChangeNotifier {
   bool _isDarkTheme = false;
+  Timer? _statusFetchTimer;
+  int _userStatus = 0;
+
+  AppDataProvider() {
+    _startFetchingUserStatus();
+  }
+
+  // Cleanup to avoid memory leaks
+  @override
+  void dispose() {
+    _statusFetchTimer?.cancel();
+    super.dispose();
+  }
 
   bool get isDarkTheme => _isDarkTheme;
 
@@ -52,16 +67,51 @@ class AppDataProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> addUser(token, BuildContext context) async {
-    await HiveBox.notes.add(
-      NotesData(
-       
-        userToken: token,
-      ),
-    );
+  int get userStatus => _userStatus;
+
+  void updateUserStatus(int status) {
+    _userStatus = status;
+    notifyListeners();
   }
 
-  Future<void> deleteUser() async {
-    await HiveBox.notes.clear();
+  void _startFetchingUserStatus() {
+    // Initialize timer to fetch user status every 30 seconds
+    _statusFetchTimer = Timer.periodic(const Duration(seconds: 30), (_) {
+      _fetchUserStatus();
+    });
+
+    // Fetch immediately on initialization
+    _fetchUserStatus();
+  }
+
+  Future<void> _fetchUserStatus() async {
+    final storage = FlutterSecureStorage();
+    String? token = await storage.read(key: 'accessToken');
+
+    if (token != null) {
+      try {
+        final response = await http.get(
+          Uri.parse('http://10.100.9.145:7684/api/v1/user/status'),
+          headers: {
+            'Authorization': 'Bearer $token',
+          },
+        );
+        print(userStatus);
+        print(response.statusCode);
+        if (response.statusCode == 200) {
+          final data = jsonDecode(response.body)['data'];
+          updateUserStatus(data['user_status']);
+        } else {
+          print('Failed to fetch user status: ${response.body}');
+          // Handle login navigation or token refresh if needed
+        }
+      } catch (e) {
+        print('Error occurred while fetching user status: $e');
+        // Handle errors appropriately
+      }
+    } else {
+      print('Token is null');
+      // Handle login navigation if needed
+    }
   }
 }

@@ -50,7 +50,7 @@ class _SignUpScreen extends State<SignUpScreen> {
       );
       return;
     }
-     final url = Uri.parse('http://10.100.9.145:7684/api/v1/auth/register');
+    final url = Uri.parse('http://10.100.9.145:7684/api/v1/auth/register');
     //final url = Uri.parse('http://84.54.96.157:17041/api/v1/auth/register');
     final headers = {"Content-Type": "application/json"};
     final body = jsonEncode({
@@ -85,11 +85,6 @@ class _SignUpScreen extends State<SignUpScreen> {
             },
           );
         } else {
-          // Save token to Hive
-          // final userToken = responseBody['token'];
-          // var box = Hive.box<NotesData>('notes');
-          // box.put('user_data', NotesData(userToken: userToken));
-
           Navigator.push(
             context,
             MaterialPageRoute(

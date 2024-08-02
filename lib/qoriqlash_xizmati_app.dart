@@ -1,11 +1,10 @@
 import 'package:another_flutter_splash_screen/another_flutter_splash_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:qoriqlash_xizmati/back/auth_reg_reset/login_page/login_page.dart';
-import 'package:qoriqlash_xizmati/back/hive/notes_data.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:provider/provider.dart';
 import 'package:qoriqlash_xizmati/front/components/changeColorProvider.dart';
 import 'package:qoriqlash_xizmati/front/pages/home_page.dart';
-import 'package:provider/provider.dart';
+import 'package:qoriqlash_xizmati/back/auth_reg_reset/login_page/login_page.dart';
 import 'package:qoriqlash_xizmati/front/style/app_style.dart';
 
 class QoriqlashXizmatiApp extends StatelessWidget {
@@ -36,30 +35,50 @@ class QoriqlashXizmatiApp extends StatelessWidget {
 class SplashScreenWidget extends StatelessWidget {
   const SplashScreenWidget({super.key});
 
+  Future<Widget> determineNextScreen() async {
+    // Create an instance of FlutterSecureStorage
+    final storage = FlutterSecureStorage();
+
+    // Retrieve the token from secure storage
+    String? token = await storage.read(key: 'accessToken');
+
+    if (token != null) {
+      // Token exists, return HomePage
+      return HomePage();
+    } else {
+      // Token is null, print message and return LoginScreen
+      print('Token is null');
+      return LoginScreen();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    bool isLoggedIn;
-
-    return ValueListenableBuilder(
-        valueListenable: Hive.box<NotesData>('notes').listenable(),
-        builder: (context, Box<NotesData> box, _) {
-          final box = Hive.box<NotesData>('notes');
-          if (box.isNotEmpty) {
-            String? token = box.getAt(0)?.userToken;
-            print(token);
-            isLoggedIn = true;
-          } else {
-            print('data in hive not found aniqrogi bom bosh');
-            isLoggedIn = false;
-          }
-
+    return FutureBuilder<Widget>(
+      future: determineNextScreen(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        } else if (snapshot.hasError) {
+          return Scaffold(
+            body: Center(
+              child: Text('Error: ${snapshot.error}'),
+            ),
+          );
+        } else {
           return FlutterSplashScreen.fadeIn(
             backgroundColor: Colors.white,
             duration: const Duration(seconds: 3),
             childWidget: const SplashScreenContent(),
-            nextScreen: isLoggedIn ? HomePage() : LoginScreen(),
+            nextScreen: snapshot.data!,
           );
-        });
+        }
+      },
+    );
   }
 }
 
@@ -96,18 +115,6 @@ class SplashScreenContent extends StatelessWidget {
               ),
             ],
           ),
-          // RichText(
-          //     text: const TextSpan(
-          //   style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
-          //   children: <TextSpan>[
-          //     TextSpan(
-          //         text: 'Qo\'riqlash',
-          //         style: TextStyle(color: AppColors.lightTextColor)),
-          //     TextSpan(
-          //         text: 'Xizmati',
-          //         style: TextStyle(color: AppColors.lightTextColor)),
-          //   ],
-          // )),
         ],
       ),
     );
