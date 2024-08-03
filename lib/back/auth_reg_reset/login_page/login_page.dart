@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
@@ -52,9 +53,9 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       final response = await http.post(url, headers: headers, body: body);
       final responseBody = jsonDecode(response.body);
-      print(responseBody);
+      print(responseBody['status_code']);
 
-      if (response.statusCode == 200) {
+      if (responseBody['status_code'] == 200) {
         final accessToken = responseBody['data']['access_token'];
         final refreshToken = responseBody['data']['refresh_token'];
 
@@ -66,30 +67,10 @@ class _LoginScreenState extends State<LoginScreen> {
           context,
           MaterialPageRoute(builder: (context) => HomePage()),
         );
-      } else if (response.statusCode == 400) {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text('Xatolik!'),
-              content: Text('Parol yoki telefon raqamingiz noto\'g\'ri'),
-              actions: <Widget>[
-                TextButton(
-                  child: Text('OK'),
-                  onPressed: () {
-                    passwordTextInputController.clear();
-                    emailTextInputController.clear();
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          },
-        );
       } else {
         SnackBarService.showSnackBar(
           context,
-          'Failed to log in: ${response.body}',
+          responseBody['detail'],
           true,
         );
       }
@@ -164,13 +145,13 @@ class _LoginScreenState extends State<LoginScreen> {
                       keyboardType: TextInputType.phone,
                       autocorrect: false,
                       controller: emailTextInputController,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         fillColor: AppColors.fillColor,
                         filled: true,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(15)),
                         ),
-                        hintText: '+998901234567 formatida',
+                        hintText: '+998901234567',
                         hintStyle: AppStyle.fontStyle,
                         label: Icon(
                           Icons.phone,
@@ -235,7 +216,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                   builder: (context) => PasswordForgotPage()),
                             );
                           },
-                          child: Text(
+                          child: AutoSizeText(
+                            maxLines: 1,
+                            minFontSize: 5,
+                            maxFontSize: 12,
                             'Parolingizni unutdingizmi?',
                             style: AppStyle.fontStyle.copyWith(
                               color: AppColors.lightIconGuardColor,
@@ -267,7 +251,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text(
+                    const AutoSizeText(
+                      maxLines: 1,
+                      minFontSize: 5,
+                      maxFontSize: 12,
                       'Akkauntingiz yo\'qmi?',
                       style: AppStyle.fontStyle,
                     ),
@@ -278,7 +265,10 @@ class _LoginScreenState extends State<LoginScreen> {
                             MaterialPageRoute(
                                 builder: (context) => SignUpScreen()));
                       },
-                      child: Text(
+                      child: AutoSizeText(
+                        maxLines: 1,
+                        minFontSize: 5,
+                        maxFontSize: 12,
                         'Ro\'yxatdan o\'ting',
                         style: AppStyle.fontStyle.copyWith(
                           color: AppColors.lightIconGuardColor,

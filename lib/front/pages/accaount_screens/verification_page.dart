@@ -1,31 +1,16 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:intl/intl.dart'; // For date formatting
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:live_photo_detector/index.dart';
 import 'package:qoriqlash_xizmati/back/api/appConfig.dart';
-
 import 'package:qoriqlash_xizmati/front/components/mini_red_app_bar.dart';
 import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
 import 'package:qoriqlash_xizmati/front/style/app_style.dart';
-
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'My App',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: FaceVirify(),
-    );
-  }
-}
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
+import 'package:image/image.dart' as img;
 
 class FaceVirify extends StatefulWidget {
   const FaceVirify({super.key});
@@ -100,7 +85,8 @@ class _FaceVirifyState extends State<FaceVirify> {
 
     try {
       var response = await http.post(
-        Uri.parse('http://10.100.9.145:7684/api/v1/user/passport-data'),
+        Uri.parse(
+            'http://${AppConfig.serverAddress}/api/v1/user/passport-data'),
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
@@ -352,10 +338,25 @@ class _M7ExampleScreenState extends State<M7ExampleScreen> {
     }
 
     try {
+      // Resize image
+      File imageFile = File(imagePath);
+      img.Image? originalImage = img.decodeImage(imageFile.readAsBytesSync());
+      if (originalImage != null) {
+        // Resize the image while maintaining the aspect ratio
+        img.Image resizedImage = img.copyResize(originalImage, width: 600);
+
+        // Save the resized image to a temporary file
+        String tempPath = '${imageFile.parent.path}/temp_image.jpg';
+        File(tempPath).writeAsBytesSync(img.encodeJpg(resizedImage));
+
+        // Update the imagePath to the path of the resized image
+        imagePath = tempPath;
+      }
+
       var headers = {
         'Authorization': 'Bearer $token',
       };
-      print(token);
+
       var request = http.MultipartRequest(
         'POST',
         Uri.parse('${AppConfig.serverAddress}/api/v1/user/upload-photo/'),
@@ -363,20 +364,19 @@ class _M7ExampleScreenState extends State<M7ExampleScreen> {
 
       request.headers.addAll(headers);
 
-      // Add the file to the request
+      // Add the resized file to the request
       request.files.add(await http.MultipartFile.fromPath('file', imagePath));
 
       // Send the request
       var response = await request.send();
-      print(response.statusCode);
-      print(response);
-      print('pizdes boldi ${response.statusCode}');
-      // Handle the response
-      if (response.statusCode == 200) {
+      var responseData = await response.stream.bytesToString();
+      var jsonResponse = json.decode(responseData);
+
+      if (jsonResponse['status'] == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+          SnackBar(
             content: Text(
-              "Image uploaded successfully!",
+              '${jsonResponse['message']}',
               style: TextStyle(color: Colors.white),
             ),
             backgroundColor: Colors.green,
@@ -386,9 +386,9 @@ class _M7ExampleScreenState extends State<M7ExampleScreen> {
         print(response.statusCode);
         print(response.request);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+          SnackBar(
             content: Text(
-              "Failed to upload image.",
+              '${jsonResponse['message']}',
               style: TextStyle(color: Colors.white),
             ),
             backgroundColor: Colors.red,

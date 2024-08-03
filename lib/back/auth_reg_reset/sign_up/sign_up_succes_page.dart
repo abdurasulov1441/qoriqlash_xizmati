@@ -19,7 +19,7 @@ class SignUpSuccessPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  'Ha! Muvaffaqiyatli',
+                  'Muvaffaqiyatli',
                   style: AppStyle.fontStyle
                       .copyWith(fontSize: 20, fontWeight: FontWeight.bold),
                 )
@@ -45,7 +45,7 @@ class SignUpSuccessPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  'Siz endi tizimni ichidagi imkoniyatlarda',
+                  'Siz endi tizimni ichidagi imkoniyatlardan',
                   style: AppStyle.fontStyle.copyWith(
                     color: Colors.grey,
                   ),
