@@ -63,14 +63,13 @@
 //     );
 //   }
 // }
-import 'package:flutter/services.dart';
+
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:intl/intl.dart'; // For date formatting
+
 import 'package:live_photo_detector/index.dart';
 import 'package:qoriqlash_xizmati/back/api/appConfig.dart';
 
-import 'package:qoriqlash_xizmati/front/components/mini_red_app_bar.dart';
 import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
 import 'package:qoriqlash_xizmati/front/style/app_style.dart';
 
