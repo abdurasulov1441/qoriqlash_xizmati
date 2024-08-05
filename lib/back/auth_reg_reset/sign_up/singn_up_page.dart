@@ -52,7 +52,6 @@ class _SignUpScreen extends State<SignUpScreen> {
       return;
     }
     final url = Uri.parse('${AppConfig.serverAddress}/api/v1/auth/register');
-    //final url = Uri.parse('http://84.54.96.157:17041/api/v1/auth/register');
     final headers = {"Content-Type": "application/json"};
     final body = jsonEncode({
       "password": passwordTextInputController.text,

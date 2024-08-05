@@ -144,7 +144,11 @@ class _ConfirmSmsPageState extends State<ConfirmSmsPage> {
           if (_mounted) {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => SignUpSuccessPage()),
+              MaterialPageRoute(
+                  builder: (context) => SignUpSuccessPage(
+                        phone: '${widget.phone}',
+                        password: '${widget.password}',
+                      )),
             );
           }
         });

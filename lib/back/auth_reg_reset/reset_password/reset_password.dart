@@ -3,7 +3,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:qoriqlash_xizmati/back/api/appConfig.dart';
 import 'dart:convert';
-import 'package:qoriqlash_xizmati/back/auth_reg_reset/forgot_password/forgot_password.dart';
+
 import 'package:qoriqlash_xizmati/back/auth_reg_reset/reset_password/reset_password_succes.dart';
 import 'package:qoriqlash_xizmati/front/components/mini_red_app_bar.dart';
 import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
@@ -179,21 +179,7 @@ class _XavfsizlikPageState extends State<XavfsizlikPage> {
                     SizedBox(height: 16),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => PasswordForgotPage()),
-                            );
-                          },
-                          child: Text(
-                            'Parolni unutdingizmi',
-                            style: TextStyle(color: Colors.red),
-                          ),
-                        ),
-                      ],
+                      children: [],
                     ),
                     SizedBox(height: 32),
                   ],

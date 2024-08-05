@@ -1,14 +1,63 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:qoriqlash_xizmati/back/auth_reg_reset/login_page/login_page.dart';
+import 'package:qoriqlash_xizmati/back/api/appConfig.dart';
+import 'package:qoriqlash_xizmati/back/snack_bar.dart';
+import 'package:qoriqlash_xizmati/front/pages/home_page.dart';
 import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
 import 'package:qoriqlash_xizmati/front/style/app_style.dart';
+import 'package:http/http.dart' as http;
 
 class SignUpSuccessPage extends StatelessWidget {
-  const SignUpSuccessPage({super.key});
-
+  const SignUpSuccessPage(
+      {super.key, required this.phone, required this.password});
+  final String phone;
+  final String password;
   @override
   Widget build(BuildContext context) {
+    Future<void> login() async {
+      final url = Uri.parse('${AppConfig.serverAddress}/api/v1/auth/login');
+      final headers = {"Content-Type": "application/json"};
+      final body = jsonEncode({"password": password, "phone_number": phone});
+
+      // Create an instance of FlutterSecureStorage
+      final storage = FlutterSecureStorage();
+
+      try {
+        final response = await http.post(url, headers: headers, body: body);
+        final responseBody = jsonDecode(response.body);
+        print(responseBody['status_code']);
+
+        if (responseBody['status_code'] == 200) {
+          final accessToken = responseBody['data']['access_token'];
+          final refreshToken = responseBody['data']['refresh_token'];
+
+          // Store the tokens in secure storage
+          await storage.write(key: 'accessToken', value: accessToken);
+          await storage.write(key: 'refreshToken', value: refreshToken);
+
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => HomePage()),
+          );
+        } else {
+          SnackBarService.showSnackBar(
+            context,
+            responseBody['detail'],
+            true,
+          );
+        }
+      } catch (e) {
+        SnackBarService.showSnackBar(
+          context,
+          'Error occurred: $e',
+          true,
+        );
+        print(e);
+      }
+    }
+
     return Scaffold(
       body: Container(
         child: Column(
@@ -72,10 +121,11 @@ class SignUpSuccessPage extends StatelessWidget {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => LoginScreen()),
-                  );
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(builder: (context) => LoginScreen()),
+                  // );
+                  login();
                 },
                 child: Text(
                   'Ketdik',
