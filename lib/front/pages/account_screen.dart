@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_svg/svg.dart';
@@ -247,7 +248,7 @@ class _AccountScreenState extends State<AccountScreen> {
                         }
                       },
                       trailing: name[index] == 'Qorong\'u rejim'
-                          ? Switch(
+                          ? CupertinoSwitch(
                               value: themeProvider.isDarkTheme,
                               onChanged: (value) {
                                 themeProvider.toggleTheme();
@@ -409,7 +410,7 @@ class _AccountScreenNotLoginState extends State<AccountScreenNotLogin> {
                         //leading: Image.asset(images[index],width: 50,height: 50,),
                         textColor: Colors.white,
                         trailing: name[index] == 'Qorong\'u rejim'
-                            ? Switch(
+                            ? CupertinoSwitch(
                                 value: themeProvider.isDarkTheme,
                                 onChanged: (value) {
                                   themeProvider.toggleTheme();
