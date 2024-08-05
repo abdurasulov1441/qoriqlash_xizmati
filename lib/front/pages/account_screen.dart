@@ -14,7 +14,6 @@ import 'package:qoriqlash_xizmati/front/pages/accaount_screens/shaxsiy_malumotla
 import 'package:qoriqlash_xizmati/front/pages/accaount_screens/verification_page.dart';
 import 'package:qoriqlash_xizmati/front/pages/accaount_screens/visacard.dart';
 import 'package:qoriqlash_xizmati/front/pages/accaount_screens/yordam_page.dart';
-import 'package:qoriqlash_xizmati/front/pages/pult_boshligi_pages/pult_boshligi_home.dart';
 import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
 import 'package:qoriqlash_xizmati/front/style/app_style.dart';
 import 'package:http/http.dart' as http;
@@ -39,35 +38,92 @@ class _AccountScreenState extends State<AccountScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Chiqish'),
-          content: const Text('Haqiqatdan ham chiqmoqchimisiz?'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Yo\'q'),
-            ),
-            TextButton(
-              onPressed: () async {
-                // Create an instance of FlutterSecureStorage
-                final storage = FlutterSecureStorage();
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.0),
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(16.0),
+            child: Column(
+              mainAxisSize:
+                  MainAxisSize.min, // Ensures the dialog fits the content size
+              children: [
+                Container(
+                  width: double.infinity,
+                  height: 40,
+                  color: AppColors.lightIconGuardColor,
+                  alignment: Alignment.center,
+                  child: Text(
+                    'Chiqish',
+                    style: AppStyle.fontStyle.copyWith(
+                        color: AppColors.lightHeaderColor,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(
+                    'Haqiqatdan ham chiqmoqchimisiz?',
+                    style: AppStyle.fontStyle,
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                              10), // Установите нужный радиус
+                        ),
+                      ),
+                      onPressed: () async {
+                        // Create an instance of FlutterSecureStorage
+                        final storage = FlutterSecureStorage();
 
-                // Clear the tokens
-                await storage.delete(key: 'accessToken');
-                await storage.delete(key: 'refreshToken');
+                        // Clear the tokens
+                        await storage.delete(key: 'accessToken');
+                        await storage.delete(key: 'refreshToken');
 
-                // Navigate to LoginScreen
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => LoginScreen()),
-                  (Route<dynamic> route) => false,
-                );
-              },
-              child: const Text('Chiqish'),
+                        // Navigate to LoginScreen
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => LoginScreen()),
+                          (Route<dynamic> route) => false,
+                        );
+                      },
+                      child: const Text(
+                        'Ha',
+                        style: AppStyle.fontStyle,
+                      ),
+                    ),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                              10), // Установите нужный радиус
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text(
+                        'Yo\'q',
+                        style: AppStyle.fontStyle,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 20,
+                )
+              ],
             ),
-          ],
+          ),
         );
       },
     );
@@ -284,35 +340,92 @@ class _AccountScreenNotLoginState extends State<AccountScreenNotLogin> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Chiqish'),
-          content: const Text('Haqiqatdan ham chiqmoqchimisiz?'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Yo\'q'),
-            ),
-            TextButton(
-              onPressed: () async {
-                // Create an instance of FlutterSecureStorage
-                final storage = FlutterSecureStorage();
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.0),
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(16.0),
+            child: Column(
+              mainAxisSize:
+                  MainAxisSize.min, // Ensures the dialog fits the content size
+              children: [
+                Container(
+                  width: double.infinity,
+                  height: 40,
+                  color: AppColors.lightIconGuardColor,
+                  alignment: Alignment.center,
+                  child: Text(
+                    'Chiqish',
+                    style: AppStyle.fontStyle.copyWith(
+                        color: AppColors.lightHeaderColor,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(
+                    'Haqiqatdan ham chiqmoqchimisiz?',
+                    style: AppStyle.fontStyle,
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                              10), // Установите нужный радиус
+                        ),
+                      ),
+                      onPressed: () async {
+                        // Create an instance of FlutterSecureStorage
+                        final storage = FlutterSecureStorage();
 
-                // Clear the tokens
-                await storage.delete(key: 'accessToken');
-                await storage.delete(key: 'refreshToken');
+                        // Clear the tokens
+                        await storage.delete(key: 'accessToken');
+                        await storage.delete(key: 'refreshToken');
 
-                // Navigate to LoginScreen
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => LoginScreen()),
-                  (Route<dynamic> route) => false,
-                );
-              },
-              child: const Text('Chiqish'),
+                        // Navigate to LoginScreen
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => LoginScreen()),
+                          (Route<dynamic> route) => false,
+                        );
+                      },
+                      child: const Text(
+                        'Ha',
+                        style: AppStyle.fontStyle,
+                      ),
+                    ),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                              10), // Установите нужный радиус
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text(
+                        'Yo\'q',
+                        style: AppStyle.fontStyle,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 20,
+                )
+              ],
             ),
-          ],
+          ),
         );
       },
     );
@@ -326,12 +439,10 @@ class _AccountScreenNotLoginState extends State<AccountScreenNotLogin> {
       'Qorong\'u rejim',
       'Chiqish',
       'Verifikatiyadan o\'tish',
-      'Pult Boshligi',
     ];
     final List image = [
       'yordam.svg',
       'tungi_rejim.svg',
-      'logout.svg',
       'logout.svg',
       'logout.svg',
     ];
@@ -340,7 +451,6 @@ class _AccountScreenNotLoginState extends State<AccountScreenNotLogin> {
       Divider(),
       Shartnomalar(),
       FaceVirify(),
-      PultBoshligiHome(),
     ];
     return Scaffold(
       body: SizedBox(

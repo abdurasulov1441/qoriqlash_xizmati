@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:live_photo_detector/index.dart';
 import 'package:qoriqlash_xizmati/back/api/appConfig.dart';
 import 'dart:convert';
 
@@ -54,15 +55,16 @@ class _XavfsizlikPageState extends State<XavfsizlikPage> {
         'new_password': _newPasswordController.text,
       }),
     );
+    final responseBody = jsonDecode(response.body);
+    print(responseBody['status']);
 
-    if (response.statusCode == 200) {
-      print('Password changed successfully');
+    if (responseBody['status'] == 200) {
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => PasswordResetSuccesPage()),
       );
     } else {
-      print('Failed to change password: ${response.body}');
+      print('o\'rnatilmadi');
     }
 
     setState(() {
@@ -75,7 +77,7 @@ class _XavfsizlikPageState extends State<XavfsizlikPage> {
     return Scaffold(
         bottomNavigationBar: SafeArea(
           child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 20),
+            padding: EdgeInsets.symmetric(horizontal: 40, vertical: 20),
             width: double.infinity,
             child: ElevatedButton(
               onPressed: _isLoading ? null : _changePassword,
@@ -101,91 +103,91 @@ class _XavfsizlikPageState extends State<XavfsizlikPage> {
             ),
           ),
         ),
-        body: Container(
-          child: Column(
-            children: [
-              MiniRedAppBar(),
-              MiniRedTitle(title: 'Xavfsizlik'),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Row(
-                      children: [
-                        SizedBox(
-                          width: 20,
-                        ),
-                        Text(
-                          'Avvalgi parol',
-                          style: AppStyle.fontStyle
-                              .copyWith(fontWeight: FontWeight.bold),
-                        )
-                      ],
-                    ),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    PasswordField(
-                      controller: _oldPasswordController,
-                      hint: 'Parolni kiriting...',
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Row(
-                      children: [
-                        SizedBox(
-                          width: 20,
-                        ),
-                        Text(
-                          'Yangi parol',
-                          style: AppStyle.fontStyle
-                              .copyWith(fontWeight: FontWeight.bold),
-                        )
-                      ],
-                    ),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    PasswordField(
-                      controller: _newPasswordController,
-                      hint: 'Parolni kiriting...',
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Row(
-                      children: [
-                        SizedBox(
-                          width: 20,
-                        ),
-                        Text(
-                          'Tasdiqlash parol',
-                          style: AppStyle.fontStyle
-                              .copyWith(fontWeight: FontWeight.bold),
-                        )
-                      ],
-                    ),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    PasswordField(
-                      controller: _confirmPasswordController,
-                      hint: 'Parolni kiriting...',
-                    ),
-                    SizedBox(height: 16),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [],
-                    ),
-                    SizedBox(height: 32),
-                  ],
+        body: SingleChildScrollView(
+          child: Container(
+            child: Column(
+              children: [
+                MiniRedAppBar(),
+                MiniRedTitle(title: 'Xavfsizlik'),
+                Lottie.asset(
+                  'assets/lotties/changepass.json',
+                  //  width: 200, height: 200
                 ),
-              ),
-            ],
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: 20,
+                          ),
+                          Text(
+                            'Avvalgi parol',
+                            style: AppStyle.fontStyle
+                                .copyWith(fontWeight: FontWeight.bold),
+                          )
+                        ],
+                      ),
+                      SizedBox(
+                        height: 8,
+                      ),
+                      PasswordField(
+                        controller: _oldPasswordController,
+                        hint: 'Parolni kiriting...',
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: 20,
+                          ),
+                          Text(
+                            'Yangi parol',
+                            style: AppStyle.fontStyle
+                                .copyWith(fontWeight: FontWeight.bold),
+                          )
+                        ],
+                      ),
+                      SizedBox(
+                        height: 8,
+                      ),
+                      PasswordField(
+                        controller: _newPasswordController,
+                        hint: 'Parolni kiriting...',
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: 20,
+                          ),
+                          Text(
+                            'Tasdiqlash parol',
+                            style: AppStyle.fontStyle
+                                .copyWith(fontWeight: FontWeight.bold),
+                          )
+                        ],
+                      ),
+                      SizedBox(
+                        height: 8,
+                      ),
+                      PasswordField(
+                        controller: _confirmPasswordController,
+                        hint: 'Parolni kiriting...',
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ));
   }

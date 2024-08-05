@@ -18,6 +18,7 @@ class FaqPage extends StatelessWidget {
               height: 30,
             ),
             FAQ(
+              showDivider: false,
               collapsedIcon: Icon(Icons.add),
               ansStyle: AppStyle.fontStyle.copyWith(color: Colors.grey),
               question: "Shartnoma qanday tuziladi?",
@@ -25,18 +26,21 @@ class FaqPage extends StatelessWidget {
               queStyle: AppStyle.fontStyle,
             ),
             FAQ(
+                showDivider: false,
                 collapsedIcon: Icon(Icons.add),
                 ansStyle: AppStyle.fontStyle.copyWith(color: Colors.grey),
                 queStyle: AppStyle.fontStyle,
                 question: "Sizlarda qanday qo’riqlash ta’riflari bor?",
                 answer: data4),
             FAQ(
+                showDivider: false,
                 collapsedIcon: Icon(Icons.add),
                 ansStyle: AppStyle.fontStyle.copyWith(color: Colors.grey),
                 queStyle: AppStyle.fontStyle,
                 question: "Qo’riqlash xizmatining vazifasi nima?",
                 answer: data4),
             FAQ(
+                showDivider: false,
                 collapsedIcon: Icon(Icons.add),
                 ansStyle: AppStyle.fontStyle.copyWith(color: Colors.grey),
                 queStyle: AppStyle.fontStyle,
