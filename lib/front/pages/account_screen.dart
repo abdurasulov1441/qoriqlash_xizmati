@@ -7,7 +7,7 @@ import 'package:qoriqlash_xizmati/back/api/appConfig.dart';
 import 'package:qoriqlash_xizmati/back/auth_reg_reset/login_page/login_page.dart';
 import 'package:qoriqlash_xizmati/back/auth_reg_reset/reset_password/reset_password.dart';
 import 'package:qoriqlash_xizmati/front/components/appbar_title.dart';
-import 'package:qoriqlash_xizmati/front/components/changeColorProvider.dart';
+import 'package:qoriqlash_xizmati/front/components/app_data_provider.dart';
 import 'package:qoriqlash_xizmati/front/pages/accaount_screens/shartnomalar.dart';
 import 'package:qoriqlash_xizmati/front/pages/accaount_screens/shaxsiy_malumotlar.dart';
 import 'package:qoriqlash_xizmati/front/pages/accaount_screens/verification_page.dart';

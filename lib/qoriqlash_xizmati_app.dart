@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
 import 'package:qoriqlash_xizmati/back/api/appConfig.dart';
-import 'package:qoriqlash_xizmati/front/components/changeColorProvider.dart';
+import 'package:qoriqlash_xizmati/front/components/app_data_provider.dart';
 import 'package:qoriqlash_xizmati/front/pages/home_page.dart';
 import 'package:qoriqlash_xizmati/back/auth_reg_reset/login_page/login_page.dart';
 import 'package:qoriqlash_xizmati/front/style/app_style.dart';

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:qoriqlash_xizmati/front/components/changeColorProvider.dart';
+import 'package:qoriqlash_xizmati/front/components/app_data_provider.dart';
 import 'package:qoriqlash_xizmati/front/components/mini_red_app_bar.dart';
 import 'package:qoriqlash_xizmati/front/components/object_flat_container.dart';
 import 'package:qoriqlash_xizmati/front/pages/tarifs_screens/object/texnik_object.dart';

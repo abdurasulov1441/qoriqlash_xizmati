@@ -1,7 +1,7 @@
 import 'package:fluid_bottom_nav_bar/fluid_bottom_nav_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:qoriqlash_xizmati/front/components/changeColorProvider.dart';
+import 'package:qoriqlash_xizmati/front/components/app_data_provider.dart';
 import 'package:qoriqlash_xizmati/front/pages/account_screen.dart';
 import 'package:qoriqlash_xizmati/front/pages/home_page/home_page_elements.dart';
 import 'package:qoriqlash_xizmati/front/pages/news_screen.dart';
