@@ -1,7 +1,6 @@
 import 'package:fluid_bottom_nav_bar/fluid_bottom_nav_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:qoriqlash_xizmati/front/components/app_data_provider.dart';
+import 'package:qoriqlash_xizmati/back/api/user_status.dart';
 import 'package:qoriqlash_xizmati/front/pages/account_screen.dart';
 import 'package:qoriqlash_xizmati/front/pages/home_page/home_page_elements.dart';
 import 'package:qoriqlash_xizmati/front/pages/news_screen.dart';
@@ -62,16 +61,7 @@ class _HomePageState extends State<HomePage> {
           _child = const SendRequestSafingScreen();
           break;
         case 3:
-          _child = Consumer<AppDataProvider>(
-            builder: (context, appDataProvider, child) {
-              final userStatus = appDataProvider.userStatus;
-              return userStatus == 1
-                  ? const AccountScreenNotLogin()
-                  : (userStatus == 2
-                      ? const AccountScreen()
-                      : const AccountScreenNotLogin());
-            },
-          );
+          _getUserStatusAndSetScreen();
           break;
       }
       _child = AnimatedSwitcher(
@@ -81,6 +71,21 @@ class _HomePageState extends State<HomePage> {
         child: _child,
       );
     });
+  }
+
+  Future<void> _getUserStatusAndSetScreen() async {
+    try {
+      final userStatusService = UserStatusService();
+      int status = await userStatusService.getUserStatus();
+      setState(() {
+        _child = (status == 1) ? AccountScreenNotLogin() : AccountScreen();
+      });
+    } catch (e) {
+      setState(() {
+        _child = AccountScreenNotLogin();
+      });
+      print('Error in _getUserStatusAndSetScreen: $e');
+    }
   }
 
   @override
