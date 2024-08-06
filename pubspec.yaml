@@ -95,7 +95,7 @@ flutter:
     - assets/lotties/
     - assets/translations/    
   fonts:
-    - family: Poppins
+    - family: Noto
       fonts:
-        - asset: assets/fonts/Poppins-Regular.ttf
+        - asset: assets/fonts/NotoSans-Regular.ttf
   

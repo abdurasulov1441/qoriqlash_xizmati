@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qoriqlash_xizmati/front/components/app_data_provider.dart';
 import 'package:qoriqlash_xizmati/front/components/mini_red_app_bar.dart';
+import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
+import 'package:qoriqlash_xizmati/front/style/app_style.dart';
 
 class Sozlamalar extends StatelessWidget {
   const Sozlamalar({super.key});
@@ -22,32 +24,69 @@ class Sozlamalar extends StatelessWidget {
           MiniRedAppBar(),
           MiniRedTitle(
             title:
-                allprovider.translate('settings'), // Use the translate method
+                allprovider.translate('sozlamalar'), // Use the translate method
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              IconButton(
-                icon: Icon(Icons.brightness_4),
-                onPressed: () {
-                  allprovider.toggleTheme();
-                },
+          GestureDetector(
+            onTap: () {
+              allprovider.toggleTheme();
+            },
+            child: Container(
+              margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              width: double.infinity,
+              height: 100,
+              decoration: BoxDecoration(
+                  color: AppColors.uxuiColor,
+                  borderRadius: BorderRadius.all(Radius.circular(10))),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Text(
+                    allprovider.translate('sozlamalar2'),
+                    style: AppStyle.fontStyle,
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.brightness_4),
+                    onPressed: () {
+                      allprovider.toggleTheme();
+                    },
+                  ),
+                ],
               ),
-              LanguageToggleButton(
-                languages: languages,
-                languageImages: languageImages,
-                onLanguageChanged: (language) {
-                  allprovider.loadLanguage(language);
-                },
+            ),
+          ),
+          GestureDetector(
+            onTap: () {},
+            child: Container(
+              margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              width: double.infinity,
+              height: 100,
+              decoration: BoxDecoration(
+                  color: AppColors.uxuiColor,
+                  borderRadius: BorderRadius.all(Radius.circular(10))),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Text(
+                    allprovider.translate('sozlamalar1'),
+                    style: AppStyle.fontStyle,
+                  ),
+                  LanguageToggleButton(
+                    languages: languages,
+                    languageImages: languageImages,
+                    onLanguageChanged: (language) {
+                      allprovider.loadLanguage(language);
+                    },
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
           Text(
-            allprovider.translate('settings'),
+            allprovider.translate('sozlamalar'),
             style: TextStyle(fontSize: 24),
           ),
           Text(
-            allprovider.translate('language'),
+            allprovider.translate('sozlamalar1'),
             style: TextStyle(fontSize: 24),
           ),
         ],

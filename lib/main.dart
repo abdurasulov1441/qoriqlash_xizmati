@@ -14,7 +14,7 @@ Future<void> main() async {
 
   runApp(
     ChangeNotifierProvider(
-      create: (context) => AppDataProvider()..loadLanguage('ru'),
+      create: (context) => AppDataProvider()..loadLanguage('uzlat'),
       child: QoriqlashXizmatiApp(),
     ),
   );

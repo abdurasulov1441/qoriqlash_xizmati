@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
 import 'dart:convert';
-import 'package:http/http.dart' as http;
 
 class AppDataProvider with ChangeNotifier {
   bool _isDarkTheme = false;
@@ -62,30 +61,38 @@ class AppDataProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Locale _locale = Locale('en');
+  Locale _locale = Locale('uzlat');
   Map<String, String> _localizedStrings = {};
 
   Locale get locale => _locale;
   Map<String, String> get localizedStrings => _localizedStrings;
 
+  AppDataProvider() {
+    loadLanguage(_locale.languageCode); // Load default language on init
+  }
+
   Future<void> loadLanguage(String languageCode) async {
     _locale = Locale(languageCode);
 
-    // Load the JSON string from assets
-    String jsonString =
-        await rootBundle.loadString('assets/translations/$languageCode.json');
-    // Decode the JSON string into a Map
-    Map<String, dynamic> jsonMap = json.decode(jsonString);
+    try {
+      // Load the JSON string from assets
+      String jsonString =
+          await rootBundle.loadString('assets/translations/$languageCode.json');
+      // Decode the JSON string into a Map
+      Map<String, dynamic> jsonMap = json.decode(jsonString);
 
-    // Properly cast the map to Map<String, String>
-    _localizedStrings = {};
-    for (var item in jsonMap['data']) {
-      item.forEach((key, value) {
-        _localizedStrings[key as String] = value as String;
-      });
+      // Properly cast the map to Map<String, String>
+      _localizedStrings = {};
+      for (var item in jsonMap['data']) {
+        item.forEach((key, value) {
+          _localizedStrings[key as String] = value as String;
+        });
+      }
+
+      notifyListeners();
+    } catch (e) {
+      print('Error loading language: $e');
     }
-
-    notifyListeners();
   }
 
   String translate(String key) {

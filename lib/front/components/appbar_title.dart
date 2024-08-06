@@ -9,7 +9,7 @@ class AppbarTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = Provider.of<AppDataProvider>(context);
+    final allprovider = Provider.of<AppDataProvider>(context);
     return Column(
       children: [
         Container(
@@ -47,18 +47,18 @@ class AppbarTitle extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'O\'zbekiston Respublikasi',
+                        allprovider.translate('appbartitle1'),
                         style: AppStyle.fontStyle.copyWith(
                             fontWeight: FontWeight.bold,
-                            color: themeProvider.isDarkTheme
+                            color: allprovider.isDarkTheme
                                 ? AppColors.darkTextColor
                                 : AppColors.lightTextColor),
                       ),
                       Text(
-                        'Milliy Gvardiyasi Qo\'riqlash Xizmati',
+                        allprovider.translate('appbartitle2'),
                         style: AppStyle.fontStyle.copyWith(
                             fontWeight: FontWeight.bold,
-                            color: themeProvider.isDarkTheme
+                            color: allprovider.isDarkTheme
                                 ? AppColors.darkTextColor
                                 : AppColors.lightTextColor),
                       ),
