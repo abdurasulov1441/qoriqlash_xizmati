@@ -1,7 +1,9 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
-import 'package:live_photo_detector/index.dart';
+import 'package:lottie/lottie.dart';
 import 'dart:convert';
 
 import 'package:qoriqlash_xizmati/back/auth_reg_reset/forgot_password/forgot_sms_confirm.dart';
@@ -17,18 +19,57 @@ class PasswordForgotPage extends StatefulWidget {
 }
 
 class _PasswordForgotPageState extends State<PasswordForgotPage> {
-  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _phoneController =
+      TextEditingController(text: '+998 ');
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  final _phoneNumberFormatter = TextInputFormatter.withFunction(
+    (oldValue, newValue) {
+      if (!newValue.text.startsWith('+998 ')) {
+        return oldValue;
+      }
+
+      String text = newValue.text.substring(5).replaceAll(RegExp(r'\D'), '');
+
+      if (text.length > 9) {
+        text = text.substring(0, 9);
+      }
+
+      StringBuffer formatted = StringBuffer('+998 ');
+      int selectionIndex = newValue.selection.baseOffset;
+
+      if (text.length > 0)
+        formatted.write('(${text.substring(0, min(2, text.length))}');
+      if (text.length > 2)
+        formatted.write(') ${text.substring(2, min(5, text.length))}');
+      if (text.length > 5)
+        formatted.write(' ${text.substring(5, min(7, text.length))}');
+      if (text.length > 7)
+        formatted.write(' ${text.substring(7, text.length)}');
+
+      selectionIndex = formatted.length;
+
+      if (newValue.selection.baseOffset < 5) {
+        selectionIndex = 5;
+      }
+
+      return TextEditingValue(
+        text: formatted.toString(),
+        selection: TextSelection.collapsed(offset: selectionIndex),
+      );
+    },
+  );
 
   Future<void> _sendPhoneNumber() async {
     if (_formKey.currentState?.validate() ?? false) {
-      final phoneNumber = _phoneController.text;
+      final phoneNumber =
+          _phoneController.text.replaceAll(RegExp(r'[^0-9]'), '');
 
       try {
         final response = await http.put(
           Uri.parse('http://10.100.9.145:7684/api/v1/auth/reset_password'),
           headers: {'Content-Type': 'application/json'},
-          body: jsonEncode({'phone_number': phoneNumber}),
+          body: jsonEncode({'phone_number': '+$phoneNumber'}),
         );
 
         if (response.statusCode == 200) {
@@ -37,12 +78,11 @@ class _PasswordForgotPageState extends State<PasswordForgotPage> {
             SnackBar(content: Text(responseBody['message'])),
           );
 
-          // Navigate to the SMS confirmation page
           Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => PasswordForgotSMSConfirmPage(
-                phone: _phoneController.text,
+                phone: '+$phoneNumber',
               ),
             ),
           );
@@ -116,14 +156,14 @@ class _PasswordForgotPageState extends State<PasswordForgotPage> {
                   keyboardType: TextInputType.phone,
                   autocorrect: false,
                   inputFormatters: [
-                    FilteringTextInputFormatter.allow(RegExp(r'[0-9+]')),
-                    LengthLimitingTextInputFormatter(13),
+                    _phoneNumberFormatter,
                   ],
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Поле не может быть пустым';
-                    } else if (value.length != 13) {
-                      return 'Длина номера должна быть 13 символов';
+                    } else if (value.replaceAll(RegExp(r'\D'), '').length !=
+                        12) {
+                      return 'Длина номера должна быть 12 символов';
                     }
                     return null;
                   },
@@ -132,7 +172,6 @@ class _PasswordForgotPageState extends State<PasswordForgotPage> {
                       filled: true,
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(15))),
-                      hintText: '+998901234567',
                       hintStyle: AppStyle.fontStyle,
                       label: Icon(
                         Icons.phone,

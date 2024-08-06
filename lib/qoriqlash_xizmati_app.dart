@@ -9,6 +9,7 @@ import 'package:qoriqlash_xizmati/front/style/app_style.dart';
 import 'package:another_flutter_splash_screen/another_flutter_splash_screen.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 class QoriqlashXizmatiApp extends StatelessWidget {
   const QoriqlashXizmatiApp({super.key});
@@ -21,7 +22,18 @@ class QoriqlashXizmatiApp extends StatelessWidget {
       ],
       child: Consumer<AppDataProvider>(
         builder: (context, themeProvider, child) {
+          final allprovider = Provider.of<AppDataProvider>(context);
           return MaterialApp(
+            locale: allprovider.locale,
+            localizationsDelegates: [
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+            ],
+            supportedLocales: [
+              Locale('ru'),
+              Locale('uzkiril'),
+              Locale('uzlatin'),
+            ],
             debugShowCheckedModeBanner: false,
             theme: themeProvider.currentTheme,
             routes: {

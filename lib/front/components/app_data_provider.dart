@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class AppDataProvider with ChangeNotifier {
   bool _isDarkTheme = false;
@@ -57,5 +60,35 @@ class AppDataProvider with ChangeNotifier {
   void updateEndTime(String label, TimeOfDay time) {
     endTimes[label] = time;
     notifyListeners();
+  }
+
+  Locale _locale = Locale('en');
+  Map<String, String> _localizedStrings = {};
+
+  Locale get locale => _locale;
+  Map<String, String> get localizedStrings => _localizedStrings;
+
+  Future<void> loadLanguage(String languageCode) async {
+    _locale = Locale(languageCode);
+
+    // Load the JSON string from assets
+    String jsonString =
+        await rootBundle.loadString('assets/translations/$languageCode.json');
+    // Decode the JSON string into a Map
+    Map<String, dynamic> jsonMap = json.decode(jsonString);
+
+    // Properly cast the map to Map<String, String>
+    _localizedStrings = {};
+    for (var item in jsonMap['data']) {
+      item.forEach((key, value) {
+        _localizedStrings[key as String] = value as String;
+      });
+    }
+
+    notifyListeners();
+  }
+
+  String translate(String key) {
+    return _localizedStrings[key] ?? key;
   }
 }

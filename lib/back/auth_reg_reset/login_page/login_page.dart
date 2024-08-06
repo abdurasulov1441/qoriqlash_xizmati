@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:math';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:qoriqlash_xizmati/back/api/appConfig.dart';
@@ -20,13 +22,51 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool isHiddenPassword = true;
-  TextEditingController emailTextInputController = TextEditingController();
+  TextEditingController phoneTextInputController =
+      TextEditingController(text: '+998 ');
   TextEditingController passwordTextInputController = TextEditingController();
   final formKey = GlobalKey<FormState>();
 
+  final _phoneNumberFormatter = TextInputFormatter.withFunction(
+    (oldValue, newValue) {
+      if (!newValue.text.startsWith('+998 ')) {
+        return oldValue;
+      }
+
+      String text = newValue.text.substring(5).replaceAll(RegExp(r'\D'), '');
+
+      if (text.length > 9) {
+        text = text.substring(0, 9);
+      }
+
+      StringBuffer formatted = StringBuffer('+998 ');
+      int selectionIndex = newValue.selection.baseOffset;
+
+      if (text.length > 0)
+        formatted.write('(${text.substring(0, min(2, text.length))}');
+      if (text.length > 2)
+        formatted.write(') ${text.substring(2, min(5, text.length))}');
+      if (text.length > 5)
+        formatted.write(' ${text.substring(5, min(7, text.length))}');
+      if (text.length > 7)
+        formatted.write(' ${text.substring(7, text.length)}');
+
+      selectionIndex = formatted.length;
+
+      if (newValue.selection.baseOffset < 5) {
+        selectionIndex = 5;
+      }
+
+      return TextEditingValue(
+        text: formatted.toString(),
+        selection: TextSelection.collapsed(offset: selectionIndex),
+      );
+    },
+  );
+
   @override
   void dispose() {
-    emailTextInputController.dispose();
+    phoneTextInputController.dispose();
     passwordTextInputController.dispose();
     super.dispose();
   }
@@ -38,14 +78,23 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> login() async {
+    FocusScope.of(context).unfocus();
     final isValid = formKey.currentState!.validate();
     if (!isValid) return;
     final url = Uri.parse('${AppConfig.serverAddress}/api/v1/auth/login');
     final headers = {"Content-Type": "application/json"};
+
+    // Retain the '+' and remove other non-digit characters
+    final phoneNumber =
+        '+${phoneTextInputController.text.substring(1).replaceAll(RegExp(r'\D'), '')}';
+
     final body = jsonEncode({
       "password": passwordTextInputController.text,
-      "phone_number": emailTextInputController.text
+      "phone_number": phoneNumber
     });
+
+    // Debugging: Print the formatted phone number
+    print("Phone number to be sent: $phoneNumber");
 
     // Create an instance of FlutterSecureStorage
     final storage = FlutterSecureStorage();
@@ -141,10 +190,21 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     const SizedBox(height: 5),
                     TextFormField(
-                      // style: TextStyle(color: AppColors.lightTextColor),
                       keyboardType: TextInputType.phone,
                       autocorrect: false,
-                      controller: emailTextInputController,
+                      controller: phoneTextInputController,
+                      inputFormatters: [
+                        _phoneNumberFormatter,
+                      ],
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Поле не может быть пустым';
+                        } else if (value.replaceAll(RegExp(r'\D'), '').length !=
+                            12) {
+                          return 'Длина номера должна быть 12 символов';
+                        }
+                        return null;
+                      },
                       decoration: InputDecoration(
                         fillColor: AppColors.fillColor,
                         filled: true,

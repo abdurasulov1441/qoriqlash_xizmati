@@ -11,6 +11,7 @@ import 'package:qoriqlash_xizmati/front/components/appbar_title.dart';
 import 'package:qoriqlash_xizmati/front/components/app_data_provider.dart';
 import 'package:qoriqlash_xizmati/front/pages/accaount_screens/shartnomalar.dart';
 import 'package:qoriqlash_xizmati/front/pages/accaount_screens/shaxsiy_malumotlar.dart';
+import 'package:qoriqlash_xizmati/front/pages/accaount_screens/sozlamalar.dart';
 import 'package:qoriqlash_xizmati/front/pages/accaount_screens/verification_page.dart';
 import 'package:qoriqlash_xizmati/front/pages/accaount_screens/visacard.dart';
 import 'package:qoriqlash_xizmati/front/pages/accaount_screens/yordam_page.dart';
@@ -435,22 +436,19 @@ class _AccountScreenNotLoginState extends State<AccountScreenNotLogin> {
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<AppDataProvider>(context);
     final List name = [
-      'Yordam',
-      'Qorong\'u rejim',
-      'Chiqish',
       'Verifikatiyadan o\'tish',
+      'Sozlamalar',
+      'Chiqish',
     ];
     final List image = [
-      'yordam.svg',
-      'tungi_rejim.svg',
+      'logout.svg',
       'logout.svg',
       'logout.svg',
     ];
     final List<Widget> route = [
-      FaqPage(),
-      Divider(),
-      Shartnomalar(),
       FaceVirify(),
+      Sozlamalar(),
+      Shartnomalar(),
     ];
     return Scaffold(
       body: SizedBox(

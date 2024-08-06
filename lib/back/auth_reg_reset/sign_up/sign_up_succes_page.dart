@@ -9,55 +9,70 @@ import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
 import 'package:qoriqlash_xizmati/front/style/app_style.dart';
 import 'package:http/http.dart' as http;
 
-class SignUpSuccessPage extends StatelessWidget {
+class SignUpSuccessPage extends StatefulWidget {
   const SignUpSuccessPage(
       {super.key, required this.phone, required this.password});
+
   final String phone;
   final String password;
+
   @override
-  Widget build(BuildContext context) {
-    Future<void> login() async {
-      final url = Uri.parse('${AppConfig.serverAddress}/api/v1/auth/login');
-      final headers = {"Content-Type": "application/json"};
-      final body = jsonEncode({"password": password, "phone_number": phone});
+  _SignUpSuccessPageState createState() => _SignUpSuccessPageState();
+}
 
-      // Create an instance of FlutterSecureStorage
-      final storage = FlutterSecureStorage();
+class _SignUpSuccessPageState extends State<SignUpSuccessPage> {
+  @override
+  void initState() {
+    super.initState();
+    login(); // Automatically login when the page is initialized
+  }
 
-      try {
-        final response = await http.post(url, headers: headers, body: body);
-        final responseBody = jsonDecode(response.body);
-        print(responseBody['status_code']);
+  Future<void> login() async {
+    final url = Uri.parse('${AppConfig.serverAddress}/api/v1/auth/login');
+    final headers = {"Content-Type": "application/json"};
+    final body =
+        jsonEncode({"password": widget.password, "phone_number": widget.phone});
 
-        if (responseBody['status_code'] == 200) {
-          final accessToken = responseBody['data']['access_token'];
-          final refreshToken = responseBody['data']['refresh_token'];
+    // Create an instance of FlutterSecureStorage
+    final storage = FlutterSecureStorage();
 
-          // Store the tokens in secure storage
-          await storage.write(key: 'accessToken', value: accessToken);
-          await storage.write(key: 'refreshToken', value: refreshToken);
+    try {
+      final response = await http.post(url, headers: headers, body: body);
+      final responseBody = jsonDecode(response.body);
+      print(responseBody['status_code']);
 
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => HomePage()),
-          );
-        } else {
-          SnackBarService.showSnackBar(
-            context,
-            responseBody['detail'],
-            true,
-          );
-        }
-      } catch (e) {
+      if (responseBody['status_code'] == 200) {
+        final accessToken = responseBody['data']['access_token'];
+        final refreshToken = responseBody['data']['refresh_token'];
+
+        // Store the tokens in secure storage
+        await storage.write(key: 'accessToken', value: accessToken);
+        await storage.write(key: 'refreshToken', value: refreshToken);
+
+        // Navigate to HomePage
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => HomePage()),
+        );
+      } else {
         SnackBarService.showSnackBar(
           context,
-          'Error occurred: $e',
+          responseBody['detail'],
           true,
         );
-        print(e);
       }
+    } catch (e) {
+      SnackBarService.showSnackBar(
+        context,
+        'Error occurred: $e',
+        true,
+      );
+      print(e);
     }
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
         child: Column(
@@ -74,9 +89,7 @@ class SignUpSuccessPage extends StatelessWidget {
                 )
               ],
             ),
-            SizedBox(
-              height: 5,
-            ),
+            SizedBox(height: 5),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -87,44 +100,32 @@ class SignUpSuccessPage extends StatelessWidget {
                 )
               ],
             ),
-            SizedBox(
-              height: 30,
-            ),
+            SizedBox(height: 30),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
                   'Siz endi tizimni ichidagi imkoniyatlardan',
-                  style: AppStyle.fontStyle.copyWith(
-                    color: Colors.grey,
-                  ),
+                  style: AppStyle.fontStyle.copyWith(color: Colors.grey),
                 )
               ],
             ),
-            SizedBox(
-              height: 5,
-            ),
+            SizedBox(height: 5),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('foydalanishingiz va ko‘rishingiz mumkin',
-                    style: AppStyle.fontStyle.copyWith(
-                      color: Colors.grey,
-                    ))
+                Text(
+                  'foydalanishingiz va ko‘rishingiz mumkin',
+                  style: AppStyle.fontStyle.copyWith(color: Colors.grey),
+                )
               ],
             ),
-            SizedBox(
-              height: 30,
-            ),
+            SizedBox(height: 30),
             Container(
               padding: EdgeInsets.symmetric(horizontal: 20),
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(builder: (context) => LoginScreen()),
-                  // );
                   login();
                 },
                 child: Text(

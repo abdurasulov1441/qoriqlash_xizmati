@@ -1,11 +1,13 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:qoriqlash_xizmati/back/api/appConfig.dart';
 import 'package:qoriqlash_xizmati/back/auth_reg_reset/sign_up/sms_verify_page.dart';
 import 'package:qoriqlash_xizmati/back/snack_bar.dart';
 import 'package:http/http.dart' as http;
 import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
 import 'package:qoriqlash_xizmati/front/style/app_style.dart';
+import 'dart:math';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -20,8 +22,46 @@ class _SignUpScreen extends State<SignUpScreen> {
   TextEditingController passwordTextInputController = TextEditingController();
   TextEditingController passwordTextRepeatInputController =
       TextEditingController();
-  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _phoneController =
+      TextEditingController(text: '+998 ');
   final formKey = GlobalKey<FormState>();
+
+  final _phoneNumberFormatter = TextInputFormatter.withFunction(
+    (oldValue, newValue) {
+      if (!newValue.text.startsWith('+998 ')) {
+        return oldValue;
+      }
+
+      String text = newValue.text.substring(5).replaceAll(RegExp(r'\D'), '');
+
+      if (text.length > 9) {
+        text = text.substring(0, 9);
+      }
+
+      StringBuffer formatted = StringBuffer('+998 ');
+      int selectionIndex = newValue.selection.baseOffset;
+
+      if (text.length > 0)
+        formatted.write('(${text.substring(0, min(2, text.length))}');
+      if (text.length > 2)
+        formatted.write(') ${text.substring(2, min(5, text.length))}');
+      if (text.length > 5)
+        formatted.write(' ${text.substring(5, min(7, text.length))}');
+      if (text.length > 7)
+        formatted.write(' ${text.substring(7, text.length)}');
+
+      selectionIndex = formatted.length;
+
+      if (newValue.selection.baseOffset < 5) {
+        selectionIndex = 5;
+      }
+
+      return TextEditingValue(
+        text: formatted.toString(),
+        selection: TextSelection.collapsed(offset: selectionIndex),
+      );
+    },
+  );
 
   @override
   void dispose() {
@@ -39,6 +79,7 @@ class _SignUpScreen extends State<SignUpScreen> {
   }
 
   Future<void> signUp() async {
+    FocusScope.of(context).unfocus();
     final isValid = formKey.currentState!.validate();
     if (!isValid) return;
 
@@ -51,11 +92,15 @@ class _SignUpScreen extends State<SignUpScreen> {
       );
       return;
     }
+
+    // Process the phone number to remove any non-numeric characters except '+'
+    final phoneNumber = _phoneController.text.replaceAll(RegExp(r'[^0-9]'), '');
+
     final url = Uri.parse('${AppConfig.serverAddress}/api/v1/auth/register');
     final headers = {"Content-Type": "application/json"};
     final body = jsonEncode({
       "password": passwordTextInputController.text,
-      "phone_number": _phoneController.text
+      "phone_number": '+$phoneNumber'
     });
 
     try {
@@ -89,7 +134,7 @@ class _SignUpScreen extends State<SignUpScreen> {
             context,
             MaterialPageRoute(
               builder: (context) => ConfirmSmsPage(
-                phone: _phoneController.text,
+                phone: '+$phoneNumber',
                 password: passwordTextInputController.text,
                 code: '', // No code generated
               ),
@@ -180,16 +225,15 @@ class _SignUpScreen extends State<SignUpScreen> {
                       keyboardType: TextInputType.phone,
                       autocorrect: false,
                       controller: _phoneController,
-                      // inputFormatters: [
-                      //   FilteringTextInputFormatter.allow(RegExp(r'[0-9+]')),
-                      //   LengthLimitingTextInputFormatter(
-                      //       13), // Ограничение на длину
-                      // ],
+                      inputFormatters: [
+                        _phoneNumberFormatter,
+                      ],
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Поле не может быть пустым';
-                        } else if (value.length != 13) {
-                          return 'Длина номера должна быть 13 символов';
+                        } else if (value.replaceAll(RegExp(r'\D'), '').length !=
+                            12) {
+                          return 'Длина номера должна быть 12 символов';
                         }
                         return null;
                       },

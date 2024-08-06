@@ -113,7 +113,7 @@ class _PasswordForgotSMSConfirmPageState
           children: [
             MiniRedAppBar(),
             MiniRedTitle(title: 'Parolni tiklash'),
-            Lottie.asset('assets/lotties/'),
+            Lottie.asset('assets/lotties/forgot_password.json'),
             // Image.asset(
             //   'assets/images/password_reset_2.png',
             // ),
