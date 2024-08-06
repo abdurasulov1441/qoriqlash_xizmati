@@ -5,9 +5,25 @@
 "appbartitle1":"O'zbekiston Respublikasi",
 "appbartitle2":"Milliy Gvardiyasi Qo'riqlash Xizmati",
 
+"accountnotlogin1":"Shaxsi tasdiqlanmagan foydalanuvchi",
+"accountnotlogin2":"Verifikatiyadan o'tish",
+"accountnotlogin3":"Chiqish",
+"accountnotlogin4":"Haqiqatdan ham chiqmoqchimisiz?",
+"accountnotlogin5":"Ha",
+"accountnotlogin6":"Yo'q",
+
+"accountnotlogin7":"Shartnomalar",
+"accountnotlogin8":"Arizalar",
+"accountnotlogin9":"Shaxsiy ma'lumotlar",
+"accountnotlogin10":"Mening kartalarim",
+"accountnotlogin11":"Mening uyim",
+
+
         "sozlamalar": "Sozlamalar",
        "sozlamalar1": "Tilni o'zgartirish",
-       "sozlamalar2": "Mavzuni o'zgartirish"
+       "sozlamalar2": "Mavzuni o'zgartirish",
+        "sozlamalar3": "Yordam",
+        "sozlamalar4": "Parolni almashtirish"
 
 
 

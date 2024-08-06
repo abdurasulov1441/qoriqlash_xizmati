@@ -1,12 +1,10 @@
 import 'dart:convert';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:qoriqlash_xizmati/back/api/appConfig.dart';
 import 'package:qoriqlash_xizmati/back/auth_reg_reset/login_page/login_page.dart';
-import 'package:qoriqlash_xizmati/back/auth_reg_reset/reset_password/reset_password.dart';
 import 'package:qoriqlash_xizmati/front/components/appbar_title.dart';
 import 'package:qoriqlash_xizmati/front/components/app_data_provider.dart';
 import 'package:qoriqlash_xizmati/front/pages/accaount_screens/shartnomalar.dart';
@@ -14,7 +12,6 @@ import 'package:qoriqlash_xizmati/front/pages/accaount_screens/shaxsiy_malumotla
 import 'package:qoriqlash_xizmati/front/pages/accaount_screens/sozlamalar.dart';
 import 'package:qoriqlash_xizmati/front/pages/accaount_screens/verification_page.dart';
 import 'package:qoriqlash_xizmati/front/pages/accaount_screens/visacard.dart';
-import 'package:qoriqlash_xizmati/front/pages/accaount_screens/yordam_page.dart';
 import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
 import 'package:qoriqlash_xizmati/front/style/app_style.dart';
 import 'package:http/http.dart' as http;
@@ -39,6 +36,8 @@ class _AccountScreenState extends State<AccountScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
+        final dataProvider =
+            Provider.of<AppDataProvider>(context, listen: false);
         return Dialog(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16.0),
@@ -55,7 +54,7 @@ class _AccountScreenState extends State<AccountScreen> {
                   color: AppColors.lightIconGuardColor,
                   alignment: Alignment.center,
                   child: Text(
-                    'Chiqish',
+                    dataProvider.translate('accountnotlogin3'),
                     style: AppStyle.fontStyle.copyWith(
                         color: AppColors.lightHeaderColor,
                         fontWeight: FontWeight.bold),
@@ -67,7 +66,7 @@ class _AccountScreenState extends State<AccountScreen> {
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Text(
-                    'Haqiqatdan ham chiqmoqchimisiz?',
+                    dataProvider.translate('accountnotlogin4'),
                     style: AppStyle.fontStyle,
                   ),
                 ),
@@ -97,8 +96,8 @@ class _AccountScreenState extends State<AccountScreen> {
                           (Route<dynamic> route) => false,
                         );
                       },
-                      child: const Text(
-                        'Ha',
+                      child: Text(
+                        dataProvider.translate('accountnotlogin5'),
                         style: AppStyle.fontStyle,
                       ),
                     ),
@@ -112,8 +111,8 @@ class _AccountScreenState extends State<AccountScreen> {
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
-                      child: const Text(
-                        'Yo\'q',
+                      child: Text(
+                        dataProvider.translate('accountnotlogin6'),
                         style: AppStyle.fontStyle,
                       ),
                     ),
@@ -167,33 +166,27 @@ class _AccountScreenState extends State<AccountScreen> {
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<AppDataProvider>(context);
     final List<String> name = [
-      'Shartnomalar',
-      'Arizalar',
-      'Xavfsizlik',
-      'Shaxsiy ma\'lumotlar',
-      'Mening kartalarim',
-      'Yordam',
-      'Qorong\'u rejim',
-      'Chiqish',
+      themeProvider.translate('accountnotlogin7'),
+      themeProvider.translate('accountnotlogin8'),
+      themeProvider.translate('accountnotlogin9'),
+      themeProvider.translate('accountnotlogin10'),
+      themeProvider.translate('sozlamalar'),
+      themeProvider.translate('accountnotlogin3'),
     ];
     final List<String> image = [
       'shartnoma.svg',
       'arizalar.svg',
-      'havfsizlik.svg',
       'shaxsiy_malumotlar.svg',
       'mening_kartalarim.svg',
-      'yordam.svg',
-      'tungi_rejim.svg',
+      'logout.svg',
       'logout.svg',
     ];
     final List<Widget> route = [
       Shartnomalar(),
       Shartnomalar(),
-      XavfsizlikPage(),
       ShaxsiyMalumotlar(),
       Cards(),
-      FaqPage(),
-      Divider(),
+      Sozlamalar(),
       Shartnomalar(),
     ];
     return Scaffold(
@@ -229,7 +222,7 @@ class _AccountScreenState extends State<AccountScreen> {
                 Column(
                   children: [
                     Text(
-                      'Mening uyim',
+                      themeProvider.translate('accountnotlogin11'),
                       style: AppStyle.fontStyle.copyWith(
                         fontWeight: FontWeight.bold,
                         color: themeProvider.isDarkTheme
@@ -304,19 +297,12 @@ class _AccountScreenState extends State<AccountScreen> {
                           );
                         }
                       },
-                      trailing: name[index] == 'Qorong\'u rejim'
-                          ? CupertinoSwitch(
-                              value: themeProvider.isDarkTheme,
-                              onChanged: (value) {
-                                themeProvider.toggleTheme();
-                              },
-                            )
-                          : Icon(
-                              Icons.keyboard_arrow_right,
-                              color: themeProvider.isDarkTheme
-                                  ? AppColors.darkTextColor
-                                  : AppColors.lightTextColor,
-                            ),
+                      trailing: Icon(
+                        Icons.keyboard_arrow_right,
+                        color: themeProvider.isDarkTheme
+                            ? AppColors.darkTextColor
+                            : AppColors.lightTextColor,
+                      ),
                     );
                   },
                 ),
@@ -338,6 +324,8 @@ class AccountScreenNotLogin extends StatefulWidget {
 
 class _AccountScreenNotLoginState extends State<AccountScreenNotLogin> {
   void showLogoutDialog(BuildContext context) {
+    final dataProvider = Provider.of<AppDataProvider>(context, listen: false);
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -357,7 +345,7 @@ class _AccountScreenNotLoginState extends State<AccountScreenNotLogin> {
                   color: AppColors.lightIconGuardColor,
                   alignment: Alignment.center,
                   child: Text(
-                    'Chiqish',
+                    dataProvider.translate('accountnotlogin3'),
                     style: AppStyle.fontStyle.copyWith(
                         color: AppColors.lightHeaderColor,
                         fontWeight: FontWeight.bold),
@@ -369,7 +357,7 @@ class _AccountScreenNotLoginState extends State<AccountScreenNotLogin> {
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Text(
-                    'Haqiqatdan ham chiqmoqchimisiz?',
+                    dataProvider.translate('accountnotlogin4'),
                     style: AppStyle.fontStyle,
                   ),
                 ),
@@ -399,8 +387,8 @@ class _AccountScreenNotLoginState extends State<AccountScreenNotLogin> {
                           (Route<dynamic> route) => false,
                         );
                       },
-                      child: const Text(
-                        'Ha',
+                      child: Text(
+                        dataProvider.translate('accountnotlogin5'),
                         style: AppStyle.fontStyle,
                       ),
                     ),
@@ -414,8 +402,8 @@ class _AccountScreenNotLoginState extends State<AccountScreenNotLogin> {
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
-                      child: const Text(
-                        'Yo\'q',
+                      child: Text(
+                        dataProvider.translate('accountnotlogin6'),
                         style: AppStyle.fontStyle,
                       ),
                     ),
@@ -436,20 +424,16 @@ class _AccountScreenNotLoginState extends State<AccountScreenNotLogin> {
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<AppDataProvider>(context);
     final List name = [
-      'Verifikatiyadan o\'tish',
-      'Sozlamalar',
-      'Chiqish',
+      themeProvider.translate('accountnotlogin2'),
+      themeProvider.translate('sozlamalar'),
+      themeProvider.translate('accountnotlogin3'),
     ];
     final List image = [
-      'logout.svg',
-      'logout.svg',
+      'havfsizlik.svg',
+      'havfsizlik.svg',
       'logout.svg',
     ];
-    final List<Widget> route = [
-      FaceVirify(),
-      Sozlamalar(),
-      Shartnomalar(),
-    ];
+    final List<Widget> route = [FaceVirify(), Sozlamalar(), Divider()];
     return Scaffold(
       body: SizedBox(
         width: double.infinity,
@@ -466,7 +450,7 @@ class _AccountScreenNotLoginState extends State<AccountScreenNotLogin> {
               height: 10,
             ),
             Text(
-              'Shaxsi tasdiqlanmagan foydalanuvchi',
+              themeProvider.translate('accountnotlogin1'),
               style: AppStyle.fontStyle.copyWith(
                   fontWeight: FontWeight.bold,
                   color: themeProvider.isDarkTheme
@@ -503,7 +487,7 @@ class _AccountScreenNotLoginState extends State<AccountScreenNotLogin> {
                         ),
                         onTap: () {
                           print(name[index]);
-                          if (name[index] == 'Chiqish') {
+                          if (image[index] == 'logout.svg') {
                             showLogoutDialog(context);
                           } else if (name[index] == 'Qorong\'u rejim') {
                             null;
@@ -517,20 +501,13 @@ class _AccountScreenNotLoginState extends State<AccountScreenNotLogin> {
                         },
                         //leading: Image.asset(images[index],width: 50,height: 50,),
                         textColor: Colors.white,
-                        trailing: name[index] == 'Qorong\'u rejim'
-                            ? CupertinoSwitch(
-                                value: themeProvider.isDarkTheme,
-                                onChanged: (value) {
-                                  themeProvider.toggleTheme();
-                                },
-                              )
-                            : Icon(
-                                Icons.keyboard_arrow_right,
-                                color: themeProvider.isDarkTheme
-                                    ? AppColors.darkTextColor
-                                    : AppColors.lightTextColor,
-                                weight: 20,
-                              ));
+                        trailing: Icon(
+                          Icons.keyboard_arrow_right,
+                          color: themeProvider.isDarkTheme
+                              ? AppColors.darkTextColor
+                              : AppColors.lightTextColor,
+                          weight: 20,
+                        ));
                   },
                 ),
               ),

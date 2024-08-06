@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:qoriqlash_xizmati/back/auth_reg_reset/reset_password/reset_password.dart';
 import 'package:qoriqlash_xizmati/front/components/app_data_provider.dart';
 import 'package:qoriqlash_xizmati/front/components/mini_red_app_bar.dart';
+import 'package:qoriqlash_xizmati/front/pages/accaount_screens/yordam_page.dart';
 import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
 import 'package:qoriqlash_xizmati/front/style/app_style.dart';
 
@@ -33,22 +35,32 @@ class Sozlamalar extends StatelessWidget {
             child: Container(
               margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               width: double.infinity,
-              height: 100,
+              height: 70,
               decoration: BoxDecoration(
                   color: AppColors.uxuiColor,
                   borderRadius: BorderRadius.all(Radius.circular(10))),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    allprovider.translate('sozlamalar2'),
-                    style: AppStyle.fontStyle,
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20),
+                    child: Text(
+                      allprovider.translate('sozlamalar2'),
+                      style: AppStyle.fontStyle,
+                    ),
                   ),
-                  IconButton(
-                    icon: Icon(Icons.brightness_4),
-                    onPressed: () {
-                      allprovider.toggleTheme();
-                    },
+                  Container(
+                    width: 100,
+                    height: 100,
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.brightness_4,
+                        color: AppColors.lightIconGuardColor,
+                      ),
+                      onPressed: () {
+                        allprovider.toggleTheme();
+                      },
+                    ),
                   ),
                 ],
               ),
@@ -59,35 +71,104 @@ class Sozlamalar extends StatelessWidget {
             child: Container(
               margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               width: double.infinity,
-              height: 100,
+              height: 70,
               decoration: BoxDecoration(
                   color: AppColors.uxuiColor,
                   borderRadius: BorderRadius.all(Radius.circular(10))),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    allprovider.translate('sozlamalar1'),
-                    style: AppStyle.fontStyle,
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20),
+                    child: Text(
+                      allprovider.translate('sozlamalar1'),
+                      style: AppStyle.fontStyle,
+                    ),
                   ),
-                  LanguageToggleButton(
-                    languages: languages,
-                    languageImages: languageImages,
-                    onLanguageChanged: (language) {
-                      allprovider.loadLanguage(language);
-                    },
+                  Container(
+                    width: 100,
+                    height: 100,
+                    child: LanguageToggleButton(
+                      languages: languages,
+                      languageImages: languageImages,
+                      onLanguageChanged: (language) {
+                        allprovider.loadLanguage(language);
+                      },
+                    ),
                   ),
                 ],
               ),
             ),
           ),
-          Text(
-            allprovider.translate('sozlamalar'),
-            style: TextStyle(fontSize: 24),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => FaqPage()));
+            },
+            child: Container(
+              margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              width: double.infinity,
+              height: 70,
+              decoration: BoxDecoration(
+                  color: AppColors.uxuiColor,
+                  borderRadius: BorderRadius.all(Radius.circular(10))),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20),
+                    child: Text(
+                      allprovider.translate('sozlamalar3'),
+                      style: AppStyle.fontStyle,
+                    ),
+                  ),
+                  Container(
+                    width: 100,
+                    height: 100,
+                    child: Icon(
+                      Icons.arrow_right,
+                      color: AppColors.lightIconGuardColor,
+                      size: 40,
+                    ),
+                  )
+                ],
+              ),
+            ),
           ),
-          Text(
-            allprovider.translate('sozlamalar1'),
-            style: TextStyle(fontSize: 24),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => XavfsizlikPage()));
+            },
+            child: Container(
+              margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              width: double.infinity,
+              height: 70,
+              decoration: BoxDecoration(
+                  color: AppColors.uxuiColor,
+                  borderRadius: BorderRadius.all(Radius.circular(10))),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20),
+                    child: Text(
+                      allprovider.translate('sozlamalar4'),
+                      style: AppStyle.fontStyle,
+                    ),
+                  ),
+                  Container(
+                    width: 100,
+                    height: 100,
+                    child: Icon(
+                      Icons.lock,
+                      color: AppColors.lightIconGuardColor,
+                      size: 30,
+                    ),
+                  )
+                ],
+              ),
+            ),
           ),
         ],
       ),

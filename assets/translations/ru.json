@@ -6,6 +6,18 @@
 "appbartitle2":"Респулики Узбекистан",
 
 
+"accountnotlogin1":"Не идентифицированный пользователь",
+"accountnotlogin2":"Пройти веривикацию",
+"accountnotlogin3":"Выход",
+"accountnotlogin4":"Действительно хотите выйти?",
+"accountnotlogin5":"Да",
+"accountnotlogin6":"Нет",
+
+"accountnotlogin7":"Соглашения",
+"accountnotlogin8":"Приложение",
+"accountnotlogin9":"Персональная информация",
+"accountnotlogin10":"Мои карты",
+"accountnotlogin11":"Мой дом",
 
 
 
@@ -14,7 +26,9 @@
 
         "sozlamalar": "Настройки",
        "sozlamalar1": "Сменить язык",
-       "sozlamalar2": "Сменить тему"
+       "sozlamalar2": "Сменить тему",
+       "sozlamalar3": "Помощь",
+        "sozlamalar4": "Изменить пароль"
 
 
 

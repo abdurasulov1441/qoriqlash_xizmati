@@ -5,11 +5,25 @@
 "appbartitle1":"Ўзбекистон Респуликиаси",
 "appbartitle2":"Миллий Гвардияси Қўриқлаш Хизмати",
 
+"accountnotlogin1":"Шахси тасдиқланмаган фойдаланувчи",
+"accountnotlogin2":"Веривикациядан ўтиш",
+"accountnotlogin3":"Чиқиш",
+"accountnotlogin4":"Ҳақиқатдан ҳам чиқмоқчимисиз?",
+"accountnotlogin5":"Ҳа",
+"accountnotlogin6":"Йўқ",
+
+"accountnotlogin7":"Шартномалар",
+"accountnotlogin8":"Аризалар",
+"accountnotlogin9":"Шахсий маълумотлар",
+"accountnotlogin10":"Менинг карталарим",
+"accountnotlogin11":"Менинг уйим",
 
 
         "sozlamalar": "Созламалар",
        "sozlamalar1": "Тилни ўзгартириш",
-        "sozlamalar2": "Мавзуни ўзгартириш"
+        "sozlamalar2": "Мавзуни ўзгартириш",
+         "sozlamalar3": "Ёрдам",
+         "sozlamalar4": "Парольни алмаштириш"
 
       }
       
