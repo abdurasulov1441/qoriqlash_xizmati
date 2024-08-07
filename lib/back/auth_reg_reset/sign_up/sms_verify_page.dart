@@ -128,13 +128,13 @@ class _ConfirmSmsPageState extends State<ConfirmSmsPage> {
     if (_mounted) {
       if (jsonResponse['status'] == 200) {
         setState(() {
-          currentPinTheme = succesPinTheme; // Set success theme
+          currentPinTheme = succesPinTheme;
         });
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              'Login Successful\nPhone: ${widget.phone}\nPassword: ${widget.password}',
+              'SMS tasdiqlandi',
             ),
           ),
         );
@@ -158,7 +158,7 @@ class _ConfirmSmsPageState extends State<ConfirmSmsPage> {
         });
 
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('${jsonResponse['message']}')),
+          SnackBar(content: Text('Tasdiqlash kodi noto\'g\'ri')),
         );
       }
     }

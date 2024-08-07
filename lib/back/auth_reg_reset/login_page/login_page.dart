@@ -119,14 +119,14 @@ class _LoginScreenState extends State<LoginScreen> {
       } else {
         SnackBarService.showSnackBar(
           context,
-          responseBody['detail'],
+          'Login yoki parolingiz noto\'g\'ri',
           true,
         );
       }
     } catch (e) {
       SnackBarService.showSnackBar(
         context,
-        'Error occurred: $e',
+        'Server bilan aloqa mavjud emas',
         true,
       );
       print(e);
@@ -237,8 +237,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       autocorrect: false,
                       controller: passwordTextInputController,
                       obscureText: isHiddenPassword,
-                      validator: (value) => value != null && value.length < 6
-                          ? 'Минимум 6 символов'
+                      validator: (value) => value != null && value.length < 8
+                          ? 'Kamida 8 belgidan kam bo\'lmasligi kerak'
                           : null,
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       decoration: InputDecoration(

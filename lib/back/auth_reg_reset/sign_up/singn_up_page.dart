@@ -87,7 +87,7 @@ class _SignUpScreen extends State<SignUpScreen> {
         passwordTextRepeatInputController.text) {
       SnackBarService.showSnackBar(
         context,
-        'Пароли должны совпадать',
+        'Parollar mos kelishi kerak',
         true,
       );
       return;
@@ -136,24 +136,22 @@ class _SignUpScreen extends State<SignUpScreen> {
               builder: (context) => ConfirmSmsPage(
                 phone: '+$phoneNumber',
                 password: passwordTextInputController.text,
-                code: '', // No code generated
+                code: '',
               ),
             ),
           );
         }
       } else {
-        // Handle error response
         SnackBarService.showSnackBar(
           context,
-          'Failed to register user: ${response.body}',
+          'Registratsiada xatolik yuz berdi',
           true,
         );
       }
     } catch (e) {
-      // Handle network or other errors
       SnackBarService.showSnackBar(
         context,
-        'Error occurred: $e',
+        'Server bilan aloqa mavjud emas',
         true,
       );
     }
@@ -230,10 +228,10 @@ class _SignUpScreen extends State<SignUpScreen> {
                       ],
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Поле не может быть пустым';
+                          return 'Bo\'sh bo\'lmasligi lozim';
                         } else if (value.replaceAll(RegExp(r'\D'), '').length !=
                             12) {
-                          return 'Длина номера должна быть 12 символов';
+                          return 'Telefon raqam uzunligi 9 belgidan kam bo\'lmasligi kerak';
                         }
                         return null;
                       },
@@ -271,8 +269,8 @@ class _SignUpScreen extends State<SignUpScreen> {
                       controller: passwordTextInputController,
                       obscureText: isHiddenPassword,
                       autovalidateMode: AutovalidateMode.onUserInteraction,
-                      validator: (value) => value != null && value.length < 6
-                          ? 'Минимум 6 символов'
+                      validator: (value) => value != null && value.length < 8
+                          ? 'Kamida 8 belgidan kam bo\'lmasligi kerak'
                           : null,
                       decoration: InputDecoration(
                         fillColor: AppColors.fillColor,
@@ -316,8 +314,8 @@ class _SignUpScreen extends State<SignUpScreen> {
                       controller: passwordTextRepeatInputController,
                       obscureText: isHiddenPassword,
                       autovalidateMode: AutovalidateMode.onUserInteraction,
-                      validator: (value) => value != null && value.length < 6
-                          ? 'Минимум 6 символов'
+                      validator: (value) => value != null && value.length < 8
+                          ? 'Kamida 8 belgidan kam bo\'lmasligi kerak'
                           : null,
                       decoration: InputDecoration(
                         fillColor: AppColors.fillColor,
