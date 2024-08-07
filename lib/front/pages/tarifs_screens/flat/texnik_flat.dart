@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:provider/provider.dart';
-import 'package:qoriqlash_xizmati/front/components/app_data_provider.dart';
 import 'package:qoriqlash_xizmati/front/components/mini_red_app_bar.dart';
 import 'package:qoriqlash_xizmati/front/pages/tarifs_screens/object/ariza_step_texnik_object/ariza_texnik_object.dart';
 import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
