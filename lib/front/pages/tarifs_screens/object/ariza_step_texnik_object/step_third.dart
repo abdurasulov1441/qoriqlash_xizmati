@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 
 class BuildStep3Page extends StatelessWidget {
   const BuildStep3Page({super.key});
@@ -7,15 +6,7 @@ class BuildStep3Page extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: [
-        Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: SvgPicture.asset(
-              'assets/images/step3.svg',
-              width: 50,
-              height: 50,
-            )),
-      ],
+      children: [],
     );
   }
 }

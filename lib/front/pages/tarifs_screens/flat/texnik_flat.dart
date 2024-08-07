@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:qoriqlash_xizmati/front/components/mini_red_app_bar.dart';
-import 'package:qoriqlash_xizmati/front/pages/tarifs_screens/object/ariza_step_texnik_object/ariza_texnik_object.dart';
 import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
 import 'package:qoriqlash_xizmati/front/style/app_style.dart';
 
@@ -413,10 +412,10 @@ class _DropdownButtonExampleState extends State<DropDownFlat> {
                     borderRadius: BorderRadius.all(Radius.circular(10))),
                 backgroundColor: AppColors.lightButtonGreen),
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => ArizaTexnikObyekt()),
-              );
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(builder: (context) => ArizaTexnikXonadon()),
+              // );
             },
             child: Text('Ariza berish',
                 style: AppStyle.fontStyle

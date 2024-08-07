@@ -1,18 +1,11 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:qoriqlash_xizmati/front/style/app_style.dart';
 
 Widget _buildStepPage2() {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.end,
     children: [
-      Container(
-          child: SvgPicture.asset(
-        'assets/images/step2.svg',
-        width: 50,
-        height: 50,
-      )),
       SizedBox(
         //margin: EdgeInsets.symmetric(horizontal: 50),
         width: 219,
@@ -288,12 +281,6 @@ class BuildStep2Page extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        Container(
-            child: SvgPicture.asset(
-          'assets/images/step2.svg',
-          width: 50,
-          height: 50,
-        )),
         SizedBox(
           //margin: EdgeInsets.symmetric(horizontal: 50),
           width: 219,

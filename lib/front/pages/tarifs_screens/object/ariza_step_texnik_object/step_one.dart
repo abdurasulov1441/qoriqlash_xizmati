@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:qoriqlash_xizmati/front/style/app_style.dart';
 
 class BuildStep1Page extends StatelessWidget {
@@ -9,13 +8,6 @@ class BuildStep1Page extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: SvgPicture.asset(
-              'assets/images/step1.svg',
-              width: 50,
-              height: 50,
-            )),
         Container(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             child: Column(
