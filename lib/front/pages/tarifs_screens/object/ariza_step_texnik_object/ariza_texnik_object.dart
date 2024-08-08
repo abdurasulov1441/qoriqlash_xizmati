@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:qoriqlash_xizmati/back/api/FormData.dart';
 
 import 'package:qoriqlash_xizmati/front/components/mini_red_app_bar.dart';
 
@@ -10,7 +11,16 @@ import 'package:qoriqlash_xizmati/front/pages/tarifs_screens/object/ariza_step_t
 import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
 
 class ArizaTexnikObyekt extends StatelessWidget {
-  const ArizaTexnikObyekt({super.key});
+  final String? obyektTuri;
+  final String? qoriqlashVositasi;
+  final Map<String, TimeOfDay>? qoriqlashVaqtlari;
+
+  const ArizaTexnikObyekt({
+    Key? key,
+    this.obyektTuri,
+    this.qoriqlashVositasi,
+    this.qoriqlashVaqtlari,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +31,13 @@ class ArizaTexnikObyekt extends StatelessWidget {
           children: [
             MiniRedAppBar(),
             MiniRedTitle(title: 'Arizani Rasmiylashtirish'),
-            Expanded(child: ArizaStep()),
+            Expanded(
+              child: MultiStepForm(
+                obyektTuri: obyektTuri,
+                qoriqlashVositasi: qoriqlashVositasi,
+                qoriqlashVaqtlari: qoriqlashVaqtlari,
+              ),
+            ),
           ],
         ),
       ),
@@ -39,7 +55,16 @@ class ArizaStep extends StatelessWidget {
 }
 
 class MultiStepForm extends StatefulWidget {
-  const MultiStepForm({super.key});
+  final String? obyektTuri;
+  final String? qoriqlashVositasi;
+  final Map<String, TimeOfDay>? qoriqlashVaqtlari;
+
+  const MultiStepForm({
+    Key? key,
+    this.obyektTuri,
+    this.qoriqlashVositasi,
+    this.qoriqlashVaqtlari,
+  }) : super(key: key);
 
   @override
   _MultiStepFormState createState() => _MultiStepFormState();
@@ -48,6 +73,7 @@ class MultiStepForm extends StatefulWidget {
 class _MultiStepFormState extends State<MultiStepForm> {
   final PageController _pageController = PageController();
   int _currentStep = 0;
+  FormData _formData = FormData();
 
   void _nextStep() {
     if (_currentStep < 3) {
@@ -73,6 +99,12 @@ class _MultiStepFormState extends State<MultiStepForm> {
     }
   }
 
+  void _updateFormData(FormData newData) {
+    setState(() {
+      _formData = newData;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -80,7 +112,7 @@ class _MultiStepFormState extends State<MultiStepForm> {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: SvgPicture.asset(
-            'assets/images/step${_currentStep + 1}.svg', // Dynamically load SVG based on _currentStep
+            'assets/images/step${_currentStep + 1}.svg',
             width: 50,
             height: 50,
           ),
@@ -89,11 +121,21 @@ class _MultiStepFormState extends State<MultiStepForm> {
           child: PageView(
             controller: _pageController,
             physics: const NeverScrollableScrollPhysics(),
-            children: const [
-              BuildStep1Page(),
-              BuildStep2Page(),
-              BuildStep3Page(),
-              BuildStep4Page(),
+            children: [
+              BuildStep1Page(
+                formData: _formData,
+                onUpdateFormData: _updateFormData,
+              ),
+              BuildStep2Page(
+                formData: _formData,
+                onUpdateFormData: _updateFormData,
+              ),
+              BuildStep3Page(
+                obyektTuri: widget.obyektTuri,
+                qoriqlashVositasi: widget.qoriqlashVositasi,
+                qoriqlashVaqtlari: widget.qoriqlashVaqtlari,
+              ),
+              const BuildStep4Page(),
             ],
           ),
         ),

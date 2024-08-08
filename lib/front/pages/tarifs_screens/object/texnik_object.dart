@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:qoriqlash_xizmati/front/components/app_data_provider.dart';
@@ -16,21 +18,46 @@ class TexnikObject extends StatelessWidget {
     return Scaffold(
       body: Container(
         child: Column(
-          children: [DropdownButtonExample()],
+          children: [DropDownObjectTexnik()],
         ),
       ),
     );
   }
 }
 
-class DropdownButtonExample extends StatefulWidget {
+class DropDownObjectTexnik extends StatefulWidget {
   @override
   _DropdownButtonExampleState createState() => _DropdownButtonExampleState();
 }
 
-class _DropdownButtonExampleState extends State<DropdownButtonExample> {
+class _DropdownButtonExampleState extends State<DropDownObjectTexnik> {
   String? _selectedItem1;
   String? _selectedItem2;
+  List<String> objectTypes = []; // List to hold the fetched object types
+
+  @override
+  void initState() {
+    super.initState();
+    fetchObjectTypes(); // Fetch data when the widget initializes
+  }
+
+  Future<void> fetchObjectTypes() async {
+    try {
+      final response = await http.get(Uri.parse(
+          'http://10.100.9.145:7684/api/v1/ref/object-types?parent_id=1'));
+      if (response.statusCode == 200) {
+        final List<dynamic> data =
+            json.decode(utf8.decode(response.bodyBytes)); // Use utf8.decode
+        setState(() {
+          objectTypes = data.map((item) => item['name'].toString()).toList();
+        });
+      } else {
+        print('Failed to load object types');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
 
   void _showModalForItem1(
       BuildContext context, List<String> items, Function(String) onSelect) {
@@ -99,7 +126,6 @@ class _DropdownButtonExampleState extends State<DropdownButtonExample> {
                 borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(8), topRight: Radius.circular(8))),
             width: double.infinity,
-            // color: AppColors.lightHeaderBlue,
             height: 35,
             child: Center(
                 child: Text('Siz qanday qo\'riqlash vositalarini tanlaysiz',
@@ -184,7 +210,6 @@ class _DropdownButtonExampleState extends State<DropdownButtonExample> {
                 borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(8), topRight: Radius.circular(8))),
             width: double.infinity,
-            // color: AppColors.lightHeaderBlue,
             height: 35,
             child: Center(
                 child: Text('Qo\'riqlash vaqt oralig\'ini kiriting',
@@ -341,15 +366,7 @@ class _DropdownButtonExampleState extends State<DropdownButtonExample> {
               onPressed: () {
                 _showModalForItem1(
                   context,
-                  [
-                    'Bank',
-                    'Ishlab chiqarish',
-                    'Zargarlik do\'kon',
-                    'Spirtli ichimlik do\'kon',
-                    'Go\'zallik saloni',
-                    'Avto salon',
-                    'Xususiy klinika'
-                  ],
+                  objectTypes, // Use the fetched object types
                   (selectedItem) {
                     setState(() {
                       _selectedItem1 = selectedItem;
@@ -498,19 +515,36 @@ class _DropdownButtonExampleState extends State<DropdownButtonExample> {
         ),
         SizedBox(height: 20),
         ElevatedButton(
-            style: ElevatedButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10))),
-                backgroundColor: AppColors.lightButtonGreen),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => ArizaTexnikObyekt()),
-              );
-            },
-            child: Text('Ariza berish',
-                style: AppStyle.fontStyle
-                    .copyWith(color: AppColors.lightHeaderColor))),
+          style: ElevatedButton.styleFrom(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+            ),
+            backgroundColor: AppColors.lightButtonGreen,
+          ),
+          onPressed: () {
+            final timeModel =
+                Provider.of<AppDataProvider>(context, listen: false);
+
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ArizaTexnikObyekt(
+                  obyektTuri: _selectedItem1,
+                  qoriqlashVositasi: _selectedItem2,
+                  qoriqlashVaqtlari: {
+                    ...timeModel.startTimes, // Passing start times
+                    ...timeModel.endTimes, // Passing end times
+                  },
+                ),
+              ),
+            );
+          },
+          child: Text(
+            'Ariza berish',
+            style:
+                AppStyle.fontStyle.copyWith(color: AppColors.lightHeaderColor),
+          ),
+        ),
       ],
     );
   }
