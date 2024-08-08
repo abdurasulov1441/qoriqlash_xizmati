@@ -32,6 +32,8 @@ class _BuildStep1PageState extends State<BuildStep1Page> {
   late TextEditingController leaderPhoneController;
   late TextEditingController legalNameController;
 
+  final _formKey = GlobalKey<FormState>();
+
   @override
   void initState() {
     super.initState();
@@ -47,7 +49,7 @@ class _BuildStep1PageState extends State<BuildStep1Page> {
         TextEditingController(text: widget.formData.legalName);
 
     if (selectedRegion != null) {
-      fetchDistricts(selectedRegion!);
+      fetchDistricts(selectedRegion);
     }
   }
 
@@ -58,12 +60,12 @@ class _BuildStep1PageState extends State<BuildStep1Page> {
     if (response.statusCode == 200) {
       setState(() {
         regions = json.decode(utf8.decode(response.bodyBytes));
-        if (selectedRegion == null) {
-          selectedRegion =
-              regions.isNotEmpty ? regions[0]['id'].toString() : null;
-          if (selectedRegion != null) {
-            fetchDistricts(selectedRegion!);
-          }
+        regions.insert(0, {'id': null, 'name': 'Hudud tanlanmadi'});
+        if (selectedRegion == null ||
+            !regions
+                .any((region) => region['id'].toString() == selectedRegion)) {
+          selectedRegion = regions[0]['id']?.toString();
+          fetchDistricts(selectedRegion);
         }
       });
     } else {
@@ -72,15 +74,29 @@ class _BuildStep1PageState extends State<BuildStep1Page> {
     }
   }
 
-  Future<void> fetchDistricts(String regionId) async {
+  Future<void> fetchDistricts(String? regionId) async {
+    if (regionId == null) {
+      setState(() {
+        districts = [
+          {'id': null, 'name': 'Hudud tanlanmadi'}
+        ];
+        selectedDistrict = districts[0]['id']?.toString();
+      });
+      return;
+    }
+
     final response = await http.get(Uri.parse(
         'http://10.100.9.145:7684/api/v1/ref/distcities?region_id=$regionId'));
 
     if (response.statusCode == 200) {
       setState(() {
         districts = json.decode(utf8.decode(response.bodyBytes));
-        selectedDistrict = widget.formData.districtId ??
-            (districts.isNotEmpty ? districts[0]['id'].toString() : null);
+        districts.insert(0, {'id': null, 'name': 'Hudud tanlanmadi'});
+        if (selectedDistrict == null ||
+            !districts.any(
+                (district) => district['id'].toString() == selectedDistrict)) {
+          selectedDistrict = districts[0]['id']?.toString();
+        }
       });
     } else {
       // Handle the error
@@ -99,263 +115,324 @@ class _BuildStep1PageState extends State<BuildStep1Page> {
     ));
   }
 
+  bool _validateForm() {
+    return _formKey.currentState?.validate() ?? false;
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      child: Column(
-        children: [
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 20),
-                  child: Text(
-                    'Hududni tanlang',
-                    style: AppStyle.fontStyle
-                        .copyWith(fontWeight: FontWeight.bold),
-                  ),
-                ),
-                SizedBox(height: 10),
-                DropdownButtonFormField<String>(
-                  value: selectedRegion,
-                  decoration: InputDecoration(
-                    label: SvgPicture.asset(
-                      'assets/images/location.svg',
-                      width: 40,
-                      height: 40,
-                    ),
-                    filled: true,
-                    fillColor: AppColors.fillColor,
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(12)),
-                      borderSide: BorderSide(
-                          width: 0, color: AppColors.lightHeaderColor),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(12)),
-                      borderSide: BorderSide(
-                          width: 0, color: AppColors.lightHeaderColor),
+      child: Form(
+        key: _formKey,
+        child: Column(
+          children: [
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20),
+                    child: Text(
+                      'Hududni tanlang',
+                      style: AppStyle.fontStyle
+                          .copyWith(fontWeight: FontWeight.bold),
                     ),
                   ),
-                  items: regions
-                      .map((region) => DropdownMenuItem(
-                            value: region['id'].toString(),
-                            child: Text(region['name']),
-                          ))
-                      .toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      selectedRegion = value;
-                      selectedDistrict = null;
-                      fetchDistricts(selectedRegion!);
+                  SizedBox(height: 10),
+                  DropdownButtonFormField<String>(
+                    value: selectedRegion,
+                    decoration: InputDecoration(
+                      prefixIcon: Padding(
+                        padding: const EdgeInsets.only(left: 10, right: 10),
+                        child: SvgPicture.asset(
+                          'assets/images/location.svg',
+                          width: 40,
+                          height: 40,
+                        ),
+                      ),
+                      filled: true,
+                      fillColor: AppColors.fillColor,
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(12)),
+                        borderSide: BorderSide(
+                            width: 0, color: AppColors.lightHeaderColor),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(12)),
+                        borderSide: BorderSide(
+                            width: 0, color: AppColors.lightHeaderColor),
+                      ),
+                    ),
+                    items: regions
+                        .map((region) => DropdownMenuItem(
+                              value: region['id']?.toString(),
+                              child: Text(region['name']),
+                            ))
+                        .toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        selectedRegion = value;
+                        selectedDistrict = null;
+                        fetchDistricts(selectedRegion);
+                        _updateFormData();
+                      });
+                    },
+                    validator: (value) {
+                      if (value == null || value == 'null') {
+                        return 'Iltimos, hududni tanlang';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 20),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20),
+                    child: Text(
+                      'Tumanni tanlang',
+                      style: AppStyle.fontStyle
+                          .copyWith(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  DropdownButtonFormField<String>(
+                    value: selectedDistrict,
+                    decoration: InputDecoration(
+                      prefixIcon: Padding(
+                        padding: const EdgeInsets.only(left: 10, right: 10),
+                        child: SvgPicture.asset(
+                          'assets/images/location.svg',
+                          width: 40,
+                          height: 40,
+                        ),
+                      ),
+                      filled: true,
+                      fillColor: AppColors.fillColor,
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(12)),
+                        borderSide: BorderSide(
+                            width: 0, color: AppColors.lightHeaderColor),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(12)),
+                        borderSide: BorderSide(
+                            width: 0, color: AppColors.lightHeaderColor),
+                      ),
+                    ),
+                    items: districts
+                        .map((district) => DropdownMenuItem(
+                              value: district['id']?.toString(),
+                              child: Text(district['name']),
+                            ))
+                        .toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        selectedDistrict = value;
+                        _updateFormData();
+                      });
+                    },
+                    validator: (value) {
+                      if (value == null || value == 'null') {
+                        return 'Iltimos, tumanni tanlang';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 20),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20),
+                    child: Text(
+                      'Manzil',
+                      style: AppStyle.fontStyle
+                          .copyWith(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  TextFormField(
+                    controller: addressController,
+                    decoration: InputDecoration(
+                      prefixIcon: Padding(
+                        padding: const EdgeInsets.only(left: 10, right: 10),
+                        child: SvgPicture.asset(
+                          'assets/images/location.svg',
+                          width: 40,
+                          height: 40,
+                        ),
+                      ),
+                      filled: true,
+                      fillColor: AppColors.fillColor,
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(12)),
+                        borderSide: BorderSide(
+                            width: 0, color: AppColors.lightHeaderColor),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(12)),
+                        borderSide: BorderSide(
+                            width: 0, color: AppColors.lightHeaderColor),
+                      ),
+                    ),
+                    onChanged: (value) {
                       _updateFormData();
-                    });
-                  },
-                ),
-                SizedBox(height: 20),
-                Padding(
-                  padding: const EdgeInsets.only(left: 20),
-                  child: Text(
-                    'Tumanni tanlang',
-                    style: AppStyle.fontStyle
-                        .copyWith(fontWeight: FontWeight.bold),
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Iltimos, manzilni kiriting';
+                      }
+                      return null;
+                    },
                   ),
-                ),
-                SizedBox(height: 10),
-                DropdownButtonFormField<String>(
-                  value: selectedDistrict,
-                  decoration: InputDecoration(
-                    label: SvgPicture.asset(
-                      'assets/images/location.svg',
-                      width: 40,
-                      height: 40,
-                    ),
-                    filled: true,
-                    fillColor: AppColors.fillColor,
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(12)),
-                      borderSide: BorderSide(
-                          width: 0, color: AppColors.lightHeaderColor),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(12)),
-                      borderSide: BorderSide(
-                          width: 0, color: AppColors.lightHeaderColor),
+                  SizedBox(height: 20),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20),
+                    child: Text(
+                      'Obyekt rahbarining F.I.SH',
+                      style: AppStyle.fontStyle
+                          .copyWith(fontWeight: FontWeight.bold),
                     ),
                   ),
-                  items: districts
-                      .map((district) => DropdownMenuItem(
-                            value: district['id'].toString(),
-                            child: Text(district['name']),
-                          ))
-                      .toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      selectedDistrict = value;
+                  SizedBox(height: 10),
+                  TextFormField(
+                    controller: leaderNameController,
+                    decoration: InputDecoration(
+                      prefixIcon: Padding(
+                        padding: const EdgeInsets.only(left: 10, right: 10),
+                        child: SvgPicture.asset(
+                          'assets/images/person1.svg',
+                          width: 40,
+                          height: 40,
+                        ),
+                      ),
+                      filled: true,
+                      fillColor: AppColors.fillColor,
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(12)),
+                        borderSide: BorderSide(
+                            width: 0, color: AppColors.lightHeaderColor),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(12)),
+                        borderSide: BorderSide(
+                            width: 0, color: AppColors.lightHeaderColor),
+                      ),
+                    ),
+                    onChanged: (value) {
                       _updateFormData();
-                    });
-                  },
-                ),
-                SizedBox(height: 20),
-                Padding(
-                  padding: const EdgeInsets.only(left: 20),
-                  child: Text(
-                    'Manzil',
-                    style: AppStyle.fontStyle
-                        .copyWith(fontWeight: FontWeight.bold),
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Iltimos, ismni kiriting';
+                      }
+                      return null;
+                    },
                   ),
-                ),
-                SizedBox(height: 10),
-                TextField(
-                  controller: addressController,
-                  decoration: InputDecoration(
-                    label: SvgPicture.asset(
-                      'assets/images/location.svg',
-                      width: 40,
-                      height: 40,
-                    ),
-                    filled: true,
-                    fillColor: AppColors.fillColor,
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(12)),
-                      borderSide: BorderSide(
-                          width: 0, color: AppColors.lightHeaderColor),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(12)),
-                      borderSide: BorderSide(
-                          width: 0, color: AppColors.lightHeaderColor),
+                  SizedBox(height: 20),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20),
+                    child: Text(
+                      'Obyekt rahbarining telefon raqami',
+                      style: AppStyle.fontStyle
+                          .copyWith(fontWeight: FontWeight.bold),
                     ),
                   ),
-                  onChanged: (value) {
-                    _updateFormData();
-                  },
-                ),
-                SizedBox(height: 20),
-                Padding(
-                  padding: const EdgeInsets.only(left: 20),
-                  child: Text(
-                    'Obyekt rahbarining F.I.SH',
-                    style: AppStyle.fontStyle
-                        .copyWith(fontWeight: FontWeight.bold),
+                  SizedBox(height: 10),
+                  TextFormField(
+                    controller: leaderPhoneController,
+                    decoration: InputDecoration(
+                      prefixIcon: Padding(
+                        padding: const EdgeInsets.only(left: 10, right: 10),
+                        child: SvgPicture.asset(
+                          'assets/images/phone.svg',
+                          width: 40,
+                          height: 40,
+                        ),
+                      ),
+                      filled: true,
+                      fillColor: AppColors.fillColor,
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(12)),
+                        borderSide: BorderSide(
+                            width: 0, color: AppColors.lightHeaderColor),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(12)),
+                        borderSide: BorderSide(
+                            width: 0, color: AppColors.lightHeaderColor),
+                      ),
+                    ),
+                    onChanged: (value) {
+                      _updateFormData();
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Iltimos, telefon raqamini kiriting';
+                      }
+                      return null;
+                    },
                   ),
-                ),
-                SizedBox(height: 10),
-                TextField(
-                  controller: leaderNameController,
-                  decoration: InputDecoration(
-                    label: SvgPicture.asset(
-                      'assets/images/person1.svg',
-                      width: 40,
-                      height: 40,
-                    ),
-                    filled: true,
-                    fillColor: AppColors.fillColor,
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(12)),
-                      borderSide: BorderSide(
-                          width: 0, color: AppColors.lightHeaderColor),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(12)),
-                      borderSide: BorderSide(
-                          width: 0, color: AppColors.lightHeaderColor),
-                    ),
-                  ),
-                  onChanged: (value) {
-                    _updateFormData();
-                  },
-                ),
-                SizedBox(height: 20),
-                Padding(
-                  padding: const EdgeInsets.only(left: 20),
-                  child: Text(
-                    'Obyekt rahbarining telefon raqami',
-                    style: AppStyle.fontStyle
-                        .copyWith(fontWeight: FontWeight.bold),
-                  ),
-                ),
-                SizedBox(height: 10),
-                TextField(
-                  controller: leaderPhoneController,
-                  decoration: InputDecoration(
-                    label: SvgPicture.asset(
-                      'assets/images/phone.svg',
-                      width: 40,
-                      height: 40,
-                    ),
-                    filled: true,
-                    fillColor: AppColors.fillColor,
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(12)),
-                      borderSide: BorderSide(
-                          width: 0, color: AppColors.lightHeaderColor),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(12)),
-                      borderSide: BorderSide(
-                          width: 0, color: AppColors.lightHeaderColor),
+                  SizedBox(height: 20),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20),
+                    child: Text(
+                      'Obyektning yuridik nomi',
+                      style: AppStyle.fontStyle
+                          .copyWith(fontWeight: FontWeight.bold),
                     ),
                   ),
-                  onChanged: (value) {
-                    _updateFormData();
-                  },
-                ),
-                SizedBox(height: 20),
-                Padding(
-                  padding: const EdgeInsets.only(left: 20),
-                  child: Text(
-                    'Obyektning yuridik nomi',
-                    style: AppStyle.fontStyle
-                        .copyWith(fontWeight: FontWeight.bold),
+                  SizedBox(height: 10),
+                  TextFormField(
+                    controller: legalNameController,
+                    decoration: InputDecoration(
+                      prefixIcon: Padding(
+                        padding: const EdgeInsets.only(left: 10, right: 10),
+                        child: SvgPicture.asset(
+                          'assets/images/buildings.svg',
+                          width: 40,
+                          height: 40,
+                        ),
+                      ),
+                      filled: true,
+                      fillColor: AppColors.fillColor,
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(12)),
+                        borderSide: BorderSide(
+                            width: 0, color: AppColors.lightHeaderColor),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(12)),
+                        borderSide: BorderSide(
+                            width: 0, color: AppColors.lightHeaderColor),
+                      ),
+                    ),
+                    onChanged: (value) {
+                      _updateFormData();
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Iltimos, yuridik nomni kiriting';
+                      }
+                      return null;
+                    },
                   ),
-                ),
-                SizedBox(height: 10),
-                TextField(
-                  controller: legalNameController,
-                  decoration: InputDecoration(
-                    label: SvgPicture.asset(
-                      'assets/images/buildings.svg',
-                      width: 40,
-                      height: 40,
-                    ),
-                    filled: true,
-                    fillColor: AppColors.fillColor,
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(12)),
-                      borderSide: BorderSide(
-                          width: 0, color: AppColors.lightHeaderColor),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(12)),
-                      borderSide: BorderSide(
-                          width: 0, color: AppColors.lightHeaderColor),
-                    ),
-                  ),
-                  onChanged: (value) {
-                    _updateFormData();
-                  },
-                ),
-                SizedBox(height: 20),
-              ],
+                  SizedBox(height: 20),
+                ],
+              ),
             ),
-          )
-        ],
+          ],
+        ),
       ),
     );
   }

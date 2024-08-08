@@ -11,15 +11,37 @@ import 'package:qoriqlash_xizmati/front/pages/tarifs_screens/object/ariza_step_t
 import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
 
 class ArizaTexnikObyekt extends StatelessWidget {
-  final String? obyektTuri;
-  final String? qoriqlashVositasi;
-  final Map<String, TimeOfDay>? qoriqlashVaqtlari;
+  final String? selectedObjectType;
+  final String? selectedGuardType;
+  final String? motionWorkDaysStartTime;
+  final String? motionWorkDaysEndTime;
+  final String? motionWeekendStartTime;
+  final String? motionWeekendEndTime;
+  final String? motionHolidayStartTime;
+  final String? motionHolidayEndTime;
+  final String? alarmWorkDaysStartTime;
+  final String? alarmWorkDaysEndTime;
+  final String? alarmWeekendStartTime;
+  final String? alarmWeekendEndTime;
+  final String? alarmHolidayStartTime;
+  final String? alarmHolidayEndTime;
 
   const ArizaTexnikObyekt({
     Key? key,
-    this.obyektTuri,
-    this.qoriqlashVositasi,
-    this.qoriqlashVaqtlari,
+    this.selectedObjectType,
+    this.selectedGuardType,
+    this.motionWorkDaysStartTime,
+    this.motionWorkDaysEndTime,
+    this.motionWeekendStartTime,
+    this.motionWeekendEndTime,
+    this.motionHolidayStartTime,
+    this.motionHolidayEndTime,
+    this.alarmWorkDaysStartTime,
+    this.alarmWorkDaysEndTime,
+    this.alarmWeekendStartTime,
+    this.alarmWeekendEndTime,
+    this.alarmHolidayStartTime,
+    this.alarmHolidayEndTime,
   }) : super(key: key);
 
   @override
@@ -33,9 +55,19 @@ class ArizaTexnikObyekt extends StatelessWidget {
             MiniRedTitle(title: 'Arizani Rasmiylashtirish'),
             Expanded(
               child: MultiStepForm(
-                obyektTuri: obyektTuri,
-                qoriqlashVositasi: qoriqlashVositasi,
-                qoriqlashVaqtlari: qoriqlashVaqtlari,
+                motionWorkDaysStartTime: motionWorkDaysStartTime,
+                motionWorkDaysEndTime: motionWorkDaysEndTime,
+                motionWeekendStartTime: motionWeekendStartTime,
+                motionWeekendEndTime: motionWeekendEndTime,
+                motionHolidayStartTime: motionHolidayStartTime,
+                motionHolidayEndTime: motionHolidayEndTime,
+                alarmWorkDaysStartTime: alarmWorkDaysStartTime,
+                alarmWorkDaysEndTime: alarmWorkDaysEndTime,
+                alarmWeekendStartTime: alarmWeekendStartTime,
+                alarmWeekendEndTime: alarmWeekendEndTime,
+                alarmHolidayStartTime: alarmHolidayStartTime,
+                alarmHolidayEndTime: alarmHolidayEndTime,
+                selectedGuardType: selectedGuardType,
               ),
             ),
           ],
@@ -45,25 +77,37 @@ class ArizaTexnikObyekt extends StatelessWidget {
   }
 }
 
-class ArizaStep extends StatelessWidget {
-  const ArizaStep({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const MultiStepForm();
-  }
-}
-
 class MultiStepForm extends StatefulWidget {
-  final String? obyektTuri;
-  final String? qoriqlashVositasi;
-  final Map<String, TimeOfDay>? qoriqlashVaqtlari;
+  final String? motionWorkDaysStartTime;
+  final String? motionWorkDaysEndTime;
+  final String? motionWeekendStartTime;
+  final String? motionWeekendEndTime;
+  final String? motionHolidayStartTime;
+  final String? motionHolidayEndTime;
+
+  final String? alarmWorkDaysStartTime;
+  final String? alarmWorkDaysEndTime;
+  final String? alarmWeekendStartTime;
+  final String? alarmWeekendEndTime;
+  final String? alarmHolidayStartTime;
+  final String? alarmHolidayEndTime;
+  final String? selectedGuardType;
 
   const MultiStepForm({
     Key? key,
-    this.obyektTuri,
-    this.qoriqlashVositasi,
-    this.qoriqlashVaqtlari,
+    this.motionWorkDaysStartTime,
+    this.motionWorkDaysEndTime,
+    this.motionWeekendStartTime,
+    this.motionWeekendEndTime,
+    this.motionHolidayStartTime,
+    this.motionHolidayEndTime,
+    this.alarmWorkDaysStartTime,
+    this.alarmWorkDaysEndTime,
+    this.alarmWeekendStartTime,
+    this.alarmWeekendEndTime,
+    this.alarmHolidayStartTime,
+    this.alarmHolidayEndTime,
+    this.selectedGuardType,
   }) : super(key: key);
 
   @override
@@ -129,12 +173,22 @@ class _MultiStepFormState extends State<MultiStepForm> {
               BuildStep2Page(
                 formData: _formData,
                 onUpdateFormData: _updateFormData,
+                motionWorkDaysStartTime: widget.motionWorkDaysStartTime,
+                motionWorkDaysEndTime: widget.motionWorkDaysEndTime,
+                motionWeekendStartTime: widget.motionWeekendStartTime,
+                motionWeekendEndTime: widget.motionWeekendEndTime,
+                motionHolidayStartTime: widget.motionHolidayStartTime,
+                motionHolidayEndTime: widget.motionHolidayEndTime,
+                alarmWorkDaysStartTime: widget.alarmWorkDaysStartTime,
+                alarmWorkDaysEndTime: widget.alarmWorkDaysEndTime,
+                alarmWeekendStartTime: widget.alarmWeekendStartTime,
+                alarmWeekendEndTime: widget.alarmWeekendEndTime,
+                alarmHolidayStartTime: widget.alarmHolidayStartTime,
+                alarmHolidayEndTime: widget.alarmHolidayEndTime,
+                selectedGuardType:
+                    widget.selectedGuardType, // Pass the type here
               ),
-              BuildStep3Page(
-                obyektTuri: widget.obyektTuri,
-                qoriqlashVositasi: widget.qoriqlashVositasi,
-                qoriqlashVaqtlari: widget.qoriqlashVaqtlari,
-              ),
+              BuildStep3Page(),
               const BuildStep4Page(),
             ],
           ),

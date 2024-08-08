@@ -2,10 +2,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:http/http.dart' as http;
-import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
-import 'package:qoriqlash_xizmati/front/components/app_data_provider.dart';
-import 'package:qoriqlash_xizmati/front/components/mini_red_app_bar.dart';
 import 'package:qoriqlash_xizmati/front/pages/tarifs_screens/object/ariza_step_texnik_object/ariza_texnik_object.dart';
 import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
 import 'package:qoriqlash_xizmati/front/style/app_style.dart';
@@ -33,12 +29,31 @@ class DropDownObjectTexnik extends StatefulWidget {
 class _DropdownButtonExampleState extends State<DropDownObjectTexnik> {
   String? _selectedItem1;
   String? _selectedItem2;
-  List<String> objectTypes = []; // List to hold the fetched object types
+  List<String> objectTypes = [];
+  List<Map<String, dynamic>> guardTypes = [];
+  List<Map<String, dynamic>> guardTimes = [];
+
+  // Variables to hold selected times for sensors
+  String? _motionWorkDaysStartTime;
+  String? _motionWorkDaysEndTime;
+  String? _motionWeekendStartTime;
+  String? _motionWeekendEndTime;
+  String? _motionHolidayStartTime;
+  String? _motionHolidayEndTime;
+
+  String? _alarmWorkDaysStartTime;
+  String? _alarmWorkDaysEndTime;
+  String? _alarmWeekendStartTime;
+  String? _alarmWeekendEndTime;
+  String? _alarmHolidayStartTime;
+  String? _alarmHolidayEndTime;
 
   @override
   void initState() {
     super.initState();
-    fetchObjectTypes(); // Fetch data when the widget initializes
+    fetchObjectTypes();
+    fetchGuardTypes();
+    fetchGuardTimes();
   }
 
   Future<void> fetchObjectTypes() async {
@@ -46,13 +61,55 @@ class _DropdownButtonExampleState extends State<DropDownObjectTexnik> {
       final response = await http.get(Uri.parse(
           'http://10.100.9.145:7684/api/v1/ref/object-types?parent_id=1'));
       if (response.statusCode == 200) {
-        final List<dynamic> data =
-            json.decode(utf8.decode(response.bodyBytes)); // Use utf8.decode
+        final List<dynamic> data = json.decode(utf8.decode(response.bodyBytes));
         setState(() {
           objectTypes = data.map((item) => item['name'].toString()).toList();
         });
       } else {
         print('Failed to load object types');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
+  Future<void> fetchGuardTypes() async {
+    try {
+      final response = await http.get(Uri.parse(
+          'http://10.100.9.145:7684/api/v1/ref/guard-types?type_id=1'));
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(utf8.decode(response.bodyBytes));
+        setState(() {
+          guardTypes = data.map((item) {
+            return {'id': item['id'], 'name': item['name']};
+          }).toList();
+        });
+      } else {
+        print('Failed to load guard types');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
+  Future<void> fetchGuardTimes() async {
+    try {
+      final response = await http
+          .get(Uri.parse('http://10.100.9.145:7684/api/v1/ref/guard-time'));
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data =
+            json.decode(utf8.decode(response.bodyBytes));
+        setState(() {
+          guardTimes = data['data']
+              .map<Map<String, dynamic>>((item) => {
+                    'id': item['id'],
+                    'value': item['value'],
+                    'name': item['name']
+                  })
+              .toList();
+        });
+      } else {
+        print('Failed to load guard times');
       }
     } catch (e) {
       print('Error: $e');
@@ -110,8 +167,8 @@ class _DropdownButtonExampleState extends State<DropDownObjectTexnik> {
     );
   }
 
-  void _showModalForItem2(
-      BuildContext context, List<String> items, Function(String) onSelect) {
+  void _showModalForItem2(BuildContext context,
+      List<Map<String, dynamic>> items, Function(String) onSelect) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -140,12 +197,14 @@ class _DropdownButtonExampleState extends State<DropDownObjectTexnik> {
               itemCount: items.length,
               itemBuilder: (BuildContext context, int index) {
                 return ListTile(
-                  title: Text(items[index], style: AppStyle.fontStyle),
+                  title: Text(items[index]['name'], style: AppStyle.fontStyle),
                   leading: Radio(
-                    value: items[index],
+                    value: items[index]['id'].toString(),
                     groupValue: _selectedItem2,
                     onChanged: (String? value) {
                       setState(() {
+                        _selectedItem2 = value;
+                        print('Selected Guard Type Updated: $_selectedItem2');
                         onSelect(value!);
                       });
                       Navigator.pop(context);
@@ -173,156 +232,216 @@ class _DropdownButtonExampleState extends State<DropDownObjectTexnik> {
     );
   }
 
-  void _showTimePicker(
-      BuildContext context, String label, bool isStartTime) async {
-    final TimeOfDay? picked = await showTimePicker(
-      context: context,
-      initialTime: TimeOfDay.now(),
-      builder: (BuildContext context, Widget? child) {
-        return MediaQuery(
-          data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
-          child: child!,
-        );
-      },
-    );
-    if (picked != null) {
-      final timeModel = Provider.of<AppDataProvider>(context, listen: false);
-      if (isStartTime) {
-        timeModel.updateStartTime(label, picked);
-      } else {
-        timeModel.updateEndTime(label, picked);
-      }
-    }
-  }
-
-  void _showTimeModal(BuildContext context) {
+  void _showTimeSelectionDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8.0),
-          ),
-          titlePadding: EdgeInsets.symmetric(vertical: 0),
-          title: Container(
-            decoration: BoxDecoration(
-                color: AppColors.lightHeaderBlue,
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(8), topRight: Radius.circular(8))),
-            width: double.infinity,
-            height: 35,
-            child: Center(
-                child: Text('Qo\'riqlash vaqt oralig\'ini kiriting',
-                    style: AppStyle.fontStyle
-                        .copyWith(fontWeight: FontWeight.bold))),
-          ),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                if (_selectedItem2 == 'Harakat sezgi sensorlar bilan' ||
-                    _selectedItem2 ==
-                        'Harakat sezgi sensorlar va tashvish tugmasi bilan')
-                  _buildTimePickerSection(
-                      'Harakat sezgi sensorlar orqali', context),
-                if (_selectedItem2 == 'Tashvish tugmasi bilan' ||
-                    _selectedItem2 ==
-                        'Harakat sezgi sensorlar va tashvish tugmasi bilan')
-                  _buildTimePickerSection('Tashvish tugmasi orqali', context),
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              title: Text('Vaqtni tanlang', style: AppStyle.fontStyle),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (_selectedItem2 == '1' || _selectedItem2 == '3')
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Датчик движения',
+                            style: AppStyle.fontStyle.copyWith(
+                                fontWeight: FontWeight.bold, fontSize: 16),
+                          ),
+                          _buildTimeDropdown(
+                            'Ish kunlari',
+                            guardTimes,
+                            _motionWorkDaysStartTime,
+                            _motionWorkDaysEndTime,
+                            (start, end) {
+                              setState(() {
+                                _motionWorkDaysStartTime = start;
+                                _motionWorkDaysEndTime = end;
+                              });
+                            },
+                          ),
+                          _buildTimeDropdown(
+                            'Shanba va yakshanba',
+                            guardTimes,
+                            _motionWeekendStartTime,
+                            _motionWeekendEndTime,
+                            (start, end) {
+                              setState(() {
+                                _motionWeekendStartTime = start;
+                                _motionWeekendEndTime = end;
+                              });
+                            },
+                          ),
+                          _buildTimeDropdown(
+                            'Dam olish kunlari',
+                            guardTimes,
+                            _motionHolidayStartTime,
+                            _motionHolidayEndTime,
+                            (start, end) {
+                              setState(() {
+                                _motionHolidayStartTime = start;
+                                _motionHolidayEndTime = end;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                    if (_selectedItem2 == '2' || _selectedItem2 == '3')
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Тревожная кнопка',
+                            style: AppStyle.fontStyle.copyWith(
+                                fontWeight: FontWeight.bold, fontSize: 16),
+                          ),
+                          _buildTimeDropdown(
+                            'Ish kunlari',
+                            guardTimes,
+                            _alarmWorkDaysStartTime,
+                            _alarmWorkDaysEndTime,
+                            (start, end) {
+                              setState(() {
+                                _alarmWorkDaysStartTime = start;
+                                _alarmWorkDaysEndTime = end;
+                              });
+                            },
+                          ),
+                          _buildTimeDropdown(
+                            'Shanba va yakshanba',
+                            guardTimes,
+                            _alarmWeekendStartTime,
+                            _alarmWeekendEndTime,
+                            (start, end) {
+                              setState(() {
+                                _alarmWeekendStartTime = start;
+                                _alarmWeekendEndTime = end;
+                              });
+                            },
+                          ),
+                          _buildTimeDropdown(
+                            'Dam olish kunlari',
+                            guardTimes,
+                            _alarmHolidayStartTime,
+                            _alarmHolidayEndTime,
+                            (start, end) {
+                              setState(() {
+                                _alarmHolidayStartTime = start;
+                                _alarmHolidayEndTime = end;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                  ],
+                ),
+              ),
+              actions: <Widget>[
+                Center(
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.lightButtonGreen),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text('Tanlash',
+                        style: AppStyle.fontStyle
+                            .copyWith(color: AppColors.lightHeaderColor)),
+                  ),
+                ),
+                if (!_allTimePairsSelected())
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10.0),
+                    child: Text(
+                      'Iltimos, har bir vaqt juftligini tanlang.',
+                      style: TextStyle(color: Colors.red),
+                    ),
+                  ),
               ],
-            ),
-          ),
-          actions: <Widget>[
-            Center(
-              child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.lightButtonGreen),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text('Tanlash',
-                      style: AppStyle.fontStyle
-                          .copyWith(color: AppColors.lightHeaderColor))),
-            ),
-          ],
+            );
+          },
         );
       },
     );
   }
 
-  Widget _buildTimePickerSection(String title, BuildContext context) {
-    return Column(
-      children: [
-        Text(title,
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-        _buildTimePickerRow('${title}_Ish kunlari', context),
-        _buildTimePickerRow('${title}_Shanba Yakshanba kunlari', context),
-        _buildTimePickerRow('${title}_Bayram kunlari', context),
-      ],
-    );
+  bool _allTimePairsSelected() {
+    // Check if all time pairs have both start and end times selected
+    return _isTimePairValid(_motionWorkDaysStartTime, _motionWorkDaysEndTime) &&
+        _isTimePairValid(_motionWeekendStartTime, _motionWeekendEndTime) &&
+        _isTimePairValid(_motionHolidayStartTime, _motionHolidayEndTime) &&
+        _isTimePairValid(_alarmWorkDaysStartTime, _alarmWorkDaysEndTime) &&
+        _isTimePairValid(_alarmWeekendStartTime, _alarmWeekendEndTime) &&
+        _isTimePairValid(_alarmHolidayStartTime, _alarmHolidayEndTime);
   }
 
-  Widget _buildTimePickerRow(String label, BuildContext context) {
-    final timeModel = Provider.of<AppDataProvider>(context);
+  bool _isTimePairValid(String? startTime, String? endTime) {
+    // Only return true if both start and end times are selected
+    return (startTime == null && endTime == null) ||
+        (startTime != null && endTime != null);
+  }
+
+  Widget _buildTimeDropdown(
+    String labelText,
+    List<Map<String, dynamic>> items,
+    String? startTime,
+    String? endTime,
+    Function(String?, String?) onChanged,
+  ) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
-      child: Row(
-        children: <Widget>[
-          Expanded(
-            flex: 2,
-            child: Text(label.split('_').last, style: TextStyle(fontSize: 12)),
-          ),
-          Flexible(
-            child: IconButton(
-              icon: Icon(
-                Icons.access_time,
-                size: 20,
-                color: AppColors.lightIconGuardColor,
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(labelText, style: AppStyle.fontStyle),
+          Row(
+            children: [
+              DropdownButton<String>(
+                value: startTime,
+                items: items
+                    .map((item) => DropdownMenuItem<String>(
+                          value: item['name'],
+                          child: Text(item['name']),
+                        ))
+                    .toList(),
+                onChanged: (value) {
+                  setState(() {
+                    onChanged(value, endTime);
+                  });
+                },
+                hint: Text(startTime ?? '--:--', style: AppStyle.fontStyle),
               ),
-              onPressed: () {
-                _showTimePicker(context, '${label}_start', true);
-              },
-            ),
-          ),
-          Flexible(
-            child: Text(
-              timeModel.startTimes['${label}_start'] != null
-                  ? DateFormat.Hm().format(DateTime(
-                      0,
-                      0,
-                      0,
-                      timeModel.startTimes['${label}_start']!.hour,
-                      timeModel.startTimes['${label}_start']!.minute))
-                  : '--:--',
-              style: TextStyle(fontSize: 12),
-            ),
-          ),
-          Text(' - ', style: TextStyle(fontSize: 12)),
-          Flexible(
-            child: IconButton(
-              icon: Icon(
-                Icons.access_time,
-                size: 20,
-                color: AppColors.lightIconGuardColor,
+              SizedBox(width: 10),
+              DropdownButton<String>(
+                value: endTime,
+                items: items
+                    .map((item) => DropdownMenuItem<String>(
+                          value: item['name'],
+                          child: Text(item['name']),
+                        ))
+                    .toList(),
+                onChanged: (value) {
+                  setState(() {
+                    onChanged(startTime, value);
+                  });
+                },
+                hint: Text(endTime ?? '--:--', style: AppStyle.fontStyle),
               ),
-              onPressed: () {
-                _showTimePicker(context, '${label}_end', false);
-              },
-            ),
+            ],
           ),
-          Flexible(
-            child: Text(
-              timeModel.endTimes['${label}_end'] != null
-                  ? DateFormat.Hm().format(DateTime(
-                      0,
-                      0,
-                      0,
-                      timeModel.endTimes['${label}_end']!.hour,
-                      timeModel.endTimes['${label}_end']!.minute))
-                  : '--:--',
-              style: TextStyle(fontSize: 12),
+          if (!_isTimePairValid(startTime, endTime))
+            Text(
+              'Iltimos, ikkala vaqtni tanlang.',
+              style: TextStyle(color: Colors.red),
             ),
-          ),
         ],
       ),
     );
@@ -333,11 +452,7 @@ class _DropdownButtonExampleState extends State<DropDownObjectTexnik> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-        MiniRedAppBar(),
-        MiniRedTitle(title: 'Texnik qo\'riqlash markazlari orqali Qo\'riqlash'),
-        SizedBox(
-          height: 20,
-        ),
+        SizedBox(height: 20),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30),
           child: Row(
@@ -366,7 +481,7 @@ class _DropdownButtonExampleState extends State<DropDownObjectTexnik> {
               onPressed: () {
                 _showModalForItem1(
                   context,
-                  objectTypes, // Use the fetched object types
+                  objectTypes,
                   (selectedItem) {
                     setState(() {
                       _selectedItem1 = selectedItem;
@@ -426,11 +541,7 @@ class _DropdownButtonExampleState extends State<DropDownObjectTexnik> {
               onPressed: () {
                 _showModalForItem2(
                   context,
-                  [
-                    'Harakat sezgi sensorlar bilan',
-                    'Tashvish tugmasi bilan',
-                    'Harakat sezgi sensorlar va tashvish tugmasi bilan'
-                  ],
+                  guardTypes,
                   (selectedItem) {
                     setState(() {
                       _selectedItem2 = selectedItem;
@@ -448,8 +559,14 @@ class _DropdownButtonExampleState extends State<DropDownObjectTexnik> {
                   ),
                   SizedBox(width: 10),
                   Expanded(
-                    child: Text(_selectedItem2 ?? 'Tanlang',
-                        style: AppStyle.fontStyle),
+                    child: Text(
+                      guardTypes
+                          .firstWhere(
+                              (item) => item['id'].toString() == _selectedItem2,
+                              orElse: () => {'name': 'Tanlang'})['name']
+                          .toString(),
+                      style: AppStyle.fontStyle,
+                    ),
                   ),
                   Icon(
                     Icons.arrow_drop_down,
@@ -467,7 +584,7 @@ class _DropdownButtonExampleState extends State<DropDownObjectTexnik> {
           child: Row(
             children: [
               Text(
-                'Qo\'riqlash vaqt oralig\'ini kiriting',
+                'Vaqtni sozlash',
                 style: AppStyle.fontStyle.copyWith(fontWeight: FontWeight.bold),
               ),
             ],
@@ -488,7 +605,7 @@ class _DropdownButtonExampleState extends State<DropDownObjectTexnik> {
                 ),
               ),
               onPressed: () {
-                _showTimeModal(context);
+                _showTimeSelectionDialog(context);
               },
               child: Row(
                 mainAxisSize: MainAxisSize.max,
@@ -500,8 +617,10 @@ class _DropdownButtonExampleState extends State<DropDownObjectTexnik> {
                   ),
                   SizedBox(width: 10),
                   Expanded(
-                    child: Text('Vaqt oralig\'ini kiriting',
-                        style: AppStyle.fontStyle),
+                    child: Text(
+                      'Tanlang', // Display selected time information if needed
+                      style: AppStyle.fontStyle,
+                    ),
                   ),
                   Icon(
                     Icons.arrow_drop_down,
@@ -522,19 +641,25 @@ class _DropdownButtonExampleState extends State<DropDownObjectTexnik> {
             backgroundColor: AppColors.lightButtonGreen,
           ),
           onPressed: () {
-            final timeModel =
-                Provider.of<AppDataProvider>(context, listen: false);
-
+            print('Navigating with Guard Type: $_selectedItem2');
             Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => ArizaTexnikObyekt(
-                  obyektTuri: _selectedItem1,
-                  qoriqlashVositasi: _selectedItem2,
-                  qoriqlashVaqtlari: {
-                    ...timeModel.startTimes, // Passing start times
-                    ...timeModel.endTimes, // Passing end times
-                  },
+                  selectedObjectType: _selectedItem1,
+                  selectedGuardType: _selectedItem2, // Pass selectedGuardType
+                  motionWorkDaysStartTime: _motionWorkDaysStartTime,
+                  motionWorkDaysEndTime: _motionWorkDaysEndTime,
+                  motionWeekendStartTime: _motionWeekendStartTime,
+                  motionWeekendEndTime: _motionWeekendEndTime,
+                  motionHolidayStartTime: _motionHolidayStartTime,
+                  motionHolidayEndTime: _motionHolidayEndTime,
+                  alarmWorkDaysStartTime: _alarmWorkDaysStartTime,
+                  alarmWorkDaysEndTime: _alarmWorkDaysEndTime,
+                  alarmWeekendStartTime: _alarmWeekendStartTime,
+                  alarmWeekendEndTime: _alarmWeekendEndTime,
+                  alarmHolidayStartTime: _alarmHolidayStartTime,
+                  alarmHolidayEndTime: _alarmHolidayEndTime,
                 ),
               ),
             );
