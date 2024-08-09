@@ -1,14 +1,19 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:flutter/material.dart';
+
 import 'package:intl/intl.dart';
-import 'package:live_photo_detector/index.dart';
+import 'package:live_photo_detector/m7_livelyness_detection.dart';
+import 'package:lottie/lottie.dart';
 import 'package:qoriqlash_xizmati/back/api/appConfig.dart';
 import 'package:qoriqlash_xizmati/front/components/mini_red_app_bar.dart';
 import 'package:qoriqlash_xizmati/front/style/app_colors.dart';
 import 'package:qoriqlash_xizmati/front/style/app_style.dart';
-import 'dart:io';
+
 import 'package:image/image.dart' as img;
 
 class FaceVirify extends StatefulWidget {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:live_photo_detector/index.dart';
+import 'package:lottie/lottie.dart';
 import 'package:pinput/pinput.dart';
 import 'dart:convert';
 

@@ -347,7 +347,17 @@ class _BuildStep2PageState extends State<BuildStep2Page> {
                 Row(
                   children: [
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        // Show the FaceVerifyPage in a modal dialog
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return Dialog(
+                              // child: FaceVerifyPage(),
+                            );
+                          },
+                        );
+                      },
                       child: const Text('Imzolash'),
                     ),
                   ],
@@ -373,3 +383,5 @@ Widget _buildTimeRow(String label, String? startTime, String? endTime) {
     ],
   );
 }
+
+// Dummy FaceVerifyPage widget for demonstration
