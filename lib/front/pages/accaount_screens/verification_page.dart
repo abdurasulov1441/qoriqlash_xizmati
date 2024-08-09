@@ -392,7 +392,7 @@ class _M7ExampleScreenState extends State<M7ExampleScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              '${jsonResponse['message']}',
+              '${jsonResponse['message']}bomadi',
               style: TextStyle(color: Colors.white),
             ),
             backgroundColor: Colors.red,

@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:intl/intl.dart'; // Import intl package
 import 'package:qoriqlash_xizmati/back/api/FormData.dart';
+import 'package:qoriqlash_xizmati/front/pages/tarifs_screens/object/ariza_step_texnik_object/face_verify.dart';
 import 'package:qoriqlash_xizmati/front/style/app_style.dart';
 
 class BuildStep2Page extends StatefulWidget {
@@ -353,7 +354,7 @@ class _BuildStep2PageState extends State<BuildStep2Page> {
                           context: context,
                           builder: (BuildContext context) {
                             return Dialog(
-                              // child: FaceVerifyPage(),
+                              child: FaceVerify(),
                             );
                           },
                         );

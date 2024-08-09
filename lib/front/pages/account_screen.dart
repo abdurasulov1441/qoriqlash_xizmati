@@ -323,7 +323,7 @@ class AccountScreenNotLogin extends StatefulWidget {
 }
 
 class _AccountScreenNotLoginState extends State<AccountScreenNotLogin> {
-  void showLogoutDialog(BuildContext context) {
+  Future<void> showLogoutDialog(BuildContext context) async {
     final dataProvider = Provider.of<AppDataProvider>(context, listen: false);
 
     showDialog(
