@@ -13,20 +13,19 @@ class Sozlamalar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final allprovider = Provider.of<AppDataProvider>(context);
+   
     final List<String> languages = ['ru', 'uzkiril', 'uzlat'];
     final List<String> languageImages = [
       'assets/images/ru.jpg',
       'assets/images/uz.png',
       'assets/images/uz.png'
     ];
-
     return Scaffold(
       body: Column(
         children: [
           MiniRedAppBar(),
           MiniRedTitle(
-            title:
-                allprovider.translate('sozlamalar'), // Use the translate method
+            title: allprovider.translate('sozlamalar'),
           ),
           GestureDetector(
             onTap: () {

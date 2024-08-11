@@ -6,6 +6,7 @@ import 'dart:convert';
 
 class AppDataProvider with ChangeNotifier {
   bool _isDarkTheme = false;
+
   Timer? _statusFetchTimer;
 
   // Cleanup to avoid memory leaks
